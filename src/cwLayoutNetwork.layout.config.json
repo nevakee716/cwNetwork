@@ -1,0 +1,12 @@
+{
+    "Name": "Network",
+    "DisplayName": "Network",
+    "Description": "Allow you to display your association in a Network",
+    "JavaScriptClassName": "cwLayoutNetwork",
+    "Options": [{
+        "Id": "custom-association-properties-display",
+        "DisplayName": "Custom Association Properties Display",
+        "Description": "Enter how you want to display association property in matrix cells : exemple Property1:NameIfchecked,Property2,....",
+        "Type": 0
+    }]
+}
