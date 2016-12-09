@@ -6,10 +6,13 @@
     "use strict";
     // constructor
     var network = function () {
-        this.nodes = {};
+        this.objectTypeNodes = {};
         this.edges = {};
     };
 
+    network.prototype.getObjectTypeNodes = function (object) {
+        return this.objectTypeNodes;
+    };
 
     network.prototype.searchForNodesAndEdges = function (object) {
         var associationNode,i;
@@ -26,36 +29,53 @@
 
 
     network.prototype.addNode = function (object) {
-        //console.log("Adding Node " + object.label);
-        var uuid = object.object_id + "#" + object.name;
-        if(!this.nodes.hasOwnProperty(uuid)) {
-            this.nodes[uuid] = new cwApi.customLibs.node(object.object_id,object.objectTypeScriptName,uuid,object.label);
-        } else
-        {
-           // console.log("nodes already exist");
+        if(!this.objectTypeNodes.hasOwnProperty(object.objectTypeScriptName)) {
+            this.objectTypeNodes[object.objectTypeScriptName] = new cwApi.customLibs.objectTypeNode(object.objectTypeScriptName,cwAPI.mm.getObjectType(object.objectTypeScriptName).name); 
         }
+        this.objectTypeNodes[object.objectTypeScriptName].addNode(object.object_id,object.properties.name);
     };
 
     network.prototype.getVisNodes = function () {
-        var nodes = [];
-        var node ;
-        this.legend = [];
+        var objectType ;
         var visData = [];
-        for (node in this.nodes) {
-            if (this.nodes.hasOwnProperty(node)) {
-                visData = this.nodes[node].getVisData();
-                nodes.push(visData);
+        for (objectType in this.objectTypeNodes) {
+            if (this.objectTypeNodes.hasOwnProperty(objectType)) {
+                visData = visData.concat(this.objectTypeNodes[objectType].getVisData());
             }
         }    
-        return nodes;    
+        return visData;    
+    };
+
+    network.prototype.SetAllAndGetNodesObject = function (scriptname,state) {
+        if (this.objectTypeNodes.hasOwnProperty(scriptname)) {
+            return this.objectTypeNodes[scriptname].SetAllAndGetNodesObject(state);
+        }    
+        return null;    
+    };
+
+    network.prototype.getVisNode = function (id,scriptname) {
+        return this.objectTypeNodes[scriptname].getVisData(id);    
+    };
+
+    network.prototype.changeState = function (id,scriptname,state) {
+        this.objectTypeNodes[scriptname].changeState(id,state);     
+    };
+
+    network.prototype.hide = function (id,scriptname) {
+        this.changeState(id,scriptname,false);
+    };
+
+    network.prototype.show = function (id,scriptname) {
+        this.changeState(id,scriptname,true);
+
     };
 
 
     network.prototype.addEdge = function (child,object) {
         //console.log(object.name + " ==> " + child.name);
         if(object.name && child.name) {
-            var uuid = object.object_id + "#" + object.name;
-            var uuidChild = child.object_id + "#" + child.name;  
+            var uuid = object.object_id + "#" + object.objectTypeScriptName;
+            var uuidChild = child.object_id + "#" + child.objectTypeScriptName;  
             var uuidAsso = uuid + "_" + uuidChild;     
             var uuidAssoReverse = uuidChild + "_" + uuid;        
             
@@ -77,9 +97,9 @@
         return edges;    
     };
 
-    network.prototype.getVisData = function (hasLegend) {
+    network.prototype.getVisData = function () {
 
-        var nodes = this.getVisNodes(hasLegend);
+        var nodes = this.getVisNodes();
         var edges = this.getVisEdges();
         // provide the data in the vis format
         var data = {
@@ -88,6 +108,8 @@
         };
         return data;
     };
+
+
 
     network.prototype.getExempleVisData = function () {
 
