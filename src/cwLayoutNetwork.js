@@ -21,6 +21,26 @@
 
 
     cwLayoutNetwork.prototype.applyJavaScript = function () {
+        var that = this;
+        var libToLoad = [];
+
+        if(cwAPI.isDebugMode() === true) {
+            that.createNetwork();
+        } else {
+            libToLoad = ['modules/bootstrap/bootstrap.min.js','modules/bootstrap-select/bootstrap-select.min.js','modules/vis/vis.min.js'];
+            // AsyncLoad
+            cwApi.customLibs.aSyncLayoutLoader.loadUrls(libToLoad,function(error){
+                if(error === null) {
+                    that.createNetwork();                
+                } else {
+                    console.log(error);
+                }
+            });
+        }
+    };
+
+
+    cwLayoutNetwork.prototype.createNetwork = function () {    
         var networkContainer = document.getElementById("cwLayoutNetworkCanva");
         var filterContainer = document.getElementById("cwLayoutNetworkFilter");
         var objectTypeNodes = this.network.getObjectTypeNodes();
@@ -73,25 +93,6 @@
 
         });
     };
-
-/*    
-        require("/layoutLibs/network.js");
-        require("/layoutLibs/edge.js");
-        require("/layoutLibs/node.js");
-        require("/layoutLibs/vis.min.js");
-        function require(script) {
-        $.ajax({
-            url: script,
-            dataType: "script",
-            async: false,           // <-- This is the key
-            success: function () {
-                // all good...
-            },
-            error: function () {
-                throw new Error("Could not load script " + script);
-            }
-        });
-    }*/
 
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;
 }(cwAPI, jQuery));
