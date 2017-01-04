@@ -17,7 +17,7 @@
 
     objectTypeNode.prototype.addNode = function (object_id,label) {
         if(!this.nodes.hasOwnProperty(object_id)) {
-            this.nodes[object_id] = new cwApi.customLibs.node(object_id,label,false);
+            this.nodes[object_id] = new cwApi.customLibs.cwLayoutNetwork.node(object_id,label,false);
         }  
     };
 
@@ -96,5 +96,15 @@
     };  
 
 
-    cwApi.customLibs.objectTypeNode = objectTypeNode;
+    if (!cwApi.customLibs) {
+        cwApi.customLibs = {};
+    }
+    if (!cwApi.customLibs.cwLayoutNetwork) {
+        cwApi.customLibs.cwLayoutNetwork = {};
+    };
+    if (!cwApi.customLibs.cwLayoutNetwork.objectTypeNode) {
+        cwApi.customLibs.cwLayoutNetwork.objectTypeNode = objectTypeNode;
+    }
+
+
 }(cwAPI, jQuery));

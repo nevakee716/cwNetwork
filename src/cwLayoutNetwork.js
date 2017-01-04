@@ -13,7 +13,7 @@
 
     // obligatoire appeler par le system
     cwLayoutNetwork.prototype.drawAssociations = function (output, associationTitleText, object) {
-        this.network = new cwApi.customLibs.network();
+        this.network = new cwApi.customLibs.cwLayoutNetwork.network();
         this.network.searchForNodesAndEdges(object);
         output.push('<div id="cwLayoutNetwork"><div id="cwLayoutNetworkFilter"></div><div id="cwLayoutNetworkCanva"></div></div>');
         this.object = object.associations;

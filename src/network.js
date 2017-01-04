@@ -30,7 +30,7 @@
 
     network.prototype.addNode = function (object) {
         if(!this.objectTypeNodes.hasOwnProperty(object.objectTypeScriptName)) {
-            this.objectTypeNodes[object.objectTypeScriptName] = new cwApi.customLibs.objectTypeNode(object.objectTypeScriptName,cwAPI.mm.getObjectType(object.objectTypeScriptName).name); 
+            this.objectTypeNodes[object.objectTypeScriptName] = new cwApi.customLibs.cwLayoutNetwork.objectTypeNode(object.objectTypeScriptName,cwAPI.mm.getObjectType(object.objectTypeScriptName).name); 
         }
         this.objectTypeNodes[object.objectTypeScriptName].addNode(object.object_id,object.properties.name);
     };
@@ -80,7 +80,7 @@
             var uuidAssoReverse = uuidChild + "_" + uuid;        
             
             if(!this.edges.hasOwnProperty(uuidAsso) && !this.edges.hasOwnProperty(uuidAssoReverse)) {
-                this.edges[uuidAsso] = new cwApi.customLibs.edge(uuid,uuidChild);
+                this.edges[uuidAsso] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid,uuidChild);
             }   
         }
         
@@ -138,5 +138,14 @@
         return data;
     };
 
-    cwApi.customLibs.network = network;
+    if (!cwApi.customLibs) {
+        cwApi.customLibs = {};
+    }
+    if (!cwApi.customLibs.cwLayoutNetwork) {
+        cwApi.customLibs.cwLayoutNetwork = {};
+    };
+    if (!cwApi.customLibs.cwLayoutNetwork.network) {
+        cwApi.customLibs.cwLayoutNetwork.network = network;
+    }
+
 }(cwAPI, jQuery));

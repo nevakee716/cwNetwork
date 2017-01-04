@@ -34,5 +34,14 @@
         //
     };
 
-    cwApi.customLibs.node = node;
+    if (!cwApi.customLibs) {
+        cwApi.customLibs = {};
+    }
+    if (!cwApi.customLibs.cwLayoutNetwork) {
+        cwApi.customLibs.cwLayoutNetwork = {};
+    };
+    if (!cwApi.customLibs.cwLayoutNetwork.node) {
+        cwApi.customLibs.cwLayoutNetwork.node = node;
+    }
+
 }(cwAPI, jQuery));
