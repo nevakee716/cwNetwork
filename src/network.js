@@ -72,7 +72,6 @@
 
 
     network.prototype.addEdge = function (child,object) {
-        //console.log(object.name + " ==> " + child.name);
         if(object.name && child.name) {
             var uuid = object.object_id + "#" + object.objectTypeScriptName;
             var uuidChild = child.object_id + "#" + child.objectTypeScriptName;  

@@ -33,7 +33,7 @@
                 if(error === null) {
                     that.createNetwork();                
                 } else {
-                    console.log(error);
+                    cwAPI.Log.Error(error);
                 }
             });
         }
