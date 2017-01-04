@@ -47,7 +47,6 @@
 
 
     objectTypeNode.prototype.getFilterObject = function () {
-        var i; 
         var filterObject;
         var object;
         var node;

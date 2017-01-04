@@ -16,6 +16,8 @@
         return {"from": this.fromUuid,"to": this.toUuid};
     };
 
-    cwApi.customLibs = {};
+    if(!cwApi.customLibs) {
+        cwApi.customLibs = {};
+    }
     cwApi.customLibs.edge = edge;
 }(cwAPI, jQuery));
