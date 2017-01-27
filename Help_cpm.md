@@ -1,0 +1,81 @@
+# How to Use Casewise Packet Manager
+
+Cpm allows you to create, publish and install custom layouts
+this documents can be found in pdf form at https://gitprint.com/wiki/casewise/cpm/Home.md
+
+# Warning
+
+Before starting, please remove from your evolve layout that are present in the marketplace. Then reinstall properly via offline or online install.
+
+All the command should be run as administrator
+
+# Install Custom Layout (Online)
+
+## Install CWPM
+
+* Install [node.js](https://nodejs.org/en/), use LTS version
+* open command console
+* type : npm install -g cwpm  
+
+if you have some problem, try to disable your anti-virus
+
+
+## Update CWPM 
+
+New features of cwpm are added everyweek, and you want to be update, it's strongly advised to run this command everyweek.
+* open command console
+* type : npm update -g 
+
+## Install Layout
+
+the list of existing custom layouts with evolve version can be found here 
+https://github.com/casewise/evolve-layouts/blob/master/README.md
+Follow the following steps to add a custom layout to evolve
+
+* via windows command go in C:\Casewise\Evolve\Site\bin or the corresponding installation folder of Evolve by typing cd C:\Casewise\Evolve\Site\bin
+* if it's the 1st time you use cpm install
+  * type cpm --install
+  * then change the version of evolve in C:\Casewise\Evolve\Site\bin\evolve.json to match your evolve
+* Type : cpm --install Layout_Name (this will install the layout into Marketplace/libs)
+* Type : cpm --install (this will update your existing layouts and list the layouts availables)
+* if there is a problem delete evolve.json 
+
+# Install Custom Layout (Offline Installation)
+
+## Downloading zip package
+
+* Go https://github.com/casewise/evolve-layouts/tree/master/dist
+* Select the zip file of the layout you want to install
+* for exemple Network-v0.4.0-evolve-v4.0.zip
+
+## Installation offline
+
+* unzip the zip file
+* Put the contenant of src in Casewise\Evolve\Site\bin\webDesigner\custom\Marketplace\libs\LAYOUT_NAME
+* Put the contenant of external in Casewise\Evolve\Site\bin\webDesigner\js\external
+* Put the contenant of modules in Casewise\Evolve\Site\bin\webDesigner\libs\modules
+* Put the contenant of fonts in Casewise\Evolve\Site\bin\webDesigner\fonts
+
+
+
+# Create a Custom Layout 
+
+* cpm --name CustomLayoutName
+* it's strongly advised to create a github for your new layout
+* if you need to load external libraries like D3js, look at FilterByExternalAssociation as exemple
+
+# Publish a custom layout 
+
+Required:
+* ask access to https://github.com/casewise/evolve-layouts repository which contains all evolve custom layouts (Pouya.Mohtacham@casewise.com)
+* clone this repository in the folder of your choice
+
+In your custom layout folder:
+
+* Fill in package.json mandatory fields : name, version, evolve-version
+* It's strongly advised to fields non-mandatory fields : wiki,repository and description
+* cpm --package (level of modification patch|minor|major)
+* cpm --register (path of evolve-layouts repository)
+* commit and push the modifications in evolve-layouts repository
+
+
