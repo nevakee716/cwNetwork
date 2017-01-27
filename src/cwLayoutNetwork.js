@@ -15,7 +15,7 @@
     cwLayoutNetwork.prototype.drawAssociations = function (output, associationTitleText, object) {
         this.network = new cwApi.customLibs.cwLayoutNetwork.network();
         this.network.searchForNodesAndEdges(object);
-        output.push('<div id="cwLayoutNetwork"><div id="cwLayoutNetworkFilter"></div><div id="cwLayoutNetworkCanva"></div></div>');
+        output.push('<div id="cwLayoutNetwork"><div id="cwLayoutNetworkFilter" class="bootstrap-iso"></div><div id="cwLayoutNetworkCanva"></div></div>');
         this.object = object.associations;
     };
 
