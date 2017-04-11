@@ -5,18 +5,22 @@
 
   "use strict";
   // constructor
-  var edge = function(fromUuid, toUuid) {
+  var edge = function(fromUuid, toUuid,direction) {
     this.fromUuid = fromUuid;
     this.toUuid = toUuid;
+    this.direction = direction;
   };
 
 
   //permet de lire les propriétés de l'asso et de choisir quoi afficher en fonction du champs custom
   edge.prototype.getVisData = function() {
-    return {
-      "from": this.fromUuid,
-      "to": this.toUuid
-    };
+    var edgeVis = {};
+    edgeVis.from = this.fromUuid;
+    edgeVis.to = this.toUuid; 
+    if(this.direction) {
+      edgeVis.arrows = this.direction;       
+    }   
+    return edgeVis;
   };
 
 

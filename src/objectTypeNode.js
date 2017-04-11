@@ -5,7 +5,7 @@
 
     "use strict";
     // constructor
-    var objectTypeNode = function (scriptname,label) {
+    var objectTypeNode = function (label,scriptname) {
         this.scriptname = scriptname;
         this.label = label;
         this.nodes = {};
@@ -29,7 +29,7 @@
         for (node in this.nodes) {
             if (this.nodes.hasOwnProperty(node)) {
                 nodeVisData = this.nodes[node].getVisData();
-                nodeVisData.group = this.scriptname;
+                nodeVisData.group = this.label;
                 nodeVisData.id = nodeVisData.id + "#" + this.scriptname;
                 visData.push(nodeVisData); 
             }
@@ -40,7 +40,7 @@
     objectTypeNode.prototype.getVisData = function (id) {
         var nodeVisData;
         nodeVisData = this.nodes[id].getVisData();
-        nodeVisData.group = this.scriptname;
+        nodeVisData.group = this.label;
         nodeVisData.id = nodeVisData.id + "#" + this.scriptname;
         return nodeVisData;
     };
@@ -59,8 +59,10 @@
         filterObject.setAttribute('data-actions-box','true');
         filterObject.setAttribute('data-size','10');
         filterObject.className = "selectNetworkPicker";
-        filterObject.setAttribute('id',this.scriptname);
 
+        filterObject.setAttribute('name',this.label);
+        filterObject.setAttribute('id',this.label);
+        filterObject.setAttribute('scriptname',this.scriptname);
         for (node in this.nodes) {
             if (this.nodes.hasOwnProperty(node)) {
                 object = document.createElement("option");
@@ -81,7 +83,7 @@
                 if(this.nodes[node].getStatus() !== state) {
                     this.nodes[node].setStatus(state);
                     nodeVisData = this.nodes[node].getVisData();
-                    nodeVisData.group = this.scriptname;
+                    nodeVisData.group = this.label;
                     nodeVisData.id = nodeVisData.id + "#" + this.scriptname;
                     changeStateNodeObject.push(nodeVisData); 
                 }

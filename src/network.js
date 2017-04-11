@@ -15,24 +15,27 @@
     };
 
     network.prototype.searchForNodesAndEdges = function (object) {
-        var associationNode,i;
-        for (associationNode in object.associations) {
-            if (object.associations.hasOwnProperty(associationNode)) {
-                for (i = 0; i < object.associations[associationNode].length; i += 1) {
-                    this.addNode(object.associations[associationNode][i]);
-                    this.addEdge(object.associations[associationNode][i],object);
-                    this.searchForNodesAndEdges(object.associations[associationNode][i]);
-                }
+        var i;
+        if(object.hasOwnProperty("children")) {
+            for (i = 0; i < object.children.length; i += 1) {
+                this.addNode(object.children[i]);
+                this.addEdge(object.children[i],object);
+                this.searchForNodesAndEdges(object.children[i]);
             }
+        } else { // in case of index
+            for (i = 0; i < object.length; i += 1) {
+                this.addNode(object[i]);
+                this.searchForNodesAndEdges(object[i]);
+            }    
         }
     };
 
 
     network.prototype.addNode = function (object) {
-        if(!this.objectTypeNodes.hasOwnProperty(object.objectTypeScriptName)) {
-            this.objectTypeNodes[object.objectTypeScriptName] = new cwApi.customLibs.cwLayoutNetwork.objectTypeNode(object.objectTypeScriptName,cwAPI.mm.getObjectType(object.objectTypeScriptName).name); 
+        if(!this.objectTypeNodes.hasOwnProperty(object.group)) {
+            this.objectTypeNodes[object.group] = new cwApi.customLibs.cwLayoutNetwork.objectTypeNode(object.group,object.objectTypeScriptName); 
         }
-        this.objectTypeNodes[object.objectTypeScriptName].addNode(object.object_id,object.properties.name);
+        this.objectTypeNodes[object.group].addNode(object.object_id,object.name);
     };
 
     network.prototype.getVisNodes = function () {
@@ -79,7 +82,7 @@
             var uuidAssoReverse = uuidChild + "_" + uuid;        
             
             if(!this.edges.hasOwnProperty(uuidAsso) && !this.edges.hasOwnProperty(uuidAssoReverse)) {
-                this.edges[uuidAsso] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid,uuidChild);
+                this.edges[uuidAsso] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid,uuidChild,child.direction);
             }   
         }
         

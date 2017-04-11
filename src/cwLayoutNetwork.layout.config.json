@@ -3,5 +3,23 @@
     "DisplayName": "Network",
     "Description": "Allow you to display your association in a Network",
     "JavaScriptClassName": "cwLayoutNetwork",
-    "Options": []
+    "Options": [
+    {
+        "Id": "hidden-nodes",
+        "DisplayName": "Hidden Nodes",
+        "Description": "Use comma as splitter character",
+        "Type": 0
+    },
+	{
+        "Id": "popOutList",
+        "DisplayName": "popOut List",
+        "Description": "list the scriptname of the objectType and the popOut",
+        "Type": 0
+    },
+	{
+        "Id": "specificGroup",
+        "DisplayName": "specific Group List",
+        "Description": "list the nodeIDs and the assignGroup",
+        "Type": 0
+    }]
 }

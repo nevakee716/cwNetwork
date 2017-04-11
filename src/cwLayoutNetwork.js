@@ -9,53 +9,205 @@
         cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
         cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
 
+        this.hiddenNodes = [];
+        this.popOut = [];
+        this.specificGroup = [];
+        this.directionList = [];
+        this.init = true;
+        this.getspecificGroupList(this.options.CustomOptions['specificGroup']);        
+        this.getPopOutList(this.options.CustomOptions['popOutList']);
+        this.getHiddenNodeList(this.options.CustomOptions['hidden-nodes']);
+        this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);
+        this.getdirectionList(this.options.CustomOptions['arrowDirection']);
     };
+
+
+    cwLayoutNetwork.prototype.getPopOutList = function(options) {
+        if(options) {
+            var optionList = options.split("#");
+            var optionSplit;
+
+            for (var i = 0; i < optionList.length; i += 1) {
+                if(optionList[i] !== "") {
+                    var optionSplit = optionList[i].split(",");
+                    this.popOut[optionSplit[0]] = optionSplit[1];
+                }
+            }
+        }
+    };
+
+    cwLayoutNetwork.prototype.getdirectionList = function(options) {
+        if(options) {
+            var optionList = options.split("#");
+            var optionSplit;
+
+            for (var i = 0; i < optionList.length; i += 1) {
+                if(optionList[i] !== "") {
+                    var optionSplit = optionList[i].split(",");
+                    this.directionList[optionSplit[0]] = optionSplit[1];
+                }
+            }
+        }
+    };
+
+    cwLayoutNetwork.prototype.getFontAwesomeList = function(options) {
+        var groups = {};
+
+        if(options) {
+            var optionList = options.split("||");
+            var optionSplit;
+            for (var i = 0; i < optionList.length; i += 1) {
+                if(optionList[i] !== "") {
+                    var optionSplit = optionList[i].split(",");
+                    groups[optionSplit[0]] = {};
+                    groups[optionSplit[0]].shape = 'icon';
+                    groups[optionSplit[0]].icon = {};
+                    groups[optionSplit[0]].icon.face = 'FontAwesome';
+                    groups[optionSplit[0]].icon.code = unescape('%u' + optionSplit[1]);
+                    if(optionSplit[2]) {
+                       groups[optionSplit[0]].icon.color = optionSplit[2];   
+                    }
+                     groups[optionSplit[0]].icon.size = '50';                                     
+                }
+            }
+        }
+
+        this.groupsIcon = groups;
+    };
+
+    cwLayoutNetwork.prototype.getspecificGroupList = function(options) {
+        if(options) {
+            var optionList = options.split("#");
+            var optionSplit;
+
+            for (var i = 0; i < optionList.length; i += 1) {
+                if(optionList[i] !== "") {
+                    var optionSplit = optionList[i].split(",");
+                    this.specificGroup[optionSplit[0]] = optionSplit[1];
+                }
+            }
+        }
+    };
+
+    cwLayoutNetwork.prototype.getHiddenNodeList = function(options) {
+        if(options) {
+
+            var optionList = options.split(",");
+            var optionSplit;
+            for (var i = 0; i < optionList.length; i += 1) {
+                if(optionList[i] !== "") {
+                    this.hiddenNodes.push(optionList[i]);
+                }
+            }
+        }
+    };
+
+    cwLayoutNetwork.prototype.simplify = function (child) {
+        var childrenArray = [];
+        var element;
+        var nextChild;
+        for (var associationNode in child.associations) {
+            if (child.associations.hasOwnProperty(associationNode)) {
+                for (var i = 0; i < child.associations[associationNode].length; i += 1) {
+                    nextChild = child.associations[associationNode][i];
+                    if(this.hiddenNodes.indexOf(associationNode) !== -1) {
+                        childrenArray = childrenArray.concat(this.simplify(nextChild));
+                    } else {
+                        element = {}; 
+                        element.name = this.multiLine(nextChild.name,7);
+                        element.object_id = nextChild.object_id;
+                        element.objectTypeScriptName = nextChild.objectTypeScriptName;
+
+                        if(this.specificGroup.hasOwnProperty(associationNode)) {
+                            element.group = this.specificGroup[associationNode];
+                        } else {
+                            element.group = cwAPI.mm.getObjectType(nextChild.objectTypeScriptName).name;                           
+                        }
+
+                        if(this.directionList.hasOwnProperty(associationNode)) {
+                            element.direction = this.directionList[associationNode];
+                        }
+
+                        element.children = this.simplify(nextChild);
+                        childrenArray.push(element);   
+                    }
+                }
+            } 
+        }
+        return childrenArray;
+    };
+
+    cwLayoutNetwork.prototype.multiLine = function(name,size) {
+        var nameSplit = name.split(" "); 
+        var carry = 0;
+        var multiLineName = "";
+        for (var i = 0; i < nameSplit.length -1; i += 1) {
+            if(nameSplit[i].length > size || carry + nameSplit[i].length > size) {
+                multiLineName += nameSplit[i] + "\n";
+                carry = 0;
+            } else {
+                carry += nameSplit[i].length + 1;
+                multiLineName += nameSplit[i] + " ";
+            }
+        }
+        multiLineName = multiLineName + nameSplit[nameSplit.length - 1];
+
+        return multiLineName ;
+
+
+
+
+    };
+
 
     // obligatoire appeler par le system
     cwLayoutNetwork.prototype.drawAssociations = function (output, associationTitleText, object) {
-        this.network = new cwApi.customLibs.cwLayoutNetwork.network();
-        this.network.searchForNodesAndEdges(object);
+        this.originalObject  = object;
+        this.network = new cwApi.customLibs.cwLayoutNetwork.network(this.groupsIcon);
+        this.network.searchForNodesAndEdges(this.simplify(object));
         output.push('<div id="cwLayoutNetwork"><div id="cwLayoutNetworkFilter" class="bootstrap-iso"></div><div id="cwLayoutNetworkCanva"></div></div>');
         this.object = object.associations;
     };
 
 
     cwLayoutNetwork.prototype.applyJavaScript = function () {
-        var that = this;
-        var libToLoad = [];
+        if(this.init) {
+            this.init = false;
+            var that = this;
+            var libToLoad = [];
 
-        if(cwAPI.isDebugMode() === true) {
-            that.createNetwork();
-        } else {
-            libToLoad = ['modules/bootstrap/bootstrap.min.js','modules/bootstrap-select/bootstrap-select.min.js','modules/vis/vis.min.js'];
-            // AsyncLoad
-            cwApi.customLibs.aSyncLayoutLoader.loadUrls(libToLoad,function(error){
-                if(error === null) {
-                    that.createNetwork();                
-                } else {
-                    cwAPI.Log.Error(error);
-                }
-            });
+            if(cwAPI.isDebugMode() === true) {
+                that.createNetwork();
+            } else {
+                libToLoad = ['modules/bootstrap/bootstrap.min.js','modules/bootstrap-select/bootstrap-select.min.js','modules/vis/vis.min.js'];
+                // AsyncLoad
+                cwApi.customLibs.aSyncLayoutLoader.loadUrls(libToLoad,function(error){
+                    if(error === null) {
+                        that.createNetwork();                
+                    } else {
+                        cwAPI.Log.Error(error);
+                    }
+                });
+            }
         }
     };
 
 
-    cwLayoutNetwork.prototype.createNetwork = function () {    
+    cwLayoutNetwork.prototype.createNetwork = function () {  
+
         var networkContainer = document.getElementById("cwLayoutNetworkCanva");
         var filterContainer = document.getElementById("cwLayoutNetworkFilter");
         var objectTypeNodes = this.network.getObjectTypeNodes();
         var ObjectTypeNode;
-        for (ObjectTypeNode in objectTypeNodes) {
-            if (objectTypeNodes.hasOwnProperty(ObjectTypeNode)) {
-                filterContainer.appendChild(objectTypeNodes[ObjectTypeNode].getFilterObject());
-            }
-        }
 
-        $('.selectNetworkPicker').selectpicker();
-
+        // set height
         var canvaHeight = window.innerHeight - networkContainer.getBoundingClientRect().top;
         networkContainer.setAttribute('style','height:' + canvaHeight + 'px');
-        
+
+        // legend
+        var x = - networkContainer.clientWidth / 2 + 70;
+        var y = - networkContainer.clientHeight / 2 + 150;
+        var step = 70;
         // provide the data in the vis format
         var nodes = new vis.DataSet(); //this.network.getVisNodes());
         var edges = new vis.DataSet(this.network.getVisEdges()); //this.network.getVisEdges());
@@ -63,25 +215,44 @@
             nodes: nodes,
             edges: edges
         };
-        var options = {};   
+        var options = {
+            groups : this.groupsIcon,
+            //interaction:{hover:true}
+        };
+
+        var i = 0;
+        for (ObjectTypeNode in objectTypeNodes) {
+            if (objectTypeNodes.hasOwnProperty(ObjectTypeNode)) {
+                filterContainer.appendChild(objectTypeNodes[ObjectTypeNode].getFilterObject());
+                //console.log(ObjectTypeNode);
+                //nodes.add({id: 1000+ i , x: x, y: y + i*step, label: ObjectTypeNode, group: ObjectTypeNode, value: 1, fixed: true, physics:false});
+                i = i + 1;
+            }
+        }
+
+        $('.selectNetworkPicker').selectpicker();
+
+
+    
         // initialize your network!/*# sourceMappingURL=bootstrap.min.css.map */
         this.networkUI = new vis.Network(networkContainer, data, options);
         var that = this;
         $('select.selectNetworkPicker').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
-            var scriptname = $(this).context['id'];
+            var group = $(this).context['id'];
+            var scriptname = $(this).context.getAttribute('scriptname');
             if(clickedIndex !== undefined) {
                 var id = $(this).context[clickedIndex]['id'];
                 var nodeId = id + "#" + scriptname;
                 if(newValue === false) {
                     nodes.remove(nodeId);
-                    that.network.hide(id,scriptname);
+                    that.network.hide(id,group);
                 } else {
-                    that.network.show(id,scriptname);
-                    nodes.add(that.network.getVisNode(id,scriptname));
+                    that.network.show(id,group);
+                    nodes.add(that.network.getVisNode(id,group));
                 }
             } else {
                 if($(this).context[0]) {
-                    var changeNodesArray = that.network.SetAllAndGetNodesObject(scriptname,$(this).context[0].selected);
+                    var changeNodesArray = that.network.SetAllAndGetNodesObject(group,$(this).context[0].selected);
                     if($(this).context[0].selected === true) {
                         nodes.add(changeNodesArray);
                     } else {
@@ -92,7 +263,66 @@
             }
 
         });
+
+
+        this.networkUI.on("click", function (params) {
+            if(params.hasOwnProperty('nodes') && params.nodes.length === 1) {
+                var split = params.nodes[0].split("#");
+                that.openPopOut(split[0],split[1]);
+
+
+            }
+        });
+        this.networkUI.on("doubleClick", function (params) {
+            if(params.hasOwnProperty('nodes') && params.nodes.length === 1) {
+                var split = params.nodes[0].split("#");
+                that.openObjectPage(split[0],split[1]);
+            }
+        });
+
     };
+
+    cwLayoutNetwork.prototype.lookForObjects = function (id,scriptname,child) {
+        var childrenArray = [];
+        var element;
+        var nextChild;
+        if(child.objectTypeScriptName === scriptname && child.object_id == id) {
+            return child;
+        }
+        for (var associationNode in child.associations) {
+            if (child.associations.hasOwnProperty(associationNode)) {
+                for (var i = 0; i < child.associations[associationNode].length; i += 1) {
+                    nextChild = child.associations[associationNode][i];
+                    element = this.lookForObjects(id,scriptname,nextChild);
+                    if(element !== null) {
+                        return element;
+                    } 
+                }
+            }
+        }
+        return null;
+    };
+
+
+    cwLayoutNetwork.prototype.openObjectPage = function(id,scriptname) {
+        var object = this.lookForObjects(id,scriptname,this.originalObject);
+        if(object) {
+            location.href = this.singleLinkMethod(scriptname, object);
+        }
+
+    };
+
+    cwLayoutNetwork.prototype.openPopOut = function(id,scriptname) {
+
+        var object = this.lookForObjects(id,scriptname,this.originalObject);
+        if(this.popOut[scriptname]) {
+            cwApi.cwDiagramPopoutHelper.openDiagramPopout(object,this.popOut[scriptname]);
+        }
+        
+
+    };
+
+
 
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;
 }(cwAPI, jQuery));
