@@ -36,6 +36,7 @@
             this.objectTypeNodes[object.group] = new cwApi.customLibs.cwLayoutNetwork.objectTypeNode(object.group,object.objectTypeScriptName); 
         }
         this.objectTypeNodes[object.group].addNode(object.object_id,object.name);
+
     };
 
     network.prototype.getVisNodes = function () {
@@ -49,15 +50,44 @@
         return visData;    
     };
 
-    network.prototype.SetAllAndGetNodesObject = function (scriptname,state) {
-        if (this.objectTypeNodes.hasOwnProperty(scriptname)) {
-            return this.objectTypeNodes[scriptname].SetAllAndGetNodesObject(state);
-        }    
-        return null;    
+    network.prototype.SetAllAndGetNodesObject = function (state,scriptname) {
+        var objectType;
+        var visData = [];
+        if (scriptname && this.objectTypeNodes.hasOwnProperty(scriptname)) {
+            visData = this.objectTypeNodes[scriptname].SetAllAndGetNodesObject(state);
+        } else {
+            for (objectType in this.objectTypeNodes) {
+                if (this.objectTypeNodes.hasOwnProperty(objectType)) {
+                    visData = visData.concat(this.objectTypeNodes[objectType].SetAllAndGetNodesObject(state));
+                }
+            }    
+        }
+        return visData;    
     };
 
     network.prototype.getVisNode = function (id,scriptname) {
-        return this.objectTypeNodes[scriptname].getVisData(id);    
+        if(this.range) {
+            var originNode = this.objectTypeNodes[scriptname].getVisData(id);
+            var nodesArray = [];
+            nodesArray.push(originNode);
+            var edges = this.getEdges();
+            var i,tempNode;
+            for (i = 0; i < edges.length; i += 1) {
+                if(edges[i].fromUuid === originNode.id) {
+                    tempNode = this.objectTypeNodes[edges[i].toGroup].getVisDataIfDeactivated(edges[i].toId);  
+                }
+                if(edges[i].toUuid === originNode.id) {
+                    tempNode = this.objectTypeNodes[edges[i].fromGroup].getVisDataIfDeactivated(edges[i].fromId);                    
+                }
+                if(tempNode) {
+                    nodesArray.push(tempNode); 
+                }
+                tempNode = null;
+            }
+            return nodesArray;
+        } else {
+            return this.objectTypeNodes[scriptname].getVisData(id);                
+        }
     };
 
     network.prototype.changeState = function (id,scriptname,state) {
@@ -79,10 +109,9 @@
             var uuid = object.object_id + "#" + object.objectTypeScriptName;
             var uuidChild = child.object_id + "#" + child.objectTypeScriptName;  
             var uuidAsso = uuid + "_" + uuidChild;     
-            var uuidAssoReverse = uuidChild + "_" + uuid;        
-            
+            var uuidAssoReverse = uuidChild + "_" + uuid;       
             if(!this.edges.hasOwnProperty(uuidAsso) && !this.edges.hasOwnProperty(uuidAssoReverse)) {
-                this.edges[uuidAsso] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid,uuidChild,child.direction);
+                this.edges[uuidAsso] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid,uuidChild,object.object_id,child.object_id,object.group,child.group,child.direction);
             }   
         }
         
@@ -94,6 +123,17 @@
         for (edge in this.edges) {
             if(this.edges.hasOwnProperty(edge)) {
                 edges.push(this.edges[edge].getVisData());
+            }
+        }    
+        return edges;    
+    };
+
+    network.prototype.getEdges = function () {
+        var edges = [];
+        var edge ;
+        for (edge in this.edges) {
+            if(this.edges.hasOwnProperty(edge)) {
+                edges.push(this.edges[edge].getEdge());
             }
         }    
         return edges;    
@@ -111,33 +151,57 @@
         return data;
     };
 
+    network.prototype.ActivateOption = function (option) {
+        this[option] = true;
+    };
+
+    network.prototype.DeActivateOption = function (option) {
+        this[option] = false;        
+    };
+
+    network.prototype.getFilterOptions = function () {
+
+      var filterObject;
+        var object;
+        var node;
+
+        filterObject = document.createElement("select");
+        filterObject.setAttribute('title','Options');
+        filterObject.setAttribute('multiple','');
+        filterObject.setAttribute('data-selected-text-format','static');
+        filterObject.setAttribute('data-size','10');
+        filterObject.className = "selectNetworkOptions";
 
 
-    network.prototype.getExempleVisData = function () {
+        object = document.createElement("option");
+        object.setAttribute('id',"range");
+        object.textContent = "Impact Range";
+        filterObject.appendChild(object);                                                                                                                                                                                                                                                                                                                                                                                                     
 
-        var nodes = new vis.DataSet([
-            {id: 1, label: 'Node 1'},
-            {id: 2, label: 'Node 2'},
-            {id: 3, label: 'Node 3'},
-            {id: 4, label: 'Node 4'},
-            {id: 5, label: 'Node 5'}
-        ]);
+        return filterObject;
+    };
 
-        
-        // create an array with edges
-        var edges = new vis.DataSet([
-            {from: 1, to: 3},
-            {from: 1, to: 2},
-            {from: 2, to: 4},
-            {from: 2, to: 5}
-        ]);
+    network.prototype.getFilterAllGroups = function () {
 
-        // provide the data in the vis format
-        var data = {
-            nodes: nodes,
-            edges: edges
-        };
-        return data;
+      var filterObject;
+        var object,objectType,node;
+
+        filterObject = document.createElement("select");
+        filterObject.setAttribute('title','All Objects Groups');
+        filterObject.setAttribute('multiple','');
+        filterObject.setAttribute('data-actions-box','true');
+        filterObject.setAttribute('data-selected-text-format','static');
+        filterObject.setAttribute('data-size','10');
+        filterObject.className = "selectNetworkAllGroups";   
+        for (objectType in this.objectTypeNodes) {
+            if (this.objectTypeNodes.hasOwnProperty(objectType)) {
+                object = document.createElement("option");
+                object.setAttribute('id',this.objectTypeNodes[objectType].label.replace(" ","_"));
+                object.textContent = this.objectTypeNodes[objectType].label;
+                filterObject.appendChild(object);       
+            }
+        }   
+        return filterObject;
     };
 
     if (!cwApi.customLibs) {

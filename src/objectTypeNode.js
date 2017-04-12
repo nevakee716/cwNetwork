@@ -45,6 +45,16 @@
         return nodeVisData;
     };
 
+    objectTypeNode.prototype.getVisDataIfDeactivated = function (id) {
+        var nodeVisData;
+        nodeVisData = this.nodes[id].getVisDataIfDeactivated();
+        if(nodeVisData) {
+            nodeVisData.group = this.label;
+            nodeVisData.id = nodeVisData.id + "#" + this.scriptname;        
+        }
+        return nodeVisData;    
+    };
+
 
     objectTypeNode.prototype.getFilterObject = function () {
         var filterObject;
@@ -58,7 +68,7 @@
         filterObject.setAttribute('data-selected-text-format','static');
         filterObject.setAttribute('data-actions-box','true');
         filterObject.setAttribute('data-size','10');
-        filterObject.className = "selectNetworkPicker";
+        filterObject.className = "selectNetworkPicker " + this.label.replace(" ","_");
 
         filterObject.setAttribute('name',this.label);
         filterObject.setAttribute('id',this.label);
@@ -67,7 +77,7 @@
             if (this.nodes.hasOwnProperty(node)) {
                 object = document.createElement("option");
                 object.setAttribute('id',this.nodes[node].getId());
-                object.textContent = this.nodes[node].getLabel();
+                object.textContent = this.nodes[node].getLabel().replace("\n"," ");
                 filterObject.appendChild(object);
             }                                                                                                                                                                                                                                                                                                                                                                                                            
         }

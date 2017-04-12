@@ -117,7 +117,6 @@
                         element.name = this.multiLine(nextChild.name,7);
                         element.object_id = nextChild.object_id;
                         element.objectTypeScriptName = nextChild.objectTypeScriptName;
-
                         if(this.specificGroup.hasOwnProperty(associationNode)) {
                             element.group = this.specificGroup[associationNode];
                         } else {
@@ -199,7 +198,7 @@
         var filterContainer = document.getElementById("cwLayoutNetworkFilter");
         var objectTypeNodes = this.network.getObjectTypeNodes();
         var ObjectTypeNode;
-
+        var mutex= true;
         // set height
         var canvaHeight = window.innerHeight - networkContainer.getBoundingClientRect().top;
         networkContainer.setAttribute('style','height:' + canvaHeight + 'px');
@@ -220,46 +219,130 @@
             //interaction:{hover:true}
         };
 
+        filterContainer.appendChild(this.network.getFilterAllGroups());
+
         var i = 0;
         for (ObjectTypeNode in objectTypeNodes) {
             if (objectTypeNodes.hasOwnProperty(ObjectTypeNode)) {
                 filterContainer.appendChild(objectTypeNodes[ObjectTypeNode].getFilterObject());
-                //console.log(ObjectTypeNode);
                 //nodes.add({id: 1000+ i , x: x, y: y + i*step, label: ObjectTypeNode, group: ObjectTypeNode, value: 1, fixed: true, physics:false});
                 i = i + 1;
             }
         }
-
+        filterContainer.appendChild(this.network.getFilterOptions());
+        
         $('.selectNetworkPicker').selectpicker();
-
-
-    
+        $('.selectNetworkOptions').selectpicker();    
+        $('.selectNetworkAllGroups').selectpicker();  
         // initialize your network!/*# sourceMappingURL=bootstrap.min.css.map */
         this.networkUI = new vis.Network(networkContainer, data, options);
         var that = this;
-        $('select.selectNetworkPicker').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
-            var group = $(this).context['id'];
-            var scriptname = $(this).context.getAttribute('scriptname');
+
+
+        // Network Live Option
+        $('select.selectNetworkOptions').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
             if(clickedIndex !== undefined) {
                 var id = $(this).context[clickedIndex]['id'];
-                var nodeId = id + "#" + scriptname;
                 if(newValue === false) {
-                    nodes.remove(nodeId);
-                    that.network.hide(id,group);
+                    that.network.DeActivateOption(id);
                 } else {
-                    that.network.show(id,group);
-                    nodes.add(that.network.getVisNode(id,group));
+                    that.network.ActivateOption(id);
+                }
+            }
+        });
+
+        // Network All node selector
+        $('select.selectNetworkAllGroups').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+            mutex = false;
+            if(clickedIndex !== undefined) {
+                var id = $(this).context[clickedIndex]['id'];
+                if(newValue === true) {
+                    $('.selectNetworkPicker.' + $(this).context[clickedIndex]['id']).selectpicker('selectAll');
+                    var changeNodesArray = that.network.SetAllAndGetNodesObject(true,$(this).context[clickedIndex].value);
+                    nodes.add(changeNodesArray);
+                } else {                  
+                    $('.selectNetworkPicker.' + $(this).context[clickedIndex]['id']).selectpicker('deselectAll');
+                    var changeNodesArray = that.network.SetAllAndGetNodesObject(false,$(this).context[clickedIndex].value);
+                    nodes.remove(changeNodesArray);
                 }
             } else {
-                if($(this).context[0]) {
-                    var changeNodesArray = that.network.SetAllAndGetNodesObject(group,$(this).context[0].selected);
+                if($(this).context[0]) { 
                     if($(this).context[0].selected === true) {
+                        $('.selectNetworkPicker').selectpicker('selectAll');
+                        var changeNodesArray = that.network.SetAllAndGetNodesObject(true);
                         nodes.add(changeNodesArray);
                     } else {
+                        $('.selectNetworkPicker').selectpicker('deselectAll');
+                        var changeNodesArray = that.network.SetAllAndGetNodesObject(false);
                         nodes.remove(changeNodesArray);
                     }
                 }
+            }
+            mutex = true;
+        });
 
+        // Network Node Selector
+        $('select.selectNetworkPicker').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+            if(mutex) { 
+                var group = $(this).context['id'];
+                var scriptname = $(this).context.getAttribute('scriptname');
+                var nodesArray,id,nodeId,i;
+                var groupArray = {};
+                if(clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
+                    id = $(this).context[clickedIndex]['id'];
+                    nodeId = id + "#" + scriptname;
+                    if(newValue === false) { // hide a node
+                        nodes.remove(nodeId);
+                        that.network.hide(id,group);
+                    } else { // add one node
+                        that.network.show(id,group);
+                        nodesArray = that.network.getVisNode(id,group);
+                        for (i = 0; i < nodesArray.length; i += 1) {
+                            if(!groupArray.hasOwnProperty(nodesArray[i].group)) {
+                                groupArray[nodesArray[i].group] = [];
+                            }
+                            groupArray[nodesArray[i].group].push(nodesArray[i].label.replace("\n"," "));
+                        }
+                        $('select.selectNetworkPicker').each(function( index ) {
+                            if($(this).val()) {
+                                $(this).selectpicker('val',$(this).val().concat(groupArray[$(this).context.name]) );
+                            } else {
+                                $(this).selectpicker('val',groupArray[$(this).context.name] ); 
+                            }
+                        });
+
+                        nodes.add(nodesArray);
+                    }
+                } else {  // select or deselect all node
+                    if($(this).context[0]) {
+                        var changeNodesArray = that.network.SetAllAndGetNodesObject($(this).context[0].selected,group);
+                        if($(this).context[0].selected === true) {
+                            nodes.add(changeNodesArray);
+                        } else {
+                            nodes.remove(changeNodesArray);
+                        }
+                    }
+
+                }
+
+                var globValues = $('select.selectNetworkAllGroups').val();
+                // changement d'état pour le filtre global
+                if($(this).val() && $(this).context.length === $(this).val().length) {
+                    if(globValues === null) {
+                        $('select.selectNetworkAllGroups').selectpicker('val',$(this).context.getAttribute('name'));    
+                    } else {
+                        globValues.push($(this).context.getAttribute('name'));
+                        $('select.selectNetworkAllGroups').selectpicker('val',globValues); 
+                    }
+                } else {
+                    if(globValues !== null) {
+                        var value = $(this).context.getAttribute('name');
+                        globValues = globValues.filter(function(item) { 
+                            return item !== value;
+                        });
+                        $('select.selectNetworkAllGroups').selectpicker('val',globValues); 
+                    }
+                }
             }
 
         });
