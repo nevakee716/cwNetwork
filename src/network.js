@@ -164,7 +164,7 @@
     };
 
     network.prototype.ActivateOption = function (option) {
-        if(option === "None") {
+        if(option === "none") {
             this.option.rangeMax = false;
             this.option.rangeMin = false;          
         }
