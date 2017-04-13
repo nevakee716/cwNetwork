@@ -8,6 +8,7 @@
     var network = function () {
         this.objectTypeNodes = {};
         this.edges = {};
+        this.option = {};
     };
 
     network.prototype.getObjectTypeNodes = function (object) {
@@ -66,28 +67,39 @@
     };
 
     network.prototype.getVisNode = function (id,scriptname) {
-        if(this.range) {
-            var originNode = this.objectTypeNodes[scriptname].getVisData(id);
-            var nodesArray = [];
-            nodesArray.push(originNode);
-            var edges = this.getEdges();
-            var i,tempNode;
-            for (i = 0; i < edges.length; i += 1) {
-                if(edges[i].fromUuid === originNode.id) {
-                    tempNode = this.objectTypeNodes[edges[i].toGroup].getVisDataIfDeactivated(edges[i].toId);  
-                }
-                if(edges[i].toUuid === originNode.id) {
-                    tempNode = this.objectTypeNodes[edges[i].fromGroup].getVisDataIfDeactivated(edges[i].fromId);                    
-                }
-                if(tempNode) {
-                    nodesArray.push(tempNode); 
-                }
-                tempNode = null;
-            }
-            return nodesArray;
-        } else {
-            return this.objectTypeNodes[scriptname].getVisData(id);                
+        var originNode = this.objectTypeNodes[scriptname].getVisData(id);
+        var nodesArray = [];
+        var result;
+        var edges = this.getEdges();
+        nodesArray.push(originNode);
+        if(this.option.rangeMin || this.option.rangeMax) {
+            nodesArray = nodesArray.concat(this.getCloseNodes(originNode.id,edges));
         }
+        return nodesArray;
+    };
+
+
+
+
+    network.prototype.getCloseNodes = function (id,edges) {
+        var i,tempNode;
+        var nodesArray = [];
+        for (i = 0; i < edges.length; i += 1) {
+            if(edges[i].fromUuid === id && this.option.ImpactTo) {
+                tempNode = this.objectTypeNodes[edges[i].toGroup].getVisDataIfDeactivated(edges[i].toId);  
+            }
+            if(edges[i].toUuid === id && this.option.ImpactFrom) {
+                tempNode = this.objectTypeNodes[edges[i].fromGroup].getVisDataIfDeactivated(edges[i].fromId);                    
+            }
+            if(tempNode) {
+                if(this.option.rangeMax) {
+                    nodesArray = nodesArray.concat(this.getCloseNodes(tempNode.id,edges));
+                }
+                nodesArray.push(tempNode); 
+            }
+            tempNode = null;
+        }
+        return nodesArray;
     };
 
     network.prototype.changeState = function (id,scriptname,state) {
@@ -152,18 +164,27 @@
     };
 
     network.prototype.ActivateOption = function (option) {
-        this[option] = true;
+        if(option === "None") {
+            this.option.rangeMax = false;
+            this.option.rangeMin = false;          
+        }
+        if(option === "rangeMin") {
+            this.option.rangeMax = false; 
+        }
+        if(option === "rangeMax") {
+            this.option.rangeMin = false; 
+        }
+        this.option[option] = true;
     };
 
     network.prototype.DeActivateOption = function (option) {
-        this[option] = false;        
+        this.option[option] = false;        
     };
 
     network.prototype.getFilterOptions = function () {
 
       var filterObject;
-        var object;
-        var node;
+        var option,optgroup;
 
         filterObject = document.createElement("select");
         filterObject.setAttribute('title','Options');
@@ -171,14 +192,36 @@
         filterObject.setAttribute('data-selected-text-format','static');
         filterObject.setAttribute('data-size','10');
         filterObject.className = "selectNetworkOptions";
-
-
-        object = document.createElement("option");
-        object.setAttribute('id',"range");
-        object.textContent = "Impact Range";
-        filterObject.appendChild(object);                                                                                                                                                                                                                                                                                                                                                                                                     
+        optgroup = document.createElement("optgroup");
+        optgroup.setAttribute('label','Impact Range');  
+        optgroup.setAttribute('data-max-options','1');
+        option = document.createElement("option");
+        option.setAttribute('id',"none");
+        option.textContent = "None";
+        optgroup.appendChild(option); 
+        option = document.createElement("option");
+        option.setAttribute('id',"rangeMin");
+        option.textContent = "Minimum";
+        optgroup.appendChild(option); 
+        option = document.createElement("option");
+        option.setAttribute('id',"rangeMax");
+        option.textContent = "Maximum";
+        optgroup.appendChild(option);                                                                                                                                                                                                                                                                                                                                                                                                    
+        filterObject.appendChild(optgroup);
+        optgroup = document.createElement("optgroup");
+        optgroup.setAttribute('label','Direction');       
+        option = document.createElement("option");
+        option.setAttribute('id',"ImpactFrom");
+        option.textContent = "from";
+        optgroup.appendChild(option); 
+        option = document.createElement("option");
+        option.setAttribute('id',"ImpactTo");
+        option.textContent = "to";
+        optgroup.appendChild(option);                                                                                                                                                                                                                                                                                                                                                                                    
+        filterObject.appendChild(optgroup); 
 
         return filterObject;
+
     };
 
     network.prototype.getFilterAllGroups = function () {
@@ -203,6 +246,12 @@
         }   
         return filterObject;
     };
+
+
+
+
+
+
 
     if (!cwApi.customLibs) {
         cwApi.customLibs = {};

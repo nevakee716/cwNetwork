@@ -6,13 +6,22 @@
   "use strict";
   // constructor
   var edge = function(fromUuid,toUuid, fromId, toId,fromGroup,toGroup,direction,arrowColour) {
-    this.fromUuid = fromUuid;
-    this.toUuid = toUuid;
-    this.fromGroup = fromGroup;
-    this.toGroup = toGroup;
-    this.fromId = fromId;
-    this.toId = toId;    
     this.direction = direction;
+    if(this.direction === undefined || this.direction.indexOf('from') === -1) {
+      this.fromUuid = fromUuid;
+      this.toUuid = toUuid;
+      this.fromGroup = fromGroup;
+      this.toGroup = toGroup;
+      this.fromId = fromId;
+      this.toId = toId;   
+    } else {
+      this.fromUuid = toUuid;
+      this.toUuid = fromUuid;
+      this.fromGroup = toGroup; 
+      this.toGroup = fromGroup;
+      this.fromId = toId;
+      this.toId = fromId; 
+    }
     this.arrowColour = arrowColour;
   };
 
@@ -23,15 +32,9 @@
     edgeVis.from = this.fromUuid;
     edgeVis.to = this.toUuid; 
     if(this.direction) {
-      edgeVis.arrows = this.direction;  
-      if(this.direction.indexOf('to') === -1) {
-        edgeVis.color = {inherit:'from'};
-      } else {
-        edgeVis.color = {inherit:'to'};        
-      }
-    } else {
-        edgeVis.color = {inherit:'to'};        
-    }   
+      edgeVis.arrows = 'to';     
+    }  
+    edgeVis.color = {inherit:'to'};  
     return edgeVis;
   };
 

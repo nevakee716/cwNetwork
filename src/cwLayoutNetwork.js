@@ -288,6 +288,8 @@
                 var scriptname = $(this).context.getAttribute('scriptname');
                 var nodesArray,id,nodeId,i;
                 var groupArray = {};
+                var globValues = $('select.selectNetworkAllGroups').val();
+
                 if(clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
                     id = $(this).context[clickedIndex]['id'];
                     nodeId = id + "#" + scriptname;
@@ -296,22 +298,33 @@
                         that.network.hide(id,group);
                     } else { // add one node
                         that.network.show(id,group);
-                        nodesArray = that.network.getVisNode(id,group);
-                        for (i = 0; i < nodesArray.length; i += 1) {
+                        nodesArray = that.network.getVisNode(id,group); // get all the node that should be put on
+                        for (i = 0; i < nodesArray.length; i += 1) { // put all nodes into groups
                             if(!groupArray.hasOwnProperty(nodesArray[i].group)) {
                                 groupArray[nodesArray[i].group] = [];
                             }
-                            groupArray[nodesArray[i].group].push(nodesArray[i].label.replace("\n"," "));
+                            groupArray[nodesArray[i].group].push(nodesArray[i].label.replace(/\n/g," "));
                         }
-                        $('select.selectNetworkPicker').each(function( index ) {
+
+                        $('select.selectNetworkPicker').each(function( index ) { // put values into filters
                             if($(this).val()) {
-                                $(this).selectpicker('val',$(this).val().concat(groupArray[$(this).context.name]) );
+                                $(this).selectpicker('val',$(this).val().concat(groupArray[$(this).context.name]));
                             } else {
                                 $(this).selectpicker('val',groupArray[$(this).context.name] ); 
                             }
+                            // check if global filter should be fullfill
+                            if($(this).val() && $(this).context.length === $(this).val().length) {
+                                if(globValues === null) {
+                                    $('select.selectNetworkAllGroups').selectpicker('val',$(this).context.getAttribute('name'));
+                                    globValues = [$(this).context.getAttribute('name')];  
+                                } else {
+                                    globValues.push($(this).context.getAttribute('name'));
+                                    $('select.selectNetworkAllGroups').selectpicker('val',globValues); 
+                                }
+                            }
                         });
 
-                        nodes.add(nodesArray);
+                        nodes.add(nodesArray); // adding nodes into network
                     }
                 } else {  // select or deselect all node
                     if($(this).context[0]) {
@@ -325,8 +338,8 @@
 
                 }
 
-                var globValues = $('select.selectNetworkAllGroups').val();
                 // changement d'état pour le filtre global
+                // on check si on a toutes les valeurs
                 if($(this).val() && $(this).context.length === $(this).val().length) {
                     if(globValues === null) {
                         $('select.selectNetworkAllGroups').selectpicker('val',$(this).context.getAttribute('name'));    
@@ -335,7 +348,8 @@
                         $('select.selectNetworkAllGroups').selectpicker('val',globValues); 
                     }
                 } else {
-                    if(globValues !== null) {
+                    // si certaines valeurs sont cochées
+                    if(globValues !== null) { 
                         var value = $(this).context.getAttribute('name');
                         globValues = globValues.filter(function(item) { 
                             return item !== value;
