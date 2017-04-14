@@ -325,6 +325,7 @@
                         });
 
                         nodes.add(nodesArray); // adding nodes into network
+                        that.networkUI.selectNodes([nodesArray[0].id]);
                     }
                 } else {  // select or deselect all node
                     if($(this).context[0]) {
