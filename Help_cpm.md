@@ -55,7 +55,7 @@ Follow the following steps to add a custom layout to evolve
 * Put the contenant of external in Casewise\Evolve\Site\bin\webDesigner\js\external
 * Put the contenant of modules in Casewise\Evolve\Site\bin\webDesigner\libs\modules
 * Put the contenant of fonts in Casewise\Evolve\Site\bin\webDesigner\fonts
-
+* Put the contenant of angularHTMLayout in Casewise\Evolve\Data\Common\html\angularLayouts
 
 
 # Create a Custom Layout 
