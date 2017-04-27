@@ -10,6 +10,8 @@
         cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
 
         this.hiddenNodes = [];
+        this.externalFilters = [];
+        this.nodeFiltered = [];
         this.popOut = [];
         this.specificGroup = [];
         this.directionList = [];
@@ -19,6 +21,7 @@
         this.getHiddenNodeList(this.options.CustomOptions['hidden-nodes']);
         this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);
         this.getdirectionList(this.options.CustomOptions['arrowDirection']);
+        this.getExternalFilterNodes(true,this.options.CustomOptions['filterNode']);
     };
 
 
@@ -102,37 +105,91 @@
         }
     };
 
-    cwLayoutNetwork.prototype.simplify = function (child) {
+
+    cwLayoutNetwork.prototype.getExternalFilterNodes = function(nodeType,customOptions) {
+        var optionList = customOptions.split(";");
+        for (var i = 0; i < optionList.length; i += 1) {
+            if(optionList[i] !== "") {
+                var optionSplit = optionList[i].split(":");
+                if(this.externalFilters.hasOwnProperty(optionSplit[1])) {
+                    this.externalFilters[optionSplit[1]].addNodeID(optionSplit[0]); 
+                    if(this.nodeFiltered[optionSplit[0]] === undefined) {
+                        this.nodeFiltered[optionSplit[0]] = [optionSplit[1]];
+                    } else {
+                        this.nodeFiltered[optionSplit[0]].push(optionSplit[1]);
+                    }
+                } else {
+                    this.externalFilters[optionSplit[1]] = new cwApi.customLibs.cwLayoutNetwork.externalAssociationFilter(true,optionSplit[0],optionSplit[1]); 
+                    this.nodeFiltered[optionSplit[0]] = [optionSplit[1]];
+                }
+            }
+        }
+    };
+
+
+    cwLayoutNetwork.prototype.simplify = function (child,father,hiddenNode) {
         var childrenArray = [];
-        var element;
+        var filterArray = [];
+        var filtersGroup = [];
+        var filteredFields = [];
+        var groupFilter = {};
+        var element,filterElement,groupFilter;
         var nextChild;
+        var that = this;
         for (var associationNode in child.associations) {
             if (child.associations.hasOwnProperty(associationNode)) {
                 for (var i = 0; i < child.associations[associationNode].length; i += 1) {
                     nextChild = child.associations[associationNode][i];
-                    if(this.hiddenNodes.indexOf(associationNode) !== -1) {
-                        childrenArray = childrenArray.concat(this.simplify(nextChild));
-                    } else {
+                    if(this.nodeFiltered.hasOwnProperty(associationNode)) { // external Filter Node
+                        filterElement = {}; 
+                        filterElement.name = child.associations[associationNode][i].name; 
+                        filterElement.object_id = child.associations[associationNode][i].object_id; 
+                        
+                        this.nodeFiltered[associationNode].forEach(function(groupFilterName) {
+                            that.externalFilters[groupFilterName].addfield(filterElement.name,filterElement.object_id);
+                            that.externalFilters[groupFilterName].addNodesTofield([filterElement.object_id],father);
+                            if(groupFilter[groupFilterName]) {
+                                groupFilter[groupFilterName].push(filterElement.object_id);
+                            } else {
+                                groupFilter[groupFilterName] = [filterElement.object_id];
+                            }
+                            filtersGroup.push(groupFilter);
+                        });
+                    } else if(this.hiddenNodes.indexOf(associationNode) !== -1) { // jumpAndMerge when hidden
+                        childrenArray = childrenArray.concat(this.simplify(nextChild,father,true));
+                    } else { // adding regular node
                         element = {}; 
-                        element.name = this.multiLine(nextChild.name,7);
+                        element.name = this.multiLine(nextChild.name,12);
                         element.object_id = nextChild.object_id;
                         element.objectTypeScriptName = nextChild.objectTypeScriptName;
-                        if(this.specificGroup.hasOwnProperty(associationNode)) {
+                        
+                        if(this.specificGroup.hasOwnProperty(associationNode)) { // mise en place du groupe
                             element.group = this.specificGroup[associationNode];
                         } else {
                             element.group = cwAPI.mm.getObjectType(nextChild.objectTypeScriptName).name;                           
                         }
 
-                        if(this.directionList.hasOwnProperty(associationNode)) {
+                        if(hiddenNode) { //lorsqu'un node est hidden ajouter le filtrage aussi au fils
+                            element.filterArray = filterArray; 
+                            filtersGroup.forEach(function(filterGroup) {
+                                Object.keys(filterGroup).map(function(filterKey, index) {
+                                    that.externalFilters[filterKey].addNodesTofield(filterGroup[filterKey],element);
+                                });
+                            });
+
+                        };
+
+                        if(this.directionList.hasOwnProperty(associationNode)) { // ajout de la direction
                             element.direction = this.directionList[associationNode];
                         }
 
-                        element.children = this.simplify(nextChild);
+                        element.children = this.simplify(nextChild,element);
                         childrenArray.push(element);   
                     }
                 }
             } 
         }
+
         return childrenArray;
     };
 
@@ -152,9 +209,6 @@
         multiLineName = multiLineName + nameSplit[nameSplit.length - 1];
 
         return multiLineName ;
-
-
-
 
     };
 
@@ -197,8 +251,9 @@
         var networkContainer = document.getElementById("cwLayoutNetworkCanva");
         var filterContainer = document.getElementById("cwLayoutNetworkFilter");
         var objectTypeNodes = this.network.getObjectTypeNodes();
-        var ObjectTypeNode;
+        var ObjectTypeNode,externalfilter;
         var mutex= true;
+        var i = 0;
         // set height
         var canvaHeight = window.innerHeight - networkContainer.getBoundingClientRect().top;
         networkContainer.setAttribute('style','height:' + canvaHeight + 'px');
@@ -216,24 +271,55 @@
         };
         var options = {
             groups : this.groupsIcon,
-            //interaction:{hover:true}
+            edges: {
+                smooth: {
+                    forceDirection: "vertical"
+                }
+            },
+            physics: {
+/*                barnesHut: {
+                    springLength: 150
+                },*/
+                barnesHut: {
+                  springLength: 120,
+                  //springConstant: 0.03,
+                  avoidOverlap: 0.4
+                },
+                minVelocity: 0.75,
+                solver: "barnesHut"
+            }
         };
 
+        // Adding filter all groups
         filterContainer.appendChild(this.network.getFilterAllGroups());
 
-        var i = 0;
+        // Adding filter for all selector group
+  
         for (ObjectTypeNode in objectTypeNodes) {
             if (objectTypeNodes.hasOwnProperty(ObjectTypeNode)) {
                 filterContainer.appendChild(objectTypeNodes[ObjectTypeNode].getFilterObject());
-                //nodes.add({id: 1000+ i , x: x, y: y + i*step, label: ObjectTypeNode, group: ObjectTypeNode, value: 1, fixed: true, physics:false});
                 i = i + 1;
             }
         }
+
+        // Adding filter for all selector group
+        var i = 0;
+        for (externalfilter in this.externalFilters) {
+            if (this.externalFilters.hasOwnProperty(externalfilter)) {
+                filterContainer.appendChild(this.externalFilters[externalfilter].getFilterObject("selectNetworkExternal"));
+                i = i + 1;
+            }
+        }
+
+
+        // Adding filter options
         filterContainer.appendChild(this.network.getFilterOptions());
         
         $('.selectNetworkPicker').selectpicker();
         $('.selectNetworkOptions').selectpicker();    
         $('.selectNetworkAllGroups').selectpicker();  
+        $('.selectNetworkExternal').selectpicker(); 
+
         // initialize your network!/*# sourceMappingURL=bootstrap.min.css.map */
         this.networkUI = new vis.Network(networkContainer, data, options);
         var that = this;
@@ -286,7 +372,7 @@
             if(mutex) { 
                 var group = $(this).context['id'];
                 var scriptname = $(this).context.getAttribute('scriptname');
-                var nodesArray,id,nodeId,i;
+                var changeSet,id,nodeId,i;
                 var groupArray = {};
                 var globValues = $('select.selectNetworkAllGroups').val();
 
@@ -298,42 +384,18 @@
                         that.network.hide(id,group);
                     } else { // add one node
                         that.network.show(id,group);
-                        nodesArray = that.network.getVisNode(id,group); // get all the node that should be put on
-                        for (i = 0; i < nodesArray.length; i += 1) { // put all nodes into groups
-                            if(!groupArray.hasOwnProperty(nodesArray[i].group)) {
-                                groupArray[nodesArray[i].group] = [];
-                            }
-                            groupArray[nodesArray[i].group].push(nodesArray[i].label.replace(/\n/g," "));
-                        }
-
-                        $('select.selectNetworkPicker').each(function( index ) { // put values into filters
-                            if($(this).val()) {
-                                $(this).selectpicker('val',$(this).val().concat(groupArray[$(this).context.name]));
-                            } else {
-                                $(this).selectpicker('val',groupArray[$(this).context.name] ); 
-                            }
-                            // check if global filter should be fullfill
-                            if($(this).val() && $(this).context.length === $(this).val().length) {
-                                if(globValues === null) {
-                                    $('select.selectNetworkAllGroups').selectpicker('val',$(this).context.getAttribute('name'));
-                                    globValues = [$(this).context.getAttribute('name')];  
-                                } else {
-                                    globValues.push($(this).context.getAttribute('name'));
-                                    $('select.selectNetworkAllGroups').selectpicker('val',globValues); 
-                                }
-                            }
-                        });
-
-                        nodes.add(nodesArray); // adding nodes into network
-                        that.networkUI.selectNodes([nodesArray[0].id]);
+                        changeSet = that.network.getVisNode(id,group); // get all the node that should be put on
+                        that.fillFilter(changeSet); // add the filter value
+                        nodes.add(changeSet); // adding nodes into network
+                        that.networkUI.selectNodes([changeSet[0].id]); //select the origin node
                     }
                 } else {  // select or deselect all node
                     if($(this).context[0]) {
-                        var changeNodesArray = that.network.SetAllAndGetNodesObject($(this).context[0].selected,group);
+                        var changeSet = that.network.SetAllAndGetNodesObject($(this).context[0].selected,group);
                         if($(this).context[0].selected === true) {
-                            nodes.add(changeNodesArray);
+                            nodes.add(changeSet);
                         } else {
-                            nodes.remove(changeNodesArray);
+                            nodes.remove(changeSet);
                         }
                     }
 
@@ -362,6 +424,34 @@
 
         });
 
+        // External Filter
+        $('select.selectNetworkExternal').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+            var group = $(this).context['id'];
+            var filterName = $(this).context.getAttribute('filterName');
+            var nodesArray,id,nodeId,i,changeSet;
+            var globValues = $('select.selectNetworkAllGroups').val();
+
+            if(clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
+                id = $(this).context[clickedIndex]['id'];
+                if(newValue === false) { // hide a node
+                    changeSet = that.network.ActionAndGetChangeset(that.externalFilters[filterName].getNodesToBeFiltered(id),false);
+                    nodes.remove(changeSet);
+                } else { // add one node
+                    changeSet = that.network.ActionAndGetChangeset(that.externalFilters[filterName].getNodesToBeFiltered(id),true);
+                    that.fillFilter(changeSet); // add the filter value
+                    nodes.add(changeSet); // adding nodes into network
+                }
+            } else {  // select or deselect all node
+                if($(this).context[0]) {
+                    changeSet = that.network.SetAllAndGetNodesObject($(this).context[0].selected,group);
+                    if($(this).context[0].selected === true) {
+                        nodes.add(changeSet);
+                    } else {
+                        nodes.remove(changeSet);
+                    }
+                }
+            }
+        });
 
         this.networkUI.on("click", function (params) {
             if(params.hasOwnProperty('nodes') && params.nodes.length === 1) {
@@ -378,7 +468,42 @@
             }
         });
 
+
+
+
+
     };
+
+    cwLayoutNetwork.prototype.fillFilter = function (changeSet) {
+        
+        var groupArray = {};
+        for (i = 0; i < changeSet.length; i += 1) { // put all nodes into groups
+            if(!groupArray.hasOwnProperty(changeSet[i].group)) {
+                groupArray[changeSet[i].group] = [];
+            }
+            groupArray[changeSet[i].group].push(changeSet[i].label.replace(/\n/g," "));
+        }
+
+
+        $('select.selectNetworkPicker').each(function( index ) { // put values into filters
+            if($(this).val()) {
+                $(this).selectpicker('val',$(this).val().concat(groupArray[$(this).context.name]));
+            } else {
+                $(this).selectpicker('val',groupArray[$(this).context.name] ); 
+            }
+            // check if global filter should be fullfill
+            if($(this).val() && $(this).context.length === $(this).val().length) {
+                if(globValues === null) {
+                    $('select.selectNetworkAllGroups').selectpicker('val',$(this).context.getAttribute('name'));
+                    globValues = [$(this).context.getAttribute('name')];  
+                } else {
+                    globValues.push($(this).context.getAttribute('name'));
+                    $('select.selectNetworkAllGroups').selectpicker('val',globValues); 
+                }
+            }
+        });
+    };
+
 
     cwLayoutNetwork.prototype.lookForObjects = function (id,scriptname,child) {
         var childrenArray = [];

@@ -5,10 +5,11 @@
 
     "use strict";
     // constructor
-    var node = function (id,label,status) {
+    var node = function (id,label,status,filterArray) {
         this.id = id;
         this.label = label;
         this.status = status;
+        this.filterArray = filterArray;
     };
 
     node.prototype.getLabel = function () {
@@ -20,7 +21,11 @@
     };
 
     node.prototype.setStatus = function (status) {
+        if(this.status === status) {
+            return false;
+        }
         this.status = status;
+        return true;
     };
 
     node.prototype.getId = function () {

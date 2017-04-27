@@ -36,9 +36,37 @@
         if(!this.objectTypeNodes.hasOwnProperty(object.group)) {
             this.objectTypeNodes[object.group] = new cwApi.customLibs.cwLayoutNetwork.objectTypeNode(object.group,object.objectTypeScriptName); 
         }
-        this.objectTypeNodes[object.group].addNode(object.object_id,object.name);
+        this.objectTypeNodes[object.group].addNode(object.object_id,object.name,object.filterArray);
 
     };
+
+
+
+    network.prototype.applyFilterIn = function (object) {
+        var filteredData = [];
+        for (objectType in this.objectTypeNodes) {
+            if (this.objectTypeNodes.hasOwnProperty(objectType)) {
+                visData = visData.concat(this.objectTypeNodes[objectType].SetAllAndGetNodesObject(state));
+            }
+        }  
+    };
+
+
+
+    network.prototype.ActionAndGetChangeset = function (elements,state) {
+        var that = this;
+        var changeSet = [];
+        var hasChanged; 
+        elements.forEach(function(elem) {
+            elem.name.replace("\n"," ");
+            hasChanged = that.objectTypeNodes[elem.group].changeState(elem.object_id,state);  
+            if(hasChanged) { // on check si le node est pas déja présent dans le réseau
+                changeSet = changeSet.concat(that.getVisNode(elem.object_id,elem.group));
+            }
+        });
+        return changeSet;
+    };
+
 
     network.prototype.getVisNodes = function () {
         var objectType ;
@@ -66,13 +94,13 @@
         return visData;    
     };
 
-    network.prototype.getVisNode = function (id,scriptname) {
-        var originNode = this.objectTypeNodes[scriptname].getVisData(id);
+    network.prototype.getVisNode = function (id,group,noRange) {
+        var originNode = this.objectTypeNodes[group].getVisData(id);
         var nodesArray = [];
         var result;
         var edges = this.getEdges();
         nodesArray.push(originNode);
-        if(this.option.rangeMin || this.option.rangeMax) {
+        if(this.option.rangeMin || this.option.rangeMax && !noRange) {
             nodesArray = nodesArray.concat(this.getCloseNodes(originNode.id,edges));
         }
         return nodesArray;
@@ -102,16 +130,16 @@
         return nodesArray;
     };
 
-    network.prototype.changeState = function (id,scriptname,state) {
-        this.objectTypeNodes[scriptname].changeState(id,state);     
+    network.prototype.changeState = function (id,group,state) {
+        this.objectTypeNodes[group].changeState(id,state);     
     };
 
-    network.prototype.hide = function (id,scriptname) {
-        this.changeState(id,scriptname,false);
+    network.prototype.hide = function (id,group) {
+        this.changeState(id,group,false);
     };
 
-    network.prototype.show = function (id,scriptname) {
-        this.changeState(id,scriptname,true);
+    network.prototype.show = function (id,group) {
+        this.changeState(id,group,true);
 
     };
 
@@ -219,7 +247,6 @@
         option.textContent = "to";
         optgroup.appendChild(option);                                                                                                                                                                                                                                                                                                                                                                                    
         filterObject.appendChild(optgroup); 
-
         return filterObject;
 
     };
