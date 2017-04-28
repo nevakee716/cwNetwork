@@ -70,7 +70,9 @@
                     if(optionSplit[2]) {
                        groups[optionSplit[0]].icon.color = optionSplit[2];   
                     }
-                     groups[optionSplit[0]].icon.size = '50';                                     
+                     groups[optionSplit[0]].icon.size = '50'; 
+                    groups[optionSplit[0]].font = {background: '#FFFFFF'}  ; 
+                    groups[optionSplit[0]].background = {background: '#FFFFFF'}  ;                                  
                 }
             }
         }
@@ -271,22 +273,11 @@
         };
         var options = {
             groups : this.groupsIcon,
-            edges: {
-                smooth: {
-                    forceDirection: "vertical"
-                }
-            },
             physics: {
-/*                barnesHut: {
-                    springLength: 150
-                },*/
                 barnesHut: {
-                  springLength: 120,
-                  //springConstant: 0.03,
-                  avoidOverlap: 0.4
+                  springLength: 120
                 },
-                minVelocity: 0.75,
-                solver: "barnesHut"
+                minVelocity: 0.75
             }
         };
 
@@ -430,27 +421,62 @@
             var filterName = $(this).context.getAttribute('filterName');
             var nodesArray,id,nodeId,i,changeSet;
             var globValues = $('select.selectNetworkAllGroups').val();
-
+            var nodesToHighlight,idsToHighlight,updateArray;
+            var allNodes;
             if(clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
                 id = $(this).context[clickedIndex]['id'];
-                if(newValue === false) { // hide a node
-                    changeSet = that.network.ActionAndGetChangeset(that.externalFilters[filterName].getNodesToBeFiltered(id),false);
-                    nodes.remove(changeSet);
-                } else { // add one node
-                    changeSet = that.network.ActionAndGetChangeset(that.externalFilters[filterName].getNodesToBeFiltered(id),true);
-                    that.fillFilter(changeSet); // add the filter value
-                    nodes.add(changeSet); // adding nodes into network
-                }
-            } else {  // select or deselect all node
-                if($(this).context[0]) {
-                    changeSet = that.network.SetAllAndGetNodesObject($(this).context[0].selected,group);
-                    if($(this).context[0].selected === true) {
-                        nodes.add(changeSet);
+                nodesToHighlight = that.externalFilters[filterName].getNodesToBeFiltered(id);
+                changeSet = that.network.ActionAndGetChangeset(nodesToHighlight,true);
+                that.fillFilter(changeSet); // add the filter value
+                nodes.add(changeSet); // adding nodes into network
+                idsToHighlight = [];
+                nodesToHighlight.forEach(function(node) {
+                    idsToHighlight.push(node.object_id + "#" + node.objectTypeScriptName);
+                });
+                updateArray = [];
+                nodes.forEach(function(node) {
+                    if(idsToHighlight.indexOf(node.id) === -1) {
+                        if(node.group.indexOf("Hidden") === -1) {
+                            node.group = node.group + "Hidden";
+                        }
                     } else {
-                        nodes.remove(changeSet);
+                        node.group = node.group.replace("Hidden","");     
                     }
-                }
+                    if(that.networkUI.groups.groups[node.group].icon) {
+                        node.color = that.networkUI.groups.groups[node.group].icon.color;
+                    } else {
+                        node.color = that.networkUI.groups.groups[node.group].color;    
+                    } 
+                    updateArray.push(node); 
+                });
+                nodes.update(updateArray);
+                updateArray = [];
+                allNodes = nodes.get({returnType:"Object"});
+                edges.forEach(function(edge) {
+                    var nodeID;
+                    if(idsToHighlight.indexOf(edge.from) === -1)
+                    {   
+                        nodeID =  edge.from;
+                    } 
+                    else if(idsToHighlight.indexOf(edge.to) === -1) {
+                        nodeID =  edge.to;
+                    } else {
+                        nodeID =  edge.from; 
+                    }
+                    if(allNodes.hasOwnProperty(nodeID)) {
+                        if(that.networkUI.groups.groups[allNodes[nodeID].group].icon) {
+                            edge.color = that.networkUI.groups.groups[allNodes[nodeID].group].icon.color;
+                        } else {
+                            edge.color = that.networkUI.groups.groups[allNodes[nodeID].group].color;    
+                        } 
+                    }
+
+                    updateArray.push(edge);
+                });
+                edges.update(updateArray);
+
             }
+
         });
 
         this.networkUI.on("click", function (params) {
