@@ -281,9 +281,6 @@
             }
         };
 
-        // Adding filter all groups
-        //filterContainer.appendChild(this.network.getFilterAllGroups());
-
         // Adding filter for all selector group
         for (ObjectTypeNode in objectTypeNodes) {
             if (objectTypeNodes.hasOwnProperty(ObjectTypeNode)) {
@@ -327,36 +324,6 @@
             }
         });
 
-/*        // Network All node selector
-        $('select.selectNetworkAllGroups').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
-            mutex = false;
-            if(clickedIndex !== undefined) {
-                var id = $(this).context[clickedIndex]['id'];
-                if(newValue === true) {
-                    $('.selectNetworkPicker.' + $(this).context[clickedIndex]['id']).selectpicker('selectAll');
-                    var changeNodesArray = self.network.SetAllAndGetNodesObject(true,$(this).context[clickedIndex].value);
-                    nodes.add(changeNodesArray);
-                } else {                  
-                    $('.selectNetworkPicker.' + $(this).context[clickedIndex]['id']).selectpicker('deselectAll');
-                    var changeNodesArray = self.network.SetAllAndGetNodesObject(false,$(this).context[clickedIndex].value);
-                    nodes.remove(changeNodesArray);
-                }
-            } else {
-                if($(this).context[0]) { 
-                    if($(this).context[0].selected === true) {
-                        $('.selectNetworkPicker').selectpicker('selectAll');
-                        var changeNodesArray = self.network.SetAllAndGetNodesObject(true);
-                        nodes.add(changeNodesArray);
-                    } else {
-                        $('.selectNetworkPicker').selectpicker('deselectAll');
-                        var changeNodesArray = self.network.SetAllAndGetNodesObject(false);
-                        nodes.remove(changeNodesArray);
-                    }
-                }
-            }
-            mutex = true;
-        });*/
-
         // Network Node Selector
         $('select.selectNetworkPicker').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
             if(mutex) { 
@@ -390,27 +357,7 @@
                         self.colorAllEdges(nodes,edges); // on recolorise tous les noeuds
                         self.setExternalFilterToNone(); 
                     }
-
                 }
-/*                // changement d'état pour le filtre global
-                // on check si on a toutes les valeurs
-                if($(this).val() && $(this).context.length === $(this).val().length) {
-                    if(globValues === null) {
-                        $('select.selectNetworkAllGroups').selectpicker('val',$(this).context.getAttribute('name'));    
-                    } else {
-                        globValues.push($(this).context.getAttribute('name'));
-                        $('select.selectNetworkAllGroups').selectpicker('val',globValues); 
-                    }
-                } else {
-                    // si certaines valeurs sont cochées
-                    if(globValues !== null) { 
-                        var value = $(this).context.getAttribute('name');
-                        globValues = globValues.filter(function(item) { 
-                            return item !== value;
-                        });
-                        $('select.selectNetworkAllGroups').selectpicker('val',globValues);
-                    }
-                }*/
             }
 
         });
@@ -613,16 +560,6 @@
             } else {
                 $(this).selectpicker('val',groupArray[$(this).context.name] ); 
             }
-           /* // check if global filter should be fullfill
-            if($(this).val() && $(this).context.length === $(this).val().length) {
-                if(globValues === null) {
-                    $('select.selectNetworkAllGroups').selectpicker('val',$(this).context.getAttribute('name'));
-                    globValues = [$(this).context.getAttribute('name')];  
-                } else {
-                    globValues.push($(this).context.getAttribute('name'));
-                    $('select.selectNetworkAllGroups').selectpicker('val',globValues); 
-                }
-            }*/
         });
     };
 
