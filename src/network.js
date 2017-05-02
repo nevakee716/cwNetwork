@@ -94,14 +94,16 @@
         return visData;    
     };
 
-    network.prototype.getVisNode = function (id,group,noRange) {
+    network.prototype.getVisNode = function (id,group,option) {
         var originNode = this.objectTypeNodes[group].getVisData(id);
         var nodesArray = [];
         var result;
         var edges = this.getEdges();
-        nodesArray.push(originNode);
-        if(this.option.rangeMin || this.option.rangeMax && !noRange) {
-            nodesArray = nodesArray.concat(this.getCloseNodes(originNode.id,edges));
+        if(option === undefined || !option.NoOrigin) {
+            nodesArray.push(originNode);
+        }
+        if(option && (option.rangeMin || option.rangeMax)) {
+            nodesArray = nodesArray.concat(this.getCloseNodes(originNode.id,edges,option));
         }
         return nodesArray;
     };
@@ -109,19 +111,19 @@
 
 
 
-    network.prototype.getCloseNodes = function (id,edges) {
+    network.prototype.getCloseNodes = function (id,edges,option) {
         var i,tempNode;
         var nodesArray = [];
         for (i = 0; i < edges.length; i += 1) {
-            if(edges[i].fromUuid === id && this.option.ImpactTo) {
+            if(edges[i].fromUuid === id && option.ImpactTo) {
                 tempNode = this.objectTypeNodes[edges[i].toGroup].getVisDataIfDeactivated(edges[i].toId);  
             }
-            if(edges[i].toUuid === id && this.option.ImpactFrom) {
+            if(edges[i].toUuid === id && option.ImpactFrom) {
                 tempNode = this.objectTypeNodes[edges[i].fromGroup].getVisDataIfDeactivated(edges[i].fromId);                    
             }
             if(tempNode) {
-                if(this.option.rangeMax) {
-                    nodesArray = nodesArray.concat(this.getCloseNodes(tempNode.id,edges));
+                if(option.rangeMax) {
+                    nodesArray = nodesArray.concat(this.getCloseNodes(tempNode.id,edges,option));
                 }
                 nodesArray.push(tempNode); 
             }

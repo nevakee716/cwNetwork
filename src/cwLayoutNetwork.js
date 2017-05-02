@@ -267,6 +267,9 @@
         // provide the data in the vis format
         var nodes = new vis.DataSet(); //this.network.getVisNodes());
         var edges = new vis.DataSet(this.network.getVisEdges()); //this.network.getVisEdges());
+        this.nodes = nodes;
+        this.edges = edges;
+
         var data = {
             nodes: nodes,
             edges: edges
@@ -300,8 +303,9 @@
 
 
         // Adding filter options
-        filterContainer.appendChild(this.network.getFilterOptions());
+        //filterContainer.appendChild(this.network.getFilterOptions());
         
+        //give bootstrap select to filter
         $('.selectNetworkPicker').selectpicker();
         $('.selectNetworkOptions').selectpicker();    
         $('.selectNetworkAllGroups').selectpicker();  
@@ -310,7 +314,6 @@
         // initialize your network!/*# sourceMappingURL=bootstrap.min.css.map */
         this.networkUI = new vis.Network(networkContainer, data, options);
         var self = this;
-
 
         // Network Live Option
         $('select.selectNetworkOptions').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
@@ -359,7 +362,6 @@
                     }
                 }
             }
-
         });
 
         // External Filter
@@ -407,12 +409,57 @@
         });
 
         this.createMenu(networkContainer);
-        this.networkUI.addEventListener('AddClosesNodes', this.openObjectPage.bind(this));  
-        this.networkUI.addEventListener('AddAllNodesFrom', this.openPopOut.bind(this)); 
-        this.networkUI.addEventListener('AddAllNodesTo', this.openPopOut.bind(this)); 
-            
-
+        networkContainer.addEventListener('AddClosesNodes', this.AddClosesNodes.bind(this));  
+        networkContainer.addEventListener('AddAllNodesFrom', this.AddAllNodesFrom.bind(this)); 
+        networkContainer.addEventListener('AddAllNodesTo', this.AddAllNodesTo.bind(this)); 
     };
+
+    cwLayoutNetwork.prototype.AddClosesNodes = function (event) {
+        var option = {};
+        option.ImpactTo = true;
+        option.ImpactFrom = true;
+        option.rangeMin = true;
+        option.rangeMax = false;
+        option.NoOrigin = true;
+        this.AddNodesToNetwork(event,option);
+    };
+
+    cwLayoutNetwork.prototype.AddAllNodesFrom = function (event) {
+        var option = {};
+        option.ImpactTo = false;
+        option.ImpactFrom = true;
+        option.rangeMin = false;
+        option.rangeMax = true;
+        option.NoOrigin = true;
+        this.AddNodesToNetwork(event,option);
+    };
+
+    cwLayoutNetwork.prototype.AddAllNodesTo = function (event) {
+        var option = {};
+        option.ImpactTo = true;
+        option.ImpactFrom = false;
+        option.rangeMin = true;
+        option.rangeMax = false;
+        option.NoOrigin = true;
+        this.AddNodesToNetwork(event,option);
+    };
+
+    cwLayoutNetwork.prototype.AddNodesToNetwork = function (event,option) {
+        var nodeID = event.data.d.nodes[0];
+        var group,changeSet;
+        this.nodes.forEach(function(node) { 
+            if(node.id === nodeID) {
+                group = node.group;
+            }
+        });
+        nodeID = nodeID.split("#")[0];
+        changeSet = this.network.getVisNode(nodeID,group,option,true); // get all the node self should be put on
+        this.fillFilter(changeSet); // add the filter value
+        this.nodes.add(changeSet); // adding nodes into network
+    };
+
+
+
 
     cwLayoutNetwork.prototype.colorNodes = function (nodes,idsToHighlight) {
         var updateArray = [];
