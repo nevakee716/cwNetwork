@@ -138,10 +138,16 @@
         filterObject.setAttribute('data-selected-text-format','count > 2');
         filterObject.setAttribute('data-actions-box','true');
         filterObject.setAttribute('data-size','5');
-       // filterObject.setAttribute('data-width','fit');
+       //filterObject.setAttribute('data-width','fit');
         
         filterObject.className = classname;
         filterObject.setAttribute('filterName',this.label);
+
+        //Creation du None
+        object = document.createElement("option");
+        object.setAttribute('id',0);
+        object.textContent = 'None';
+        filterObject.appendChild(object);
 
         for (id in this.filterField) {
             if (this.filterField.hasOwnProperty(id)) {
