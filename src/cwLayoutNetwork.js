@@ -21,6 +21,7 @@
         this.getHiddenNodeList(this.options.CustomOptions['hidden-nodes']);
         this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);
         this.getdirectionList(this.options.CustomOptions['arrowDirection']);
+        this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
         this.getExternalFilterNodes(true,this.options.CustomOptions['filterNode']);
     };
 
@@ -36,6 +37,12 @@
                     this.popOut[optionSplit[0]] = optionSplit[1];
                 }
             }
+        }
+    };
+
+    cwLayoutNetwork.prototype.getGroupToSelectOnStart = function(options) {
+        if(options) {
+            this.groupToSelectOnStart = options.split("#");
         }
     };
 
@@ -264,6 +271,7 @@
         var x = - networkContainer.clientWidth / 2 + 70;
         var y = - networkContainer.clientHeight / 2 + 150;
         var step = 70;
+        
         // provide the data in the vis format
         var nodes = new vis.DataSet(); //this.network.getVisNodes());
         var edges = new vis.DataSet(this.network.getVisEdges()); //this.network.getVisEdges());
@@ -305,11 +313,16 @@
         // Adding filter options
         //filterContainer.appendChild(this.network.getFilterOptions());
         
+
+
         //give bootstrap select to filter
         $('.selectNetworkPicker').selectpicker();
         $('.selectNetworkOptions').selectpicker();    
         $('.selectNetworkAllGroups').selectpicker();  
         $('.selectNetworkExternal').selectpicker(); 
+
+        // Activate Starting groups
+        this.activateStartingGroup();
 
         // initialize your network!/*# sourceMappingURL=bootstrap.min.css.map */
         this.networkUI = new vis.Network(networkContainer, data, options);
@@ -397,8 +410,6 @@
             if(params.hasOwnProperty('nodes') && params.nodes.length === 1) {
                 var split = params.nodes[0].split("#");
                 self.openPopOut(split[0],split[1]);
-
-
             }
         });
         this.networkUI.on("doubleClick", function (params) {
@@ -412,6 +423,16 @@
         networkContainer.addEventListener('AddClosesNodes', this.AddClosesNodes.bind(this));  
         networkContainer.addEventListener('AddAllNodesFrom', this.AddAllNodesFrom.bind(this)); 
         networkContainer.addEventListener('AddAllNodesTo', this.AddAllNodesTo.bind(this)); 
+    };
+
+
+
+
+
+    cwLayoutNetwork.prototype.activateStartingGroup = function (event) {
+        //this.groupToSelectOnStart.forEach(function(group) {
+        //    $('.selectNetworkPicker.' + group).selectpicker('selectAll');
+        //});
     };
 
     cwLayoutNetwork.prototype.AddClosesNodes = function (event) {
@@ -438,8 +459,8 @@
         var option = {};
         option.ImpactTo = true;
         option.ImpactFrom = false;
-        option.rangeMin = true;
-        option.rangeMax = false;
+        option.rangeMin = false;
+        option.rangeMax = true;
         option.NoOrigin = true;
         this.AddNodesToNetwork(event,option);
     };
@@ -457,8 +478,6 @@
         this.fillFilter(changeSet); // add the filter value
         this.nodes.add(changeSet); // adding nodes into network
     };
-
-
 
 
     cwLayoutNetwork.prototype.colorNodes = function (nodes,idsToHighlight) {
@@ -559,13 +578,8 @@
                 }
             };
             self.menu.push($.extend(true, {}, menu));
-
         }) (iAction);
-
         this.networkUI.on("oncontext", vis.contextMenu(this.menu)); 
-
-
-
     };
 
     cwLayoutNetwork.prototype.colorAllEdges = function (nodes,edges) {

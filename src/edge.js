@@ -6,8 +6,8 @@
   "use strict";
   // constructor
   var edge = function(fromUuid,toUuid, fromId, toId,fromGroup,toGroup,direction,arrowColour) {
-    this.direction = direction;
-    if(this.direction === undefined || this.direction.indexOf('from') === -1) {
+    this.size = 1;
+    if(direction === undefined || direction.indexOf('from') === -1) {
       this.fromUuid = fromUuid;
       this.toUuid = toUuid;
       this.fromGroup = fromGroup;
@@ -22,7 +22,19 @@
       this.fromId = toId;
       this.toId = fromId; 
     }
+    this.direction = 'to';
     this.arrowColour = arrowColour;
+  };
+
+  //permet de lire les propriétés de l'asso et de choisir quoi afficher en fonction du champs custom
+  edge.prototype.addDirection = function(direction,reserve) {
+
+    if(direction) {
+      if(direction === "'from'" || (direction === "'to'" && reserve)) {
+        this.direction = 'to, from';
+      }
+      this.size = this.size + 1;
+    }
   };
 
 
@@ -32,22 +44,24 @@
     edgeVis.from = this.fromUuid;
     edgeVis.to = this.toUuid; 
     if(this.direction) {
-      edgeVis.arrows = 'to';     
+      edgeVis.arrows = this.direction;     
     }  
     edgeVis.color = {inherit:'to'};  
+    edgeVis.width = this.size;
     return edgeVis;
   };
 
   //permet de lire les propriétés de l'asso et de choisir quoi afficher en fonction du champs custom
   edge.prototype.getEdge = function() {
-    var edgeVis = {};
-    edgeVis.fromId = this.fromId;
-    edgeVis.toId = this.toId; 
-    edgeVis.fromGroup = this.fromGroup;
-    edgeVis.toGroup = this.toGroup;   
-    edgeVis.fromUuid = this.fromUuid;
-    edgeVis.toUuid = this.toUuid; 
-    return edgeVis;
+    var edge = {};
+    edge.fromId = this.fromId;
+    edge.toId = this.toId; 
+    edge.fromGroup = this.fromGroup;
+    edge.toGroup = this.toGroup;   
+    edge.fromUuid = this.fromUuid;
+    edge.toUuid = this.toUuid; 
+    edge.direction = this.direction; 
+    return edge;
   };
 
 

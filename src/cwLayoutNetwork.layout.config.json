@@ -23,6 +23,12 @@
         "Type": 0
     },
     {
+        "Id": "groupToSelectOnStart",
+        "DisplayName": "Group To Select On Start",
+        "Description": "List the groups you want to display when the network is started. Use comma separator",
+        "Type": 0
+    },
+    {
         "Id": "iconGroup",
         "DisplayName": "Assign Icon to Group",
         "Description": "Use NameGroup,FontAwesomeUnicode,color||NameGroup2,FontAwesomeUnicode2,color2. For exemple, Organisation,f1ad,#f0a30a",
@@ -37,7 +43,7 @@
     {
         "Id": "filterNode",
         "DisplayName": "Filter Association",
-        "Description": "Select Nodes that would be use to filter Node",
+        "Description": "Select Nodes that would be use to filter Node. Use comma separator",
         "Type": 0
     }]
 }

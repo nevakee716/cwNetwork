@@ -115,12 +115,21 @@
         var i,tempNode;
         var nodesArray = [];
         for (i = 0; i < edges.length; i += 1) {
-            if(edges[i].fromUuid === id && option.ImpactTo) {
-                tempNode = this.objectTypeNodes[edges[i].toGroup].getVisDataIfDeactivated(edges[i].toId);  
+            if(option.ImpactTo) {
+                if(edges[i].fromUuid === id ) {
+                    tempNode = this.objectTypeNodes[edges[i].toGroup].getVisDataIfDeactivated(edges[i].toId);  
+                } else if(edges[i].toUuid === id && edges[i].direction === 'to, from'){
+                    tempNode = this.objectTypeNodes[edges[i].fromGroup].getVisDataIfDeactivated(edges[i].fromId);  
+                }
             }
-            if(edges[i].toUuid === id && option.ImpactFrom) {
-                tempNode = this.objectTypeNodes[edges[i].fromGroup].getVisDataIfDeactivated(edges[i].fromId);                    
+            if(option.ImpactFrom) {
+                if(edges[i].toUuid === id ) {
+                    tempNode = this.objectTypeNodes[edges[i].fromGroup].getVisDataIfDeactivated(edges[i].fromId);  
+                } else if(edges[i].fromUuid === id && edges[i].direction === 'to, from'){
+                    tempNode = this.objectTypeNodes[edges[i].toGroup].getVisDataIfDeactivated(edges[i].toId);  
+                }
             }
+
             if(tempNode) {
                 if(option.rangeMax) {
                     nodesArray = nodesArray.concat(this.getCloseNodes(tempNode.id,edges,option));
@@ -154,7 +163,11 @@
             var uuidAssoReverse = uuidChild + "_" + uuid;       
             if(!this.edges.hasOwnProperty(uuidAsso) && !this.edges.hasOwnProperty(uuidAssoReverse)) {
                 this.edges[uuidAsso] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid,uuidChild,object.object_id,child.object_id,object.group,child.group,child.direction);
-            }   
+            } else if(this.edges.hasOwnProperty(uuidAsso)) {
+                this.edges[uuidAsso].addDirection(child.direction);
+            } else if(this.edges.hasOwnProperty(uuidAssoReverse)) {
+                this.edges[uuidAssoReverse].addDirection(child.direction,true);
+            }
         }
         
     };
