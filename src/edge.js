@@ -46,7 +46,7 @@
     if(this.direction) {
       edgeVis.arrows = this.direction;     
     }  
-    edgeVis.color = {inherit:'to'};  
+    edgeVis.color = {inherit:'from'};  
     edgeVis.width = this.size;
     return edgeVis;
   };

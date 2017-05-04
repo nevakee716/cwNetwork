@@ -115,17 +115,17 @@
         var i,tempNode;
         var nodesArray = [];
         for (i = 0; i < edges.length; i += 1) {
-            if(option.ImpactTo) {
-                if(edges[i].fromUuid === id ) {
+            if(option.ImpactTo) { // on cherche les node qui partent de notre node
+                if(edges[i].fromUuid === id ) { 
                     tempNode = this.objectTypeNodes[edges[i].toGroup].getVisDataIfDeactivated(edges[i].toId);  
-                } else if(edges[i].toUuid === id && edges[i].direction === 'to, from'){
+                } else if(edges[i].toUuid === id && edges[i].direction === 'to, from'){// si direction both sur le edge
                     tempNode = this.objectTypeNodes[edges[i].fromGroup].getVisDataIfDeactivated(edges[i].fromId);  
                 }
             }
-            if(option.ImpactFrom) {
-                if(edges[i].toUuid === id ) {
+            if(option.ImpactFrom) { // on cherche les node qui viennent de notre node
+                if(edges[i].toUuid === id ) { 
                     tempNode = this.objectTypeNodes[edges[i].fromGroup].getVisDataIfDeactivated(edges[i].fromId);  
-                } else if(edges[i].fromUuid === id && edges[i].direction === 'to, from'){
+                } else if(edges[i].fromUuid === id && edges[i].direction === 'to, from'){// si direction both sur le edge
                     tempNode = this.objectTypeNodes[edges[i].toGroup].getVisDataIfDeactivated(edges[i].toId);  
                 }
             }
@@ -161,11 +161,11 @@
             var uuidChild = child.object_id + "#" + child.objectTypeScriptName;  
             var uuidAsso = uuid + "_" + uuidChild;     
             var uuidAssoReverse = uuidChild + "_" + uuid;       
-            if(!this.edges.hasOwnProperty(uuidAsso) && !this.edges.hasOwnProperty(uuidAssoReverse)) {
+            if(!this.edges.hasOwnProperty(uuidAsso) && !this.edges.hasOwnProperty(uuidAssoReverse)) { // si aucun edge existe
                 this.edges[uuidAsso] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid,uuidChild,object.object_id,child.object_id,object.group,child.group,child.direction);
-            } else if(this.edges.hasOwnProperty(uuidAsso)) {
+            } else if(this.edges.hasOwnProperty(uuidAsso)) { // si le edge existe déja 
                 this.edges[uuidAsso].addDirection(child.direction);
-            } else if(this.edges.hasOwnProperty(uuidAssoReverse)) {
+            } else if(this.edges.hasOwnProperty(uuidAssoReverse)) { // si le edge reverse existe déja
                 this.edges[uuidAssoReverse].addDirection(child.direction,true);
             }
         }

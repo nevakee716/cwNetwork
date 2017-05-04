@@ -15,6 +15,7 @@
         this.popOut = [];
         this.specificGroup = [];
         this.directionList = [];
+        this.groupToSelectOnStart = [];
         this.init = true;
         this.getspecificGroupList(this.options.CustomOptions['specificGroup']);        
         this.getPopOutList(this.options.CustomOptions['popOutList']);
@@ -42,7 +43,7 @@
 
     cwLayoutNetwork.prototype.getGroupToSelectOnStart = function(options) {
         if(options) {
-            this.groupToSelectOnStart = options.split("#");
+            this.groupToSelectOnStart = options.split(",");
         }
     };
 
@@ -75,9 +76,15 @@
                     groups[optionSplit[0]].icon.face = 'FontAwesome';
                     groups[optionSplit[0]].icon.code = unescape('%u' + optionSplit[1]);
                     if(optionSplit[2]) {
-                       groups[optionSplit[0]].icon.color = optionSplit[2];   
+                        groups[optionSplit[0]].color = {};
+                        groups[optionSplit[0]].color.border = optionSplit[2];
+                        groups[optionSplit[0]].color.background = optionSplit[2];
+                        groups[optionSplit[0]].color.highlight = {};
+                        groups[optionSplit[0]].color.highlight.border = optionSplit[2];
+                        groups[optionSplit[0]].color.highlight.background = optionSplit[2];
+                        groups[optionSplit[0]].icon.color = optionSplit[2];   
                     }
-                     groups[optionSplit[0]].icon.size = '50'; 
+                     groups[optionSplit[0]].icon.size = '40'; 
                     groups[optionSplit[0]].font = {background: '#FFFFFF'}  ; 
                     groups[optionSplit[0]].background = {background: '#FFFFFF'}  ;                                  
                 }
@@ -241,11 +248,18 @@
             if(cwAPI.isDebugMode() === true) {
                 self.createNetwork();
             } else {
-                libToLoad = ['modules/bootstrap/bootstrap.min.js','modules/bootstrap-select/bootstrap-select.min.js','modules/vis/vis.min.js'];
+                libToLoad = ['modules/bootstrap/bootstrap.min.js','modules/bootstrap-select/bootstrap-select.min.js','modules/vis/vis.min.js','modules/d3/d3.min.js'];
                 // AsyncLoad
                 cwApi.customLibs.aSyncLayoutLoader.loadUrls(libToLoad,function(error){
                     if(error === null) {
-                        self.createNetwork();                
+                        libToLoad = ['modules/visNetworkMenu/visNetworkMenu.min.js']; 
+                        cwApi.customLibs.aSyncLayoutLoader.loadUrls(libToLoad,function(error){
+                            if(error === null) {
+                                self.createNetwork(); 
+                            } else {
+                                cwAPI.Log.Error(error); 
+                            }
+                        });            
                     } else {
                         cwAPI.Log.Error(error);
                     }
@@ -286,7 +300,7 @@
             groups : this.groupsIcon,
             physics: {
                 barnesHut: {
-                  springLength: 120
+                  springLength: 130
                 },
                 minVelocity: 0.75
             }
@@ -313,16 +327,11 @@
         // Adding filter options
         //filterContainer.appendChild(this.network.getFilterOptions());
         
-
-
         //give bootstrap select to filter
         $('.selectNetworkPicker').selectpicker();
         $('.selectNetworkOptions').selectpicker();    
         $('.selectNetworkAllGroups').selectpicker();  
         $('.selectNetworkExternal').selectpicker(); 
-
-        // Activate Starting groups
-        this.activateStartingGroup();
 
         // initialize your network!/*# sourceMappingURL=bootstrap.min.css.map */
         this.networkUI = new vis.Network(networkContainer, data, options);
@@ -419,10 +428,14 @@
             }
         });
 
+        // Creation du menu et binding
         this.createMenu(networkContainer);
         networkContainer.addEventListener('AddClosesNodes', this.AddClosesNodes.bind(this));  
         networkContainer.addEventListener('AddAllNodesFrom', this.AddAllNodesFrom.bind(this)); 
         networkContainer.addEventListener('AddAllNodesTo', this.AddAllNodesTo.bind(this)); 
+
+        // Activate Starting groups
+        this.activateStartingGroup();
     };
 
 
@@ -430,9 +443,9 @@
 
 
     cwLayoutNetwork.prototype.activateStartingGroup = function (event) {
-        //this.groupToSelectOnStart.forEach(function(group) {
-        //    $('.selectNetworkPicker.' + group).selectpicker('selectAll');
-        //});
+        this.groupToSelectOnStart.forEach(function(group) {
+            $('.selectNetworkPicker.' + group).selectpicker('selectAll');
+        });
     };
 
     cwLayoutNetwork.prototype.AddClosesNodes = function (event) {
