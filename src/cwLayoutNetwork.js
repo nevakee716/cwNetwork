@@ -123,7 +123,7 @@
 
 
     cwLayoutNetwork.prototype.getExternalFilterNodes = function(nodeType,customOptions) {
-        var optionList = customOptions.split(";");
+        var optionList = customOptions.split("#");
         for (var i = 0; i < optionList.length; i += 1) {
             if(optionList[i] !== "") {
                 var optionSplit = optionList[i].split(":");
@@ -305,6 +305,18 @@
                 minVelocity: 0.75
             }
         };
+
+/*        var options = {
+            groups : this.groupsIcon,
+            layout: {
+                hierarchical: {
+                    direction: "UD"
+                }
+            },
+            edges: {
+                smooth: true
+            }
+        };*/
 
         // Adding filter for all selector group
         for (ObjectTypeNode in objectTypeNodes) {
