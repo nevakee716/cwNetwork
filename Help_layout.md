@@ -1,10 +1,11 @@
-| **Name** | **cwLayoutNetworkt** | **Version** | 
+| **Name** | **cwLayoutNetwork** | **Version** | 
 | --- | --- | --- |
-| **Updated by** | Mathias PFAUWADEL | 2.0 |
+| **Updated by** | Mathias PFAUWADEL | 3.0 |
 
 
 ## Patch Notes
 
+* 3.0 : RightClick, Highlight by External, merging (with bigger size) arrow if several associations
 * 2.0 : Adding group, icon, Impact, globalFilter, arrow
 * 1.0 : 1st version working
 
@@ -13,10 +14,13 @@
 * SearchText Box
 * More Options
 * Custom Display String Support
+* Add Translations i18n like Data/Common/i18n
 
 
 ## Description 
 Allow you to display objects and their associations in a network. The layout provide the same interaction than diagram, simple click for popOUT and double click to go on the objectPage. This layout can be use on IndexPage of ObjectPage.
+
+In case of several association, the layout will display only one edge between node, if arrow are in different way, it will display both. The size of the edge will depend of the number of association.
 
 ## Screen Shot
 The layout will scan all of your hierarchy tree, and put it in a network.
@@ -53,9 +57,13 @@ If you want objects of a node to be in a different group use this option : NodeI
 
 PS : If an object is present twice in the JSON object, one time in a group and one time in another group, it will be display twice in the network.
 
+### Group To Select On Start
+
+List the groups you want to display when the network is started. Use comma separator
+
 ### Assign Icon to Group :
 
-You can assign a FontAwesome Icon to a group. Use NameGroup,FontAwesomeUnicode,color||NameGroup2,FontAwesomeUnicode2,color2. For exemple, Organisation,f1ad,#f0a30a
+You can assign a FontAwesome Icon to a group.(go to this website to find the code http://fontawesome.io/icons/) Use NameGroup,FontAwesomeUnicode,color||NameGroup2,FontAwesomeUnicode2,color2. For exemple, Organisation,f1ad,#f0a30a
 <img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/4.png" alt="Drawing" style="width: 95%;"/>
 
 ### Arrow Direction :
@@ -66,34 +74,45 @@ Use from, if you want the arrow to leave from this node.
 
 <img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/5.png" alt="Drawing" style="width: 95%;"/>
 
+### Filter Node :
 
-## Live Options
+Select Evolve Nodes that will be use to filter your nodes. 
+nodeID:Label of the filter
+For exemple : entite_20022_1066555881:Entity Filter
+(Can be use for application flux See exemples below)
 
-### Selection
+## RightClick Action
 
-When you first go on the network Page, the network is empty, you need to choose in the different filter the nodes you want to display
-
-### Impact Options
-
-In the filter Option, you can choose the impact of the node display. By default, the impact is 0 and there is no direction selected. Which mean when you add a node, it will only add this node. If you choose Impact Minimum and direction from, when you add one node, it will also display the direct connected node where the direction of the arrow is from.
-You can choose both direction, if you want to display all the node.
-
-If you choose maximum range, it will display all the nodes that are connected (in the selected direction)
-
+You can rightClick on a node to display : 
 <img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/6.png" alt="Drawing" style="width: 95%;"/>
 
-If a link has no specifed direction, it will be considerer by the Impact Manager as the direction of the JSON Object
+### Add Closes Nodes
+This will add on the network, the node that are connected to the selected node 
 
+### Add All Nodes From
+This will add on the network, the node that have a path (even indirect) that leave from the selected Node
 
+### Add All Nodes To
+This will add on the network, the node that have a path (even indirect) that go in the selected Node
 
+## Application Map
 
+Here we have the following metamodel : 
 
+Application connected to flux connected to Application
+and flux connected to Entity
+On the network, we want to display the Application and display the flux as arrow (depending if the flux is emit or receive)
 
+For that, we use the following configuration : 
+<img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/7.png" alt="Drawing" style="width: 95%;"/>
 
+ApplicationHidden correspond to the icon and the colour that the unhighlighted node will take.
 
+<img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/8.png" alt="Drawing" style="width: 95%;"/>
+ 
+You can now go in the Entity Filter and highlight only the node that are connected to a flux that use the selected entity.
 
-
-
+PS : if you selected an entity, and all the node connected to the entity are not on the network yet, the entity will add them
 
 
 
