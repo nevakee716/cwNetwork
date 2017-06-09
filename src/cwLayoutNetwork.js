@@ -75,22 +75,36 @@
                 if(optionList[i] !== "") {
                     var optionSplit = optionList[i].split(",");
                     groups[optionSplit[0]] = {};
-                    groups[optionSplit[0]].shape = 'icon';
-                    groups[optionSplit[0]].icon = {};
-                    groups[optionSplit[0]].icon.face = 'FontAwesome';
-                    groups[optionSplit[0]].icon.code = unescape('%u' + optionSplit[1]);
-                    if(optionSplit[2]) {
-                        groups[optionSplit[0]].color = {};
-                        groups[optionSplit[0]].color.border = optionSplit[2];
-                        groups[optionSplit[0]].color.background = optionSplit[2];
-                        groups[optionSplit[0]].color.highlight = {};
-                        groups[optionSplit[0]].color.highlight.border = optionSplit[2];
-                        groups[optionSplit[0]].color.highlight.background = optionSplit[2];
-                        groups[optionSplit[0]].icon.color = optionSplit[2];   
+                    if(optionSplit[1] === "icon") {
+                        groups[optionSplit[0]].shape = 'icon';
+                        groups[optionSplit[0]].icon = {};
+                        groups[optionSplit[0]].icon.face = 'FontAwesome';
+                        groups[optionSplit[0]].icon.code = unescape('%u' + optionSplit[2]);
+                        if(optionSplit[3]) {
+                            groups[optionSplit[0]].color = {};
+                            groups[optionSplit[0]].color.border = optionSplit[3];
+                            groups[optionSplit[0]].color.background = optionSplit[3];
+                            groups[optionSplit[0]].color.highlight = {};
+                            groups[optionSplit[0]].color.highlight.border = optionSplit[3];
+                            groups[optionSplit[0]].color.highlight.background = optionSplit[3];
+                            groups[optionSplit[0]].icon.color = optionSplit[3];   
+                        }
+                        groups[optionSplit[0]].icon.size = '40'; 
+                        groups[optionSplit[0]].font = {background: '#FFFFFF'}  ; 
+                        groups[optionSplit[0]].background = {background: '#FFFFFF'}  ; 
+                    } else {
+                        groups[optionSplit[0]].shape = optionSplit[1];
+                        if(optionSplit[2]) {
+                            groups[optionSplit[0]].color = {};
+                            if(optionSplit[3]) {groups[optionSplit[0]].color.border = optionSplit[3];}
+                            else {groups[optionSplit[0]].color.border = optionSplit[2];}
+                            groups[optionSplit[0]].color.background = optionSplit[2];
+                            groups[optionSplit[0]].color.highlight = {};
+                            groups[optionSplit[0]].color.highlight.border = optionSplit[2];
+                            groups[optionSplit[0]].color.highlight.background = optionSplit[2];
+                        }                
                     }
-                     groups[optionSplit[0]].icon.size = '40'; 
-                    groups[optionSplit[0]].font = {background: '#FFFFFF'}  ; 
-                    groups[optionSplit[0]].background = {background: '#FFFFFF'}  ;                                  
+                                 
                 }
             }
         }
