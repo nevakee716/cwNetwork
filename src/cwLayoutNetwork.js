@@ -367,7 +367,6 @@
                     } else { // add one node
                         self.network.show(id,group);
                         changeSet = self.network.getVisNode(id,group); // get all the node self should be put on
-                        self.fillFilter(changeSet); // add the filter value
                         nodes.add(changeSet); // adding nodes into network
                         self.networkUI.selectNodes([changeSet[0].id]); //select the origin node
                     }
@@ -619,7 +618,6 @@
     };
 
     cwLayoutNetwork.prototype.fillFilter = function (changeSet) {
-        var globValues = $('select.selectNetworkAllGroups').val();
         var groupArray = {};
         for (i = 0; i < changeSet.length; i += 1) { // put all nodes into groups
             if(!groupArray.hasOwnProperty(changeSet[i].group)) {
