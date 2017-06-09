@@ -17,7 +17,10 @@
         this.specificGroup = [];
         this.directionList = [];
         this.groupToSelectOnStart = [];
+        this.objects = {};
+        this.layoutsByNodeId = {};
         this.init = true;
+        this.multiLineCount = this.options.CustomOptions['multiLineCount'];
         this.getspecificGroupList(this.options.CustomOptions['specificGroup']);        
         this.getPopOutList(this.options.CustomOptions['popOutList']);
         this.getHiddenNodeList(this.options.CustomOptions['hidden-nodes']);
@@ -143,6 +146,23 @@
         }
     };
 
+    cwLayoutNetwork.prototype.getItemDisplayString = function(item){
+        var l, getDisplayStringFromLayout = function(layout){
+            return layout.displayProperty.getDisplayString(item);
+        };
+        if (item.nodeID === this.nodeID){
+            return this.displayProperty.getDisplayString(item);
+        }
+        if (!this.layoutsByNodeId.hasOwnProperty(item.nodeID)){
+            if (this.viewSchema.NodesByID.hasOwnProperty(item.nodeID)){
+                var layoutOptions = this.viewSchema.NodesByID[item.nodeID].LayoutOptions;
+                this.layoutsByNodeId[item.nodeID] = new cwApi.cwLayouts[item.layoutName](layoutOptions, this.viewSchema);
+            } else {
+                return item.name;
+            }
+        }
+        return getDisplayStringFromLayout(this.layoutsByNodeId[item.nodeID]);
+    };
 
     cwLayoutNetwork.prototype.simplify = function (child,father,hiddenNode) {
         var childrenArray = [];
@@ -176,16 +196,22 @@
                         childrenArray = childrenArray.concat(this.simplify(nextChild,father,true));
                     } else { // adding regular node
                         element = {}; 
-                        element.name = this.multiLine(nextChild.name,12);
+                        element.name = this.multiLine(this.getItemDisplayString(nextChild),this.multiLineCount);
                         element.object_id = nextChild.object_id;
                         element.objectTypeScriptName = nextChild.objectTypeScriptName;
-                        
-                        if(this.specificGroup.hasOwnProperty(associationNode)) { // mise en place du groupe
-                            element.group = this.specificGroup[associationNode];
-                        } else {
-                            element.group = cwAPI.mm.getObjectType(nextChild.objectTypeScriptName).name;                           
-                        }
 
+                        // on check si l'element appartient deja a un group
+                        if(!this.objects.hasOwnProperty(element.object_id + "#" + element.objectTypeScriptName)) {
+                            if(this.specificGroup.hasOwnProperty(associationNode)) { // mise en place du groupe
+                                element.group = this.specificGroup[associationNode];
+                            } else {
+                                element.group = cwAPI.mm.getObjectType(nextChild.objectTypeScriptName).name;                           
+                            }
+                            this.objects[element.object_id + "#" + element.objectTypeScriptName] = element.group;                           
+                        } else {
+                            element.group = this.objects[element.object_id + "#" + element.objectTypeScriptName];
+                        }
+                        
                         if(hiddenNode) { //lorsqu'un node est hidden ajouter le filtrage aussi au fils
                             element.filterArray = filterArray; 
                             filtersGroup.forEach(function(filterGroup) {
@@ -211,21 +237,26 @@
     };
 
     cwLayoutNetwork.prototype.multiLine = function(name,size) {
-        var nameSplit = name.split(" "); 
-        var carry = 0;
-        var multiLineName = "";
-        for (var i = 0; i < nameSplit.length -1; i += 1) {
-            if(nameSplit[i].length > size || carry + nameSplit[i].length > size) {
-                multiLineName += nameSplit[i] + "\n";
-                carry = 0;
-            } else {
-                carry += nameSplit[i].length + 1;
-                multiLineName += nameSplit[i] + " ";
+        if(size !== "" && size > 0) {
+            var nameSplit = name.split(" "); 
+            var carry = 0;
+            var multiLineName = "";
+            for (var i = 0; i < nameSplit.length -1; i += 1) {
+                if(nameSplit[i].length > size || carry + nameSplit[i].length > size) {
+                    multiLineName += nameSplit[i] + "\n";
+                    carry = 0;
+                } else {
+                    carry += nameSplit[i].length + 1;
+                    multiLineName += nameSplit[i] + " ";
+                }
             }
-        }
-        multiLineName = multiLineName + nameSplit[nameSplit.length - 1];
+            multiLineName = multiLineName + nameSplit[nameSplit.length - 1];
 
-        return multiLineName ;
+            return multiLineName ;            
+        } else {
+            return name;
+        }
+
 
     };
 

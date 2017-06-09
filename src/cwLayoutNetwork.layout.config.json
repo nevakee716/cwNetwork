@@ -5,6 +5,12 @@
     "JavaScriptClassName": "cwLayoutNetwork",
     "Options": [
     {
+        "Id": "multiLineCount",
+        "DisplayName": "MultiLines Count",
+        "Description": "Indicates the number of caracter you need to have a carriage return. Put 0 if you never want to have carriage return",
+        "Type": 0
+    },
+    {
         "Id": "hidden-nodes",
         "DisplayName": "Hidden Nodes",
         "Description": "Use comma as splitter character",
