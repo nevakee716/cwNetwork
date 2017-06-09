@@ -81,6 +81,8 @@ nodeID:Label of the filter
 For exemple : entite_20022_1066555881:Entity Filter
 (Can be use for application flux See exemples below)
 
+PS : the filter node should always be in first
+
 ## RightClick Action
 
 You can rightClick on a node to display : 
@@ -115,6 +117,9 @@ You can now go in the Entity Filter and highlight only the node that are connect
 PS : if you selected an entity, and all the node connected to the entity are not on the network yet, the entity will add them
 
 
+## Organisation Map
+
+<img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/9.png" alt="Drawing" style="width: 95%;"/>
 
 
 

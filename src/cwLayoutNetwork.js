@@ -1,9 +1,10 @@
 /* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
 
+
+
 /*global cwAPI, jQuery */
 (function (cwApi, $) {
     "use strict";
-
     // constructor
     var cwLayoutNetwork = function (options, viewSchema) {
         cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
@@ -326,7 +327,7 @@
             }
         }
 
-        // Adding filter for all selector group
+        // Adding filter for filtering by external association
         var i = 0;
         for (externalfilter in this.externalFilters) {
             if (this.externalFilters.hasOwnProperty(externalfilter)) {
@@ -340,26 +341,13 @@
         //filterContainer.appendChild(this.network.getFilterOptions());
         
         //give bootstrap select to filter
-        $('.selectNetworkPicker').selectpicker();
-        $('.selectNetworkOptions').selectpicker();    
-        $('.selectNetworkAllGroups').selectpicker();  
+        $('.selectNetworkPicker').selectpicker(); 
         $('.selectNetworkExternal').selectpicker(); 
 
         // initialize your network!/*# sourceMappingURL=bootstrap.min.css.map */
         this.networkUI = new vis.Network(networkContainer, data, options);
         var self = this;
 
-        // Network Live Option
-        $('select.selectNetworkOptions').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
-            if(clickedIndex !== undefined) {
-                var id = $(this).context[clickedIndex]['id'];
-                if(newValue === false) {
-                    self.network.DeActivateOption(id);
-                } else {
-                    self.network.ActivateOption(id);
-                }
-            }
-        });
 
         // Network Node Selector
         $('select.selectNetworkPicker').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
