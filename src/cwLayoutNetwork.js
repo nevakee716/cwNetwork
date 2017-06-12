@@ -109,7 +109,7 @@
             }
         }
 
-        this.groupsIcon = groups;
+        this.groupsArt = groups;
     };
 
     cwLayoutNetwork.prototype.getspecificGroupList = function(options) {
@@ -278,7 +278,7 @@
     // obligatoire appeler par le system
     cwLayoutNetwork.prototype.drawAssociations = function (output, associationTitleText, object) {
         this.originalObject  = object;
-        this.network = new cwApi.customLibs.cwLayoutNetwork.network(this.groupsIcon);
+        this.network = new cwApi.customLibs.cwLayoutNetwork.network();
         this.network.searchForNodesAndEdges(this.simplify(object));
         output.push('<div id="cwLayoutNetwork"><div id="cwLayoutNetworkFilter" class="bootstrap-iso"></div><div id="cwLayoutNetworkCanva"></div></div>');
         this.object = object.associations;
@@ -343,7 +343,7 @@
             edges: edges
         };
         var options = {
-            groups : this.groupsIcon,
+            groups : this.groupsArt,
             physics: {
                 barnesHut: {
                   springLength: 130
@@ -352,17 +352,6 @@
             }
         };
 
-/*        var options = {
-            groups : this.groupsIcon,
-            layout: {
-                hierarchical: {
-                    direction: "UD"
-                }
-            },
-            edges: {
-                smooth: true
-            }
-        };*/
 
         // Adding filter for all selector group
         for (ObjectTypeNode in objectTypeNodes) {
@@ -537,6 +526,20 @@
     };
 
 
+    cwLayoutNetwork.prototype.getEdgeColorFromNode = function (node) {
+        if(this.networkUI.groups.groups[node.group].icon) {
+            return this.networkUI.groups.groups[node.group].icon.color;
+        } else {
+            if(this.networkUI.groups.groups[node.group].color.hasOwnProperty("border")) {
+                return this.networkUI.groups.groups[node.group].color.border;    
+            } else {
+                return this.networkUI.groups.groups[node.group].color;    
+            }  
+        } 
+    };
+
+
+
     cwLayoutNetwork.prototype.colorNodes = function (nodes,idsToHighlight) {
         var updateArray = [];
         var self = this;
@@ -575,11 +578,7 @@
                 nodeID =  edge.from; 
             }
             if(allNodes.hasOwnProperty(nodeID)) {
-                if(self.networkUI.groups.groups[allNodes[nodeID].group].icon) {
-                    edge.color = self.networkUI.groups.groups[allNodes[nodeID].group].icon.color;
-                } else {
-                    edge.color = self.networkUI.groups.groups[allNodes[nodeID].group].color;    
-                } 
+                edge.color = self.getEdgeColorFromNode(allNodes[nodeID]);
             }
 
             updateArray.push(edge);
@@ -647,11 +646,7 @@
         edges.forEach(function(edge) {
             nodeID =  edge.from;
             if(allNodes.hasOwnProperty(nodeID)) {
-                if(self.networkUI.groups.groups[allNodes[nodeID].group].icon) {
-                    edge.color = self.networkUI.groups.groups[allNodes[nodeID].group].icon.color;
-                } else {
-                    edge.color = self.networkUI.groups.groups[allNodes[nodeID].group].color;    
-                } 
+                edge.color = self.getEdgeColorFromNode(allNodes[nodeID]);
             }
             updateArray.push(edge);
         });
