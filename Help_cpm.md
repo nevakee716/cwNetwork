@@ -51,12 +51,11 @@ Follow the following steps to add a custom layout to evolve
 ## Installation offline
 
 * unzip the zip file
-* Put the contenant of src in Casewise\Evolve\Site\bin\webDesigner\custom\Marketplace\libs\LAYOUT_NAME
+* Put the contenant of src in Casewise\Evolve\Site\bin\webDesigner\custom\Marketplace\libs\LAYOUT_or_Specific_NAME\src
 * Put the contenant of external in Casewise\Evolve\Site\bin\webDesigner\js\external
 * Put the contenant of modules in Casewise\Evolve\Site\bin\webDesigner\libs\modules
 * Put the contenant of fonts in Casewise\Evolve\Site\bin\webDesigner\fonts
 * Put the contenant of angularHTMLayout in Casewise\Evolve\Data\Common\html\angularLayouts
-
 
 # Create a Custom Layout 
 

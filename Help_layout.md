@@ -37,6 +37,7 @@ You can use filter to choose which item to display
 ### On ObjectPage With the Object of the object Page on the network
 
 <img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/2.png" alt="Drawing" style="width: 95%;"/>
+
 The network layout should be use alone in a view.
 
 ## Options
@@ -52,23 +53,35 @@ List the popOut that you want to be used. (ex:scriptname1,popOutName1#scriptname
 
 ### Specific Group List :
 
-Group are the different filter box of the network, by default object are sort in to different group by scriptname (name of the group is the name of the objectype).
+Group are the different filter box of the network, by default object are sort in to different group by ObjectType(name of the group is the name of the objectype).
 If you want objects of a node to be in a different group use this option : NodeID,GroupName#NodeID2,GroupName2#(ex:processus_niveau_3_20004_410243396,Processus Electronique#processus_niveau_3_20004_2025026472,Processus Informatique)
 
-PS : If an object is present twice in the JSON object, one time in a group and one time in another group, it will be display twice in the network.
+PS : If an object is present twice in the JSON object, one time in a group and one time in another group, it will only appear in the first group
 
 ### Group To Select On Start
 
 List the groups you want to display when the network is started. Use comma separator
 
-### Assign Icon to Group :
+### Assign Icon or Shape to Group :
 
-You can assign a FontAwesome Icon to a group.(go to this website to find the code http://fontawesome.io/icons/) Use NameGroup,FontAwesomeUnicode,color||NameGroup2,FontAwesomeUnicode2,color2. For exemple, Organisation,f1ad,#f0a30a
+You can assign a shape (ellipse, circle, database, box, diamond, dot, star, triangle, triangleDown, square
+) to a group.
+Use NameGroup,shape,color,borderColor(optionnal)||NameGroup2,shape2,color2,borderColor2(optionnal)
+
+You can also assign a FontAwesome Icon to a group.(go to this website to find the code http://fontawesome.io/icons/) Use NameGroup,icon,FontAwesomeUnicode,color||NameGroup2,icon,FontAwesomeUnicode2,color2. 
+
+You can mix Icon and shape like that : 
+Flux,icon,f0ec,#FF8C00||Application,icon,f10a,#4F90C1||Entité,box,#FF8C00,#4F90C1
+
 <img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/4.png" alt="Drawing" style="width: 95%;"/>
 
 ### Arrow Direction :
 
-Select the direction of each node. For exemple, processus_niveau_2_20006_883051288,'to'#processus_niveau_2_20005_1079817132,'from'
+This option allows you to set arrows between nodes. The syntax is the following:  
+node_id,'direction'  
+You can use symbol # as a separator to set a list of directions.  
+The direction can be 'to' or 'from'.  
+For exemple, processus_niveau_2_20006_883051288,'to'#processus_niveau_2_20005_1079817132,'from'  
 Use to, if you want the arrow that arrive to this node.
 Use from, if you want the arrow to leave from this node.
 
