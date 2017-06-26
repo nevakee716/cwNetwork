@@ -233,7 +233,6 @@
                                     self.externalFilters[filterKey].addNodesTofield(filterGroup[filterKey],element);
                                 });
                             });
-
                         };
 
                         if(this.directionList.hasOwnProperty(associationNode)) { // ajout de la direction
@@ -315,6 +314,7 @@
     };
 
 
+// Building network
     cwLayoutNetwork.prototype.createNetwork = function () {  
 
         var networkContainer = document.getElementById("cwLayoutNetworkCanva");
@@ -383,6 +383,7 @@
         var self = this;
 
 
+// Event for filter
         // Network Node Selector
         $('select.selectNetworkPicker').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
             if(mutex) { 
@@ -474,12 +475,16 @@
 
 
 
-
+// Adding group at start
     cwLayoutNetwork.prototype.activateStartingGroup = function (event) {
         this.groupToSelectOnStart.forEach(function(group) {
             $('.selectNetworkPicker.' + group).selectpicker('selectAll');
         });
     };
+
+
+
+// dealing with adding node with the menu
 
     cwLayoutNetwork.prototype.AddClosesNodes = function (event) {
         var option = {};
@@ -490,6 +495,7 @@
         option.NoOrigin = true;
         this.AddNodesToNetwork(event,option);
     };
+
 
     cwLayoutNetwork.prototype.AddAllNodesFrom = function (event) {
         var option = {};
@@ -525,6 +531,10 @@
         this.nodes.add(changeSet); // adding nodes into network
     };
 
+
+
+
+//manage color of the edge
 
     cwLayoutNetwork.prototype.getEdgeColorFromNode = function (node) {
         if(this.networkUI.groups.groups[node.group].icon) {
