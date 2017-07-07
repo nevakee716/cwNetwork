@@ -561,10 +561,12 @@
             } else {
                 node.group = node.group.replace("Hidden","");     
             }
-            if(self.networkUI.groups.groups[node.group].icon) {
-                node.color = self.networkUI.groups.groups[node.group].icon.color;
-            } else {
-                node.color = self.networkUI.groups.groups[node.group].color;    
+            if(self.networkUI.groups.groups[node.group]) {
+                if(self.networkUI.groups.groups[node.group].icon) {
+                    nodes.color = self.networkUI.groups.groups[node.group].icon.color;
+                } else {
+                    node.color = self.networkUI.groups.groups[node.group].color;  
+                }  
             } 
             updateArray.push(node); 
         });
