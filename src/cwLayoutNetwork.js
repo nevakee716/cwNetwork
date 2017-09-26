@@ -278,13 +278,11 @@
     cwLayoutNetwork.prototype.drawAssociations = function (output, associationTitleText, object) {
         this.originalObject  = $.extend({}, object);
         var simplifyObject ;
-        if(cwAPI.isIndexPage()) {
-            simplifyObject = this.simplify(this.originalObject);
-        } else {
-            var assoNode = {};
-            assoNode[this.mmNode.NodeID] = object.associations[this.mmNode.NodeID];
-            this.originalObject.associations = assoNode;     
-            var simplifyObject = this.simplify(this.originalObject);
+        var assoNode = {};
+        assoNode[this.mmNode.NodeID] = object.associations[this.mmNode.NodeID];
+        this.originalObject.associations = assoNode;     
+        var simplifyObject = this.simplify(this.originalObject);
+        if(!cwAPI.isIndexPage()) {
             simplifyObject = this.addObjectOfObjectPage(simplifyObject,object);       
         }
        
