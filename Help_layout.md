@@ -10,7 +10,7 @@
 * 2.0 : Adding group, icon, Impact, globalFilter, arrow
 * 1.0 : 1st version working
 
-## TBD
+## To be Done
 
 * SearchText Box
 * More Options
