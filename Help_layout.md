@@ -1,10 +1,11 @@
 | **Name** | **cwLayoutNetwork** | **Version** | 
 | --- | --- | --- |
-| **Updated by** | Mathias PFAUWADEL | 3.0 |
+| **Updated by** | Mathias PFAUWADEL | 3.1 |
 
 
 ## Patch Notes
 
+* 3.1 : Correct double item, adding shape option, correct edge color
 * 3.0 : RightClick, Highlight by External, merging (with bigger size) arrow if several associations
 * 2.0 : Adding group, icon, Impact, globalFilter, arrow
 * 1.0 : 1st version working

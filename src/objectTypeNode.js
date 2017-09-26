@@ -56,7 +56,7 @@
     };
 
 
-    objectTypeNode.prototype.getFilterObject = function () {
+    objectTypeNode.prototype.getFilterObject = function (nodeID) {
         var filterObject;
         var object;
         var node;
@@ -68,7 +68,7 @@
         filterObject.setAttribute('data-selected-text-format','static');
         filterObject.setAttribute('data-actions-box','true');
         filterObject.setAttribute('data-size','10');
-        filterObject.className = "selectNetworkPicker " + this.label.replace(" ","_");
+        filterObject.className = "selectNetworkPicker_" + nodeID + " " + this.label.replace(" ","_");
 
         filterObject.setAttribute('name',this.label);
         filterObject.setAttribute('id',this.label);

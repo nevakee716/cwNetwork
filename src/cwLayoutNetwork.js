@@ -92,7 +92,7 @@
                         groups[optionSplit[0]].icon.size = '40'; 
                         groups[optionSplit[0]].font = {background: '#FFFFFF'}  ; 
                         groups[optionSplit[0]].background = {background: '#FFFFFF'}  ; 
-                    } else {
+                    } else { //shape
                         groups[optionSplit[0]].shape = optionSplit[1];
                         if(optionSplit[2]) {
                             groups[optionSplit[0]].color = {};
@@ -276,13 +276,51 @@
 
     // obligatoire appeler par le system
     cwLayoutNetwork.prototype.drawAssociations = function (output, associationTitleText, object) {
-        this.originalObject  = object;
+        this.originalObject  = $.extend({}, object);
+        var simplifyObject ;
+        if(cwAPI.isIndexPage()) {
+            simplifyObject = this.simplify(this.originalObject);
+        } else {
+            var assoNode = {};
+            assoNode[this.mmNode.NodeID] = object.associations[this.mmNode.NodeID];
+            this.originalObject.associations = assoNode;     
+            var simplifyObject = this.simplify(this.originalObject);
+            simplifyObject = this.addObjectOfObjectPage(simplifyObject,object);       
+        }
+       
         this.network = new cwApi.customLibs.cwLayoutNetwork.network();
-        this.network.searchForNodesAndEdges(this.simplify(object));
-        output.push('<div id="cwLayoutNetwork"><div id="cwLayoutNetworkFilter" class="bootstrap-iso"></div><div id="cwLayoutNetworkCanva"></div></div>');
-        this.object = object.associations;
+        this.network.searchForNodesAndEdges(simplifyObject);
+        output.push('<div id="cwLayoutNetwork' + this.nodeID + '">');
+        output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');
+        output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
+        this.object = this.originalObject.associations;
     };
 
+    cwLayoutNetwork.prototype.addObjectOfObjectPage = function (simplifyObject,object) {
+        var element = {}; 
+        element.name = this.multiLine(this.getItemDisplayString(object),this.multiLineCount);
+        element.object_id = object.object_id;
+        element.objectTypeScriptName = object.objectTypeScriptName;
+
+        // on check si l'element appartient deja a un group
+        if(!this.objects.hasOwnProperty(element.object_id + "#" + element.objectTypeScriptName)) {
+            if(this.specificGroup.hasOwnProperty(this.nodeID)) { // mise en place du groupe
+                element.group = this.specificGroup[this.nodeID];
+            } else {
+                element.group = cwAPI.mm.getObjectType(object.objectTypeScriptName).name;                           
+            }
+            this.objects[element.object_id + "#" + element.objectTypeScriptName] = element.group;                           
+        } else {
+            element.group = this.objects[element.object_id + "#" + element.objectTypeScriptName];
+        }
+          if(this.directionList.hasOwnProperty(this.nodeID)) { // ajout de la direction
+            element.direction = this.directionList[this.nodeID];
+        }
+        element.children = simplifyObject;
+
+        return [element];
+
+    };
 
     cwLayoutNetwork.prototype.applyJavaScript = function () {
         if(this.init) {
@@ -291,7 +329,10 @@
             var libToLoad = [];
 
             if(cwAPI.isDebugMode() === true) {
-                self.createNetwork();
+                if(self.network) {
+                    self.createNetwork();                    
+                }
+
             } else {
                 libToLoad = ['modules/bootstrap/bootstrap.min.js','modules/bootstrap-select/bootstrap-select.min.js','modules/vis/vis.min.js','modules/d3/d3.min.js'];
                 // AsyncLoad
@@ -317,15 +358,19 @@
 // Building network
     cwLayoutNetwork.prototype.createNetwork = function () {  
 
-        var networkContainer = document.getElementById("cwLayoutNetworkCanva");
-        var filterContainer = document.getElementById("cwLayoutNetworkFilter");
+        function addStyleString(str) {
+            var node = document.createElement('style');
+            node.innerHTML = str;
+            document.body.appendChild(node);
+        }
+
+        var networkContainer = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
+        var filterContainer = document.getElementById("cwLayoutNetworkFilter" + this.nodeID);
         var objectTypeNodes = this.network.getObjectTypeNodes();
         var ObjectTypeNode,externalfilter;
         var mutex= true;
         var i = 0;
-        // set height
-        var canvaHeight = window.innerHeight - networkContainer.getBoundingClientRect().top;
-        networkContainer.setAttribute('style','height:' + canvaHeight + 'px');
+
 
         // legend
         var x = - networkContainer.clientWidth / 2 + 70;
@@ -356,7 +401,7 @@
         // Adding filter for all selector group
         for (ObjectTypeNode in objectTypeNodes) {
             if (objectTypeNodes.hasOwnProperty(ObjectTypeNode)) {
-                filterContainer.appendChild(objectTypeNodes[ObjectTypeNode].getFilterObject());
+                filterContainer.appendChild(objectTypeNodes[ObjectTypeNode].getFilterObject(this.nodeID));
                 i = i + 1;
             }
         }
@@ -365,7 +410,7 @@
         var i = 0;
         for (externalfilter in this.externalFilters) {
             if (this.externalFilters.hasOwnProperty(externalfilter)) {
-                filterContainer.appendChild(this.externalFilters[externalfilter].getFilterObject("selectNetworkExternal"));
+                filterContainer.appendChild(this.externalFilters[externalfilter].getFilterObject("selectNetworkExternal_" + this.nodeID));
                 i = i + 1;
             }
         }
@@ -373,19 +418,22 @@
 
         // Adding filter options
         //filterContainer.appendChild(this.network.getFilterOptions());
-        
         //give bootstrap select to filter
-        $('.selectNetworkPicker').selectpicker(); 
-        $('.selectNetworkExternal').selectpicker(); 
-
+        $('.selectNetworkPicker_' + this.nodeID).selectpicker(); 
+        $('.selectNetworkExternal_' + this.nodeID).selectpicker(); 
+     
+        // set height
+        // var canvaHeight = window.innerHeight - networkContainer.getBoundingClientRect().top;
+        var canvaHeight  = window.innerHeight - document.getElementsByClassName("page-content")[0].offsetHeight - document.getElementsByClassName("page-title")[0].offsetHeight;
+        networkContainer.setAttribute('style','height:' + canvaHeight + 'px');
+        addStyleString('.bootstrap-iso .bootstrap-select.btn-group .dropdown-menu {max-height: ' + canvaHeight + 'px !important;}');
         // initialize your network!/*# sourceMappingURL=bootstrap.min.css.map */
         this.networkUI = new vis.Network(networkContainer, data, options);
         var self = this;
 
-
-// Event for filter
+        // Event for filter
         // Network Node Selector
-        $('select.selectNetworkPicker').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+        $('select.selectNetworkPicker_' + this.nodeID).on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
             if(mutex) { 
                 var group = $(this).context['id'];
                 var scriptname = $(this).context.getAttribute('scriptname');
@@ -421,7 +469,7 @@
         });
 
         // External Filter
-        $('select.selectNetworkExternal').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+        $('select.selectNetworkExternal_' + this.nodeID).on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
             var group = $(this).context['id'];
             var filterName = $(this).context.getAttribute('filterName');
             var nodesArray,id,nodeId,i,changeSet;
@@ -432,8 +480,8 @@
             if(clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
                 id = $(this).context[clickedIndex]['id'];
                 if(id !== "0") {
-                    nodesToHighlight = self.externalFilters[filterName].getNodesToBeFiltered(id);
-                    changeSet = self.network.ActionAndGetChangeset(nodesToHighlight,true);
+                    nodesToHighlight = self.externalFilters[filterName].getNodesToBeFiltered(id); // on recupere les nodes qui sont associés à la data filtré
+                    changeSet = self.network.ActionAndGetChangeset(nodesToHighlight,true); // on les ajoute dans le network
                     self.fillFilter(changeSet); // add the filter value
                     nodes.add(changeSet); // adding nodes into network
                     idsToHighlight = [];
@@ -678,7 +726,7 @@
             groupArray[changeSet[i].group].push(changeSet[i].label.replace(/\n/g," "));
         }
 
-        $('select.selectNetworkPicker').each(function( index ) { // put values into filters
+        $('select.selectNetworkPicker_' + this.nodeID).each(function( index ) { // put values into filters
             if($(this).val()) {
                 $(this).selectpicker('val',$(this).val().concat(groupArray[$(this).context.name]));
             } else {
