@@ -14,7 +14,6 @@
 
 * SearchText Box
 * More Options
-* Custom Display String Support
 * Add Translations i18n like Data/Common/i18n
 
 
