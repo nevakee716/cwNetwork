@@ -523,8 +523,9 @@
 
 // Adding group at start
     cwLayoutNetwork.prototype.activateStartingGroup = function (event) {
+    	var self = this;
         this.groupToSelectOnStart.forEach(function(group) {
-            $('.selectNetworkPicker.' + group).selectpicker('selectAll');
+            $('.selectNetworkPicker_' + self.nodeID + "." + group).selectpicker('selectAll');
         });
     };
 
