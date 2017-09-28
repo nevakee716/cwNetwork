@@ -525,7 +525,7 @@
     cwLayoutNetwork.prototype.activateStartingGroup = function (event) {
     	var self = this;
         this.groupToSelectOnStart.forEach(function(group) {
-            $('.selectNetworkPicker_' + self.nodeID + "." + group).selectpicker('selectAll');
+            $('.selectNetworkPicker_' + self.nodeID + "." + group.replaceAll(" ","_")).selectpicker('selectAll');
         });
     };
 

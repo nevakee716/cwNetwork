@@ -68,7 +68,7 @@
         filterObject.setAttribute('data-selected-text-format','static');
         filterObject.setAttribute('data-actions-box','true');
         filterObject.setAttribute('data-size','10');
-        filterObject.className = "selectNetworkPicker_" + nodeID + " " + this.label.replace(" ","_");
+        filterObject.className = "selectNetworkPicker_" + nodeID + " " + this.label.replaceAll(" ","_");
 
         filterObject.setAttribute('name',this.label);
         filterObject.setAttribute('id',this.label);
@@ -77,7 +77,7 @@
             if (this.nodes.hasOwnProperty(node)) {
                 object = document.createElement("option");
                 object.setAttribute('id',this.nodes[node].getId());
-                object.textContent = this.nodes[node].getLabel().replace("\n"," ");
+                object.textContent = this.nodes[node].getLabel().replaceAll("\n"," ");
                 filterObject.appendChild(object);
             }                                                                                                                                                                                                                                                                                                                                                                                                            
         }

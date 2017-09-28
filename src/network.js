@@ -58,7 +58,7 @@
         var changeSet = [];
         var hasChanged; 
         elements.forEach(function(elem) {
-            elem.name.replace("\n"," ");
+            elem.name.replaceAll("\n"," ");
             hasChanged = that.objectTypeNodes[elem.group].changeState(elem.object_id,state);  
             if(hasChanged) { // on check si le node est pas déja présent dans le réseau
                 changeSet = changeSet.concat(that.getVisNode(elem.object_id,elem.group));
@@ -286,7 +286,7 @@
         for (objectType in this.objectTypeNodes) {
             if (this.objectTypeNodes.hasOwnProperty(objectType)) {
                 object = document.createElement("option");
-                object.setAttribute('id',this.objectTypeNodes[objectType].label.replace(" ","_"));
+                object.setAttribute('id',this.objectTypeNodes[objectType].label.replaceAll(" ","_"));
                 object.textContent = this.objectTypeNodes[objectType].label;
                 filterObject.appendChild(object);       
             }
