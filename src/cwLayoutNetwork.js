@@ -327,10 +327,7 @@
             var libToLoad = [];
 
             if(cwAPI.isDebugMode() === true) {
-                if(self.network) {
-                    self.createNetwork();                    
-                }
-
+                if(self.network) self.createNetwork();                    
             } else {
                 libToLoad = ['modules/bootstrap/bootstrap.min.js','modules/bootstrap-select/bootstrap-select.min.js','modules/vis/vis.min.js','modules/d3/d3.min.js'];
                 // AsyncLoad
@@ -339,7 +336,7 @@
                         libToLoad = ['modules/visNetworkMenu/visNetworkMenu.min.js']; 
                         cwApi.customLibs.aSyncLayoutLoader.loadUrls(libToLoad,function(error){
                             if(error === null) {
-                                self.createNetwork(); 
+                                if(self.network) self.createNetwork();    
                             } else {
                                 cwAPI.Log.Error(error); 
                             }

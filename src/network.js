@@ -173,8 +173,7 @@
             } else if(this.edges.hasOwnProperty(uuidAssoReverse)) { // si le edge reverse existe déja
                 this.edges[uuidAssoReverse].addDirection(child.direction,true);
             }
-        }
-        
+        }  
     };
 
     network.prototype.getVisEdges = function () {
