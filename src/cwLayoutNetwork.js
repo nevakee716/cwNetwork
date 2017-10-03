@@ -11,6 +11,7 @@
         cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
 
         this.hiddenNodes = [];
+        this.complementaryNode = [];
         this.externalFilters = [];
         this.nodeFiltered = [];
         this.popOut = [];
@@ -24,6 +25,7 @@
         this.getspecificGroupList(this.options.CustomOptions['specificGroup']);        
         this.getPopOutList(this.options.CustomOptions['popOutList']);
         this.getHiddenNodeList(this.options.CustomOptions['hidden-nodes']);
+        this.getComplementaryNodeList(this.options.CustomOptions['complementaryNode']);
         this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);
         this.getdirectionList(this.options.CustomOptions['arrowDirection']);
         this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
@@ -121,6 +123,21 @@
                 if(optionList[i] !== "") {
                     var optionSplit = optionList[i].split(",");
                     this.specificGroup[optionSplit[0]] = optionSplit[1];
+                }
+            }
+        }
+    };
+
+
+
+    cwLayoutNetwork.prototype.getComplementaryNodeList = function(options) {
+        if(options) {
+
+            var optionList = options.split(",");
+            var optionSplit;
+            for (var i = 0; i < optionList.length; i += 1) {
+                if(optionList[i] !== "") {
+                    this.complementaryNode.push(optionList[i]);
                 }
             }
         }
@@ -277,9 +294,19 @@
     // obligatoire appeler par le system
     cwLayoutNetwork.prototype.drawAssociations = function (output, associationTitleText, object) {
         this.originalObject  = $.extend({}, object);
-        var simplifyObject ;
-        var assoNode = {};
+        var simplifyObject, i, assoNode = {} ;
+        // keep the node of the layout
         assoNode[this.mmNode.NodeID] = object.associations[this.mmNode.NodeID];
+        // complmentary node
+        this.complementaryNode.forEach(function(nodeID) {
+			if(object.associations[nodeID]) {
+        		assoNode[nodeID] = object.associations[nodeID];
+        	}
+        });
+
+
+
+
         this.originalObject.associations = assoNode;     
         var simplifyObject = this.simplify(this.originalObject);
         if(!cwAPI.isIndexPage()) {
