@@ -805,7 +805,7 @@
 
     cwLayoutNetwork.prototype.openPopOutFromEdge = function(id,scriptname) {
         var object = this.lookForObjects(id,scriptname,this.originalObject);
-        if(this.popOut[scriptname]) {
+        if(this.popOut[scriptname + "_edge"]) {
             cwApi.cwDiagramPopoutHelper.openDiagramPopout(object,this.popOut[scriptname + "_edge"]);
         }
     };
