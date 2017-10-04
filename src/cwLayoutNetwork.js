@@ -523,7 +523,15 @@
             if(params.hasOwnProperty('nodes') && params.nodes.length === 1) {
                 var split = params.nodes[0].split("#");
                 self.openPopOut(split[0],split[1]);
-            }
+            } else if(params.hasOwnProperty('edges') && params.edges.length === 1) {
+                var edge = self.edges.get(params.edges[0]);
+                var from = edge.from.split("#");
+                var to = edge.to.split("#");
+                self.openPopOutFromEdge(from[0],from[1]);
+
+                if(cwApi.customLibs.popWorldMap === undefined) cwApi.customLibs.popWorldMap = {};
+                cwApi.customLibs.popWorldMap.to = to;
+            };
         });
         this.networkUI.on("doubleClick", function (params) {
             if(params.hasOwnProperty('nodes') && params.nodes.length === 1) {
@@ -789,14 +797,18 @@
     };
 
     cwLayoutNetwork.prototype.openPopOut = function(id,scriptname) {
-
         var object = this.lookForObjects(id,scriptname,this.originalObject);
         if(this.popOut[scriptname]) {
             cwApi.cwDiagramPopoutHelper.openDiagramPopout(object,this.popOut[scriptname]);
         }
     };
 
-
+    cwLayoutNetwork.prototype.openPopOutFromEdge = function(id,scriptname) {
+        var object = this.lookForObjects(id,scriptname,this.originalObject);
+        if(this.popOut[scriptname]) {
+            cwApi.cwDiagramPopoutHelper.openDiagramPopout(object,this.popOut[scriptname + "_edge"]);
+        }
+    };
 
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;
 }(cwAPI, jQuery));
