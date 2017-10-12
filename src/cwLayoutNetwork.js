@@ -316,6 +316,7 @@
         this.network = new cwApi.customLibs.cwLayoutNetwork.network();
         this.network.searchForNodesAndEdges(simplifyObject);
         output.push('<div id="cwLayoutNetwork' + this.nodeID + '">');
+        output.push('<div class="cwLayoutNetworkLegend" id="cwLayoutNetworkLegend' + this.nodeID + '"></div>');
         output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');
         output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
         this.object = this.originalObject.associations;
@@ -423,7 +424,7 @@
         // Adding filter for all selector group
         for (ObjectTypeNode in objectTypeNodes) {
             if (objectTypeNodes.hasOwnProperty(ObjectTypeNode)) {
-                filterContainer.appendChild(objectTypeNodes[ObjectTypeNode].getFilterObject(this.nodeID));
+                filterContainer.appendChild(objectTypeNodes[ObjectTypeNode].getFilterObject(this.nodeID,this.groupsArt));
                 i = i + 1;
             }
         }

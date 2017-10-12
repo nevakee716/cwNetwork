@@ -56,20 +56,19 @@
     };
 
 
-    objectTypeNode.prototype.getFilterObject = function (nodeID) {
+    objectTypeNode.prototype.getFilterObject = function (nodeID,groups) {
         var filterObject;
         var object;
         var node;
 
         filterObject = document.createElement("select");
         filterObject.setAttribute('multiple','');
-        filterObject.setAttribute('title',this.label);
+        filterObject.setAttribute('title',this.label + this.getLegendElement(groups[this.label]));
         filterObject.setAttribute('data-live-search','true');
         filterObject.setAttribute('data-selected-text-format','static');
         filterObject.setAttribute('data-actions-box','true');
         filterObject.setAttribute('data-size','10');
         filterObject.className = "selectNetworkPicker_" + nodeID + " " + this.label.replaceAll(" ","_");
-
         filterObject.setAttribute('name',this.label);
         filterObject.setAttribute('id',this.label);
         filterObject.setAttribute('scriptname',this.scriptname);
@@ -83,6 +82,20 @@
         }
         return filterObject;
     };
+
+    objectTypeNode.prototype.getLegendElement = function (group) {
+        if(group.shape == "icon") {
+            var htmltxt = "";
+            htmltxt += '<i class="fa"';
+            if(group.icon.color === undefined) htmltxt += 'style="color : black">';  
+            else htmltxt += 'style="color : ' + group.icon.color + '">';        
+            htmltxt += group.icon.code;
+            htmltxt += '</i>';  
+            return htmltxt;         
+        }
+        return;
+    };
+
 
     objectTypeNode.prototype.SetAllAndGetNodesObject = function (state) {
         var nodeVisData;
