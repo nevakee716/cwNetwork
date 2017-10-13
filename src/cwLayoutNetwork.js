@@ -316,8 +316,8 @@
         this.network = new cwApi.customLibs.cwLayoutNetwork.network();
         this.network.searchForNodesAndEdges(simplifyObject);
         output.push('<div id="cwLayoutNetwork' + this.nodeID + '">');
-        output.push('<div class="cwLayoutNetworkLegend" id="cwLayoutNetworkLegend' + this.nodeID + '"></div>');
         output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');
+        output.push('<div class="bootstrap-iso" id="cwLayoutNetworkSearch' + this.nodeID + '"></div>');
         output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
         this.object = this.originalObject.associations;
     };
@@ -389,6 +389,7 @@
 
         var networkContainer = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
         var filterContainer = document.getElementById("cwLayoutNetworkFilter" + this.nodeID);
+        var searchContainer = document.getElementById("cwLayoutNetworkSearch" + this.nodeID);        
         var objectTypeNodes = this.network.getObjectTypeNodes();
         var ObjectTypeNode,externalfilter;
         var mutex= true;
@@ -438,13 +439,17 @@
             }
         }
 
+        // Adding filter search
+        searchContainer.appendChild(this.network.getSearchFilterObject(this.nodeID));
+                
 
         // Adding filter options
         //filterContainer.appendChild(this.network.getFilterOptions());
         //give bootstrap select to filter
         $('.selectNetworkPicker_' + this.nodeID).selectpicker(); 
         $('.selectNetworkExternal_' + this.nodeID).selectpicker(); 
-     
+        $('.selectNetworkSearch_' + this.nodeID).selectpicker(); 
+
         // set height
         // var canvaHeight = window.innerHeight - networkContainer.getBoundingClientRect().top;
         var canvaHeight  = window.innerHeight - document.getElementsByClassName("page-content")[0].offsetHeight - document.getElementsByClassName("page-title")[0].offsetHeight;
@@ -453,6 +458,7 @@
         // initialize your network!/*# sourceMappingURL=bootstrap.min.css.map */
         this.networkUI = new vis.Network(networkContainer, data, options);
         var self = this;
+
 
         // Event for filter
         // Network Node Selector
@@ -520,6 +526,28 @@
             }
         });
 
+        // Event for filter
+        // Network Node Selector
+        $('select.selectNetworkSearch_' + this.nodeID).on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+            if(mutex) { 
+                var changeSet,id,nodeId,i;
+                var groupArray = {};
+                if(clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
+                    id = $(this).context[clickedIndex]['id'];
+                    var options = {
+                      position: self.networkUI.getPositions()[id],
+                      scale: 2,
+                      offset: {x:0,y:0},
+                      animation: true // default duration is 1000ms and default easingFunction is easeInOutQuad.
+                    };
+                    self.networkUI.moveTo(options);
+                    options = {"nodes": [id]};
+                    self.networkUI.setSelection(options);
+                } 
+                $(this).selectpicker('val',"" ); 
+            }
+        });
+
         this.networkUI.on("click", function (params) {
             if(params.hasOwnProperty('nodes') && params.nodes.length === 1) {
                 var split = params.nodes[0].split("#");
@@ -547,14 +575,40 @@
         networkContainer.addEventListener('AddAllNodesFrom', this.AddAllNodesFrom.bind(this)); 
         networkContainer.addEventListener('AddAllNodesTo', this.AddAllNodesTo.bind(this)); 
 
+        // fill the search filter
+        data.nodes.on("add", this.addSearchFilterElement.bind(this));
+        data.nodes.on("remove", this.removeSearchFilterElement.bind(this));
+
         // Activate Starting groups
         this.activateStartingGroup();
+
     };
 
 
+    // Adding element to the search filter
+    cwLayoutNetwork.prototype.addSearchFilterElement = function (event, properties, senderId) {
+        var self = this;
+        var html = "";
+        properties.items.forEach(function(elem) {
+            var node = self.nodes.get(elem);
+            html += "<option id=" + node.id + ">" + node.label + "</option>";
+        });
+        $('select.selectNetworkSearch_' + this.nodeID)
+            .append(html)
+            .selectpicker('refresh');
+    };
 
+    // Remove element to the search filter
+    cwLayoutNetwork.prototype.removeSearchFilterElement = function (event, properties, senderId) {
+        var self = this;
+        properties.oldData.forEach(function(elem) {
+            $('select.selectNetworkSearch_' + self.nodeID)
+                .find('[id="' + elem.id +'"]').remove();
+        });       
+        $('select.selectNetworkSearch_' + self.nodeID).selectpicker('refresh');
+    };
 
-// Adding group at start
+    // Adding group at start
     cwLayoutNetwork.prototype.activateStartingGroup = function (event) {
     	var self = this;
         this.groupToSelectOnStart.forEach(function(group) {

@@ -63,7 +63,7 @@
 
         filterObject = document.createElement("select");
         filterObject.setAttribute('multiple','');
-        filterObject.setAttribute('title',this.label + this.getLegendElement(groups[this.label]));
+        filterObject.setAttribute('title',this.label + " " + this.getLegendElement(groups[this.label]));
         filterObject.setAttribute('data-live-search','true');
         filterObject.setAttribute('data-selected-text-format','static');
         filterObject.setAttribute('data-actions-box','true');

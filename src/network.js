@@ -228,44 +228,20 @@
         this.option[option] = false;        
     };
 
-    network.prototype.getFilterOptions = function () {
+    network.prototype.getSearchFilterObject = function (nodeID) {
 
-      var filterObject;
+        var filterObject;
         var option,optgroup;
 
         filterObject = document.createElement("select");
-        filterObject.setAttribute('title','Options');
-        filterObject.setAttribute('multiple','');
+        filterObject.setAttribute('title','<i style="color : black" class="fa fa-search" aria-hidden="true"></i> Focus On');
         filterObject.setAttribute('data-selected-text-format','static');
         filterObject.setAttribute('data-size','10');
-        filterObject.className = "selectNetworkOptions";
-        optgroup = document.createElement("optgroup");
-        optgroup.setAttribute('label','Impact Range');  
-        optgroup.setAttribute('data-max-options','1');
-        option = document.createElement("option");
-        option.setAttribute('id',"none");
-        option.textContent = "None";
-        optgroup.appendChild(option); 
-        option = document.createElement("option");
-        option.setAttribute('id',"rangeMin");
-        option.textContent = "Minimum";
-        optgroup.appendChild(option); 
-        option = document.createElement("option");
-        option.setAttribute('id',"rangeMax");
-        option.textContent = "Maximum";
-        optgroup.appendChild(option);                                                                                                                                                                                                                                                                                                                                                                                                    
-        filterObject.appendChild(optgroup);
-        optgroup = document.createElement("optgroup");
-        optgroup.setAttribute('label','Direction');       
-        option = document.createElement("option");
-        option.setAttribute('id',"ImpactFrom");
-        option.textContent = "from";
-        optgroup.appendChild(option); 
-        option = document.createElement("option");
-        option.setAttribute('id',"ImpactTo");
-        option.textContent = "to";
-        optgroup.appendChild(option);                                                                                                                                                                                                                                                                                                                                                                                    
-        filterObject.appendChild(optgroup); 
+        filterObject.setAttribute('data-live-search','true');
+        filterObject.setAttribute('data-selected-text-format','static');
+        filterObject.setAttribute('data-size','10');
+
+        filterObject.className = "selectNetworkSearch_" + nodeID;
         return filterObject;
 
     };
@@ -285,7 +261,7 @@
         for (objectType in this.objectTypeNodes) {
             if (this.objectTypeNodes.hasOwnProperty(objectType)) {
                 object = document.createElement("option");
-                object.setAttribute('id',this.objectTypeNodes[objectType].label.replaceAll(" ","_"));
+                object.setAttribute('value',this.objectTypeNodes[objectType].label.replaceAll(" ","_"));
                 object.textContent = this.objectTypeNodes[objectType].label;
                 filterObject.appendChild(object);       
             }
