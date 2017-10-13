@@ -84,7 +84,7 @@
     };
 
     objectTypeNode.prototype.getLegendElement = function (group) {
-        if(group.shape == "icon") {
+        if(group && group.shape == "icon") {
             var htmltxt = "";
             htmltxt += '<i class="fa"';
             if(group.icon.color === undefined) htmltxt += 'style="color : black">';  
@@ -93,7 +93,7 @@
             htmltxt += '</i>';  
             return htmltxt;         
         }
-        return;
+        return "";
     };
 
 

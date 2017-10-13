@@ -1,10 +1,14 @@
 | **Name** | **cwLayoutNetwork** | **Version** | 
 | --- | --- | --- |
-| **Updated by** | Mathias PFAUWADEL | 3.1 |
+| **Updated by** | Mathias PFAUWADEL | 3.5 |
 
 
 ## Patch Notes
 
+* 3.5 : Adding Legend (only for fontawesome icon)
+* 3.4 : Working with the LayoutMap
+* 3.3 : Adding Complementary Item
+* 3.2 : Can be display in a tab for objectPage and Indexpage
 * 3.1 : Correct double item, adding shape option, correct edge color
 * 3.0 : RightClick, Highlight by External, merging (with bigger size) arrow if several associations
 * 2.0 : Adding group, icon, Impact, globalFilter, arrow
@@ -30,15 +34,7 @@ You can use filter to choose which item to display
 
 ## Node setup
 
-### On indexPage
-
 <img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/2.jpg" alt="Drawing" style="width: 95%;"/>
-
-### On ObjectPage With the Object of the object Page on the network
-
-<img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/2.png" alt="Drawing" style="width: 95%;"/>
-
-The network layout should be use alone in a view.
 
 ## Options
 
@@ -95,6 +91,12 @@ For exemple : entite_20022_1066555881:Entity Filter
 (Can be use for application flux See exemples below)
 
 PS : the filter node should always be in first
+
+### Complementary Node :
+
+If you want to add a side Node, use this option
+For exemple, if you are on the objectPage of an application, you want to display sent and received flux.
+Put the network under the associationNode of the sent flux, then add the node id of the received flux in this option. Use comma as a splitter
 
 ## RightClick Action
 
