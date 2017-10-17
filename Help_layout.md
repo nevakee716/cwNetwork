@@ -1,10 +1,11 @@
 | **Name** | **cwLayoutNetwork** | **Version** | 
 | --- | --- | --- |
-| **Updated by** | Mathias PFAUWADEL | 3.5 |
+| **Updated by** | Mathias PFAUWADEL | 3.6 |
 
 
 ## Patch Notes
 
+* 3.6 : Adding Focus on (that all you to zoom on a node of the network)
 * 3.5 : Adding Legend (only for fontawesome icon)
 * 3.4 : Working with the LayoutMap
 * 3.3 : Adding Complementary Item
@@ -97,6 +98,13 @@ PS : the filter node should always be in first
 If you want to add a side Node, use this option
 For exemple, if you are on the objectPage of an application, you want to display sent and received flux.
 Put the network under the associationNode of the sent flux, then add the node id of the received flux in this option. Use comma as a splitter
+
+## Focus On
+
+<img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/focusOn.png" alt="Drawing" style="width: 95%;"/>
+
+This menu allow you to zoom on a object prevent on the network, it will go to his position, zoom on it, and select it.
+
 
 ## RightClick Action
 
