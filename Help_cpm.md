@@ -34,11 +34,14 @@ Follow the following steps to add a custom layout to evolve
 
 * via windows command go in C:\Casewise\Evolve\Site\bin or the corresponding installation folder of Evolve by typing cd C:\Casewise\Evolve\Site\bin
 * if it's the 1st time you use cpm install
+  * Remove the file C:\Casewise\Evolve\Site\bin\evolve.json
   * type cpm --install
   * then change the version of evolve in C:\Casewise\Evolve\Site\bin\evolve.json to match your evolve
 * Type : cpm --install Layout_Name (this will install the layout into Marketplace/libs)
 * Type : cpm --install (this will update your existing layouts and list the layouts availables)
 * if there is a problem delete evolve.json 
+
+The C:\Casewise\Evolve\Site\bin\evolve.json containes now all of your layout, if you migrates, you can copy the this file, then execute cpm --install on your new plateform, and it will install all of your layout
 
 # Install Custom Layout (Offline Installation)
 
