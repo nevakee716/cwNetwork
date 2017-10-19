@@ -607,8 +607,12 @@
                 $('.cwloading').hide(); 
                         // set height
                 // var canvaHeight = window.innerHeight - networkContainer.getBoundingClientRect().top;
-                var canvaHeight  = window.innerHeight - document.getElementsByClassName("page-content")[0].offsetHeight - document.getElementsByClassName("page-title")[0].offsetHeight;
+                var react = searchContainer.getBoundingClientRect();
+                var canvaHeight  = window.innerHeight - react.bottom;
                 networkContainer.setAttribute('style','height:' + canvaHeight + 'px');
+
+                
+
                 addStyleString('.bootstrap-iso .bootstrap-select.btn-group .dropdown-menu {max-height: ' + canvaHeight + 'px !important;}');
             }, 1000);
 
