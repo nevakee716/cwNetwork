@@ -454,12 +454,12 @@
 
 
         // set height
-        // var canvaHeight = window.innerHeight - networkContainer.getBoundingClientRect().top;
-        var canvaHeight  = window.innerHeight - document.getElementsByClassName("page-content")[0].offsetHeight - document.getElementsByClassName("page-title")[0].offsetHeight;
+        var titleReact = document.querySelector(".page-title").getBoundingClientRect();
+        var searchReact = searchContainer.getBoundingClientRect();
+        var filterReact = filterContainer.getBoundingClientRect();                
+        var canvaHeight  = window.innerHeight - titleReact.height - searchReact.height - filterReact.height;
         networkContainer.setAttribute('style','height:' + canvaHeight + 'px');
-        addStyleString('.bootstrap-iso .bootstrap-select.btn-group .dropdown-menu {max-height: ' + canvaHeight + 'px !important;}');
         
-
         var self = this;
 
 
@@ -537,7 +537,7 @@
         });
 
         // Event for filter
-        // Network Node Selector
+        // Move On a Node
         $('select.selectNetworkSearch_' + this.nodeID).on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
             if(mutex) { 
                 var changeSet,id,nodeId,i;
@@ -551,6 +551,7 @@
                       animation: true // default duration is 1000ms and default easingFunction is easeInOutQuad.
                     };
                     self.networkUI.moveTo(options);
+                    self.networkUI.fit();
                     options = {"nodes": [id]};
                     self.networkUI.setSelection(options);
                 } 
@@ -603,17 +604,8 @@
             window.setTimeout(function (params) {
                 self.networkUI.fit();
                 self.networkUI.removeEventListener("startStabilizing");
-                networkContainer.style["visibility"] = "visible";
-                $('.cwloading').hide(); 
-                        // set height
-                // var canvaHeight = window.innerHeight - networkContainer.getBoundingClientRect().top;
-                var react = searchContainer.getBoundingClientRect();
-                var canvaHeight  = window.innerHeight - react.bottom;
-                networkContainer.setAttribute('style','height:' + canvaHeight + 'px');
-
-                
-
-                addStyleString('.bootstrap-iso .bootstrap-select.btn-group .dropdown-menu {max-height: ' + canvaHeight + 'px !important;}');
+                //networkContainer.style["visibility"] = "visible";
+                //$('.cwloading').hide(); 
             }, 1000);
 
           });
@@ -621,9 +613,11 @@
  
 
         this.networkUI.on("startStabilizing", function (params) {
-            $('.cwloading').show(); 
-            networkContainer.style["visibility"] = "hidden";
+            //$('.cwloading').show(); 
+            //networkContainer.style["visibility"] = "hidden";
         });
+
+
 
     };
 
