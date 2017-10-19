@@ -1,10 +1,11 @@
 | **Name** | **cwLayoutNetwork** | **Version** | 
 | --- | --- | --- |
-| **Updated by** | Mathias PFAUWADEL | 3.6 |
+| **Updated by** | Mathias PFAUWADEL | 3.7 |
 
 
 ## Patch Notes
 
+* 3.7 : Network is now correctly zoom at start 
 * 3.6 : Adding Focus on (that all you to zoom on a node of the network)
 * 3.5 : Adding Legend (only for fontawesome icon)
 * 3.4 : Working with the LayoutMap
