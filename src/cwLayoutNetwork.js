@@ -382,6 +382,7 @@
 // Building network
     cwLayoutNetwork.prototype.createNetwork = function () {  
 
+    
         function addStyleString(str) {
             var node = document.createElement('style');
             node.innerHTML = str;
@@ -418,7 +419,7 @@
                 barnesHut: {
                   springLength: 130
                 },
-                minVelocity: 0.75
+                minVelocity: 0.75,
             }
         };
 
@@ -451,13 +452,14 @@
         $('.selectNetworkExternal_' + this.nodeID).selectpicker(); 
         $('.selectNetworkSearch_' + this.nodeID).selectpicker(); 
 
+
         // set height
         // var canvaHeight = window.innerHeight - networkContainer.getBoundingClientRect().top;
         var canvaHeight  = window.innerHeight - document.getElementsByClassName("page-content")[0].offsetHeight - document.getElementsByClassName("page-title")[0].offsetHeight;
         networkContainer.setAttribute('style','height:' + canvaHeight + 'px');
         addStyleString('.bootstrap-iso .bootstrap-select.btn-group .dropdown-menu {max-height: ' + canvaHeight + 'px !important;}');
-        // initialize your network!/*# sourceMappingURL=bootstrap.min.css.map */
-        this.networkUI = new vis.Network(networkContainer, data, options);
+        
+
         var self = this;
 
 
@@ -481,7 +483,7 @@
                         self.network.show(id,group);
                         changeSet = self.network.getVisNode(id,group); // get all the node self should be put on
                         nodes.add(changeSet); // adding nodes into network
-                        self.networkUI.selectNodes([changeSet[0].id]); //select the origin node
+                        //self.networkUI.selectNodes([changeSet[0].id]); //select the origin node
                     }
                 } else {  // select or deselect all node
                     if($(this).context[0]) {
@@ -491,7 +493,9 @@
                         } else {
                             nodes.remove(changeSet);
                         }
-                        self.colorAllEdges(nodes,edges); // on recolorise tous les noeuds
+                        if(self.networkUI) {
+                            self.colorAllEdges(nodes,edges); // on recolorise tous les noeuds
+                        }
                         self.setExternalFilterToNone(); 
                     }
                 }
@@ -518,11 +522,16 @@
                     nodesToHighlight.forEach(function(node) {
                         idsToHighlight.push(node.object_id + "#" + node.objectTypeScriptName);
                     });
-                    self.colorNodes(nodes,idsToHighlight);
-                    self.colorEdges(nodes,edges,idsToHighlight);
+                    if(self.networkUI) {
+                        self.colorNodes(nodes,idsToHighlight);
+                        self.colorEdges(nodes,edges,idsToHighlight);
+                    }
                 } else {
-                    self.colorAllNodes(nodes);
-                    self.colorAllEdges(nodes,edges); 
+                    if(self.networkUI) {
+                        self.colorAllNodes(nodes);
+                        self.colorAllEdges(nodes,edges);                        
+                    }
+
                 }
             }
         });
@@ -549,6 +558,25 @@
             }
         });
 
+       
+
+        // fill the search filter
+        data.nodes.on("add", this.addSearchFilterElement.bind(this));
+        data.nodes.on("remove", this.removeSearchFilterElement.bind(this));
+
+        // Activate Starting groups
+        this.activateStartingGroup();
+
+        // initialize your network!/*# sourceMappingURL=bootstrap.min.css.map */
+        this.networkUI = new vis.Network(networkContainer, data, options);
+
+        // Creation du menu et binding
+        this.createMenu(networkContainer);
+        networkContainer.addEventListener('AddClosesNodes', this.AddClosesNodes.bind(this));  
+        networkContainer.addEventListener('AddAllNodesFrom', this.AddAllNodesFrom.bind(this)); 
+        networkContainer.addEventListener('AddAllNodesTo', this.AddAllNodesTo.bind(this)); 
+
+        // Interaction Click
         this.networkUI.on("click", function (params) {
             if(params.hasOwnProperty('nodes') && params.nodes.length === 1) {
                 var split = params.nodes[0].split("#");
@@ -570,18 +598,23 @@
             }
         });
 
-        // Creation du menu et binding
-        this.createMenu(networkContainer);
-        networkContainer.addEventListener('AddClosesNodes', this.AddClosesNodes.bind(this));  
-        networkContainer.addEventListener('AddAllNodesFrom', this.AddAllNodesFrom.bind(this)); 
-        networkContainer.addEventListener('AddAllNodesTo', this.AddAllNodesTo.bind(this)); 
+        var stop = false;
+        this.networkUI.on("stabilizationIterationsDone", function () {
+                window.setTimeout(function (params) {
+                self.networkUI.fit();
+                self.networkUI.removeEventListener("startStabilizing");
+                networkContainer.style["visibility"] = "visible";
+                $('.cwloading').hide(); 
+            }, 1000);
 
-        // fill the search filter
-        data.nodes.on("add", this.addSearchFilterElement.bind(this));
-        data.nodes.on("remove", this.removeSearchFilterElement.bind(this));
+          });
 
-        // Activate Starting groups
-        this.activateStartingGroup();
+ 
+
+        this.networkUI.on("startStabilizing", function (params) {
+            $('.cwloading').show(); 
+            networkContainer.style["visibility"] = "hidden";
+        });
 
     };
 
