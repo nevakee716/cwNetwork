@@ -600,11 +600,16 @@
 
         var stop = false;
         this.networkUI.on("stabilizationIterationsDone", function () {
-                window.setTimeout(function (params) {
+            window.setTimeout(function (params) {
                 self.networkUI.fit();
                 self.networkUI.removeEventListener("startStabilizing");
                 networkContainer.style["visibility"] = "visible";
                 $('.cwloading').hide(); 
+                        // set height
+                // var canvaHeight = window.innerHeight - networkContainer.getBoundingClientRect().top;
+                var canvaHeight  = window.innerHeight - document.getElementsByClassName("page-content")[0].offsetHeight - document.getElementsByClassName("page-title")[0].offsetHeight;
+                networkContainer.setAttribute('style','height:' + canvaHeight + 'px');
+                addStyleString('.bootstrap-iso .bootstrap-select.btn-group .dropdown-menu {max-height: ' + canvaHeight + 'px !important;}');
             }, 1000);
 
           });
