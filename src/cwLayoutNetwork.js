@@ -551,7 +551,7 @@
                       animation: true // default duration is 1000ms and default easingFunction is easeInOutQuad.
                     };
                     self.networkUI.moveTo(options);
-                    self.networkUI.fit();
+                    
                     options = {"nodes": [id]};
                     self.networkUI.setSelection(options);
                 } 
