@@ -31,6 +31,9 @@
         this.getdirectionList(this.options.CustomOptions['arrowDirection']);
         this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
         this.getExternalFilterNodes(true,this.options.CustomOptions['filterNode']);
+
+        this.clusterOption = false;
+        this.physicsOption = false;
     };
 
 
@@ -320,8 +323,8 @@
 
         output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');
         output.push('<div class="bootstrap-iso" id="cwLayoutNetworkAction' + this.nodeID + '">');
-        output.push('<button id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '"> Disable Physics</button>');
-        output.push('<button id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
+        if(this.clusterOption) output.push('<button id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '"> Disable Physics</button>');
+        if(this.physicsOption) output.push('<button id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
         output.push('</div>');
         output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
         this.object = this.originalObject.associations;
@@ -573,10 +576,15 @@
 
        
         // Action for button
-        var physicsButton = document.getElementById("cwLayoutNetworkButtonsPhysics" + this.nodeID);
-        var clusterButton = document.getElementById("cwLayoutNetworkButtonsCluster" + this.nodeID);       
-        physicsButton.addEventListener('click', this.stopPhysics.bind(this)); 
-        clusterButton.addEventListener('click', this.clusterByHubsize.bind(this)); 
+        if(this.clusterOption) {
+            var clusterButton = document.getElementById("cwLayoutNetworkButtonsCluster" + this.nodeID); 
+            clusterButton.addEventListener('click', this.clusterByHubsize.bind(this));              
+        }
+        if(this.physicsOption)
+            var physicsButton = document.getElementById("cwLayoutNetworkButtonsPhysics" + this.nodeID);
+            physicsButton.addEventListener('click', this.stopPhysics.bind(this)); 
+        }
+ 
 
         // fill the search filter
         data.nodes.on("add", this.addSearchFilterElement.bind(this));
