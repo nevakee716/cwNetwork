@@ -21,6 +21,7 @@
         this.objects = {};
         this.layoutsByNodeId = {};
         this.init = true;
+        this.clustered = false;
         this.multiLineCount = this.options.CustomOptions['multiLineCount'];
         this.getspecificGroupList(this.options.CustomOptions['specificGroup']);        
         this.getPopOutList(this.options.CustomOptions['popOutList']);
@@ -318,21 +319,28 @@
         else output.push('<div id="cwLayoutNetwork' + this.nodeID + '">');
 
         output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');
-        output.push('<div class="bootstrap-iso" id="cwLayoutNetworkSearch' + this.nodeID + '"></div>');
+        output.push('<div class="bootstrap-iso" id="cwLayoutNetworkAction' + this.nodeID + '">');
+        output.push('<button id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '"> Disable Physics</button>');
+        output.push('<button id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
+        output.push('</div>');
         output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
         this.object = this.originalObject.associations;
     };
 
     cwLayoutNetwork.prototype.addObjectOfObjectPage = function (simplifyObject,object) {
-        var element = {}; 
+        var rootID,element = {}; 
         element.name = this.multiLine(this.getItemDisplayString(object),this.multiLineCount);
         element.object_id = object.object_id;
         element.objectTypeScriptName = object.objectTypeScriptName;
 
+        if(this.viewSchema.rootID && this.viewSchema.rootID.length > 0) {
+            rootID = this.viewSchema.rootID[0];
+        }
+
         // on check si l'element appartient deja a un group
         if(!this.objects.hasOwnProperty(element.object_id + "#" + element.objectTypeScriptName)) {
-            if(this.specificGroup.hasOwnProperty(this.nodeID)) { // mise en place du groupe
-                element.group = this.specificGroup[this.nodeID];
+            if(this.specificGroup.hasOwnProperty(rootID)) { // mise en place du groupe
+                element.group = this.specificGroup[rootID];
             } else {
                 element.group = cwAPI.mm.getObjectType(object.objectTypeScriptName).name;                           
             }
@@ -340,8 +348,8 @@
         } else {
             element.group = this.objects[element.object_id + "#" + element.objectTypeScriptName];
         }
-          if(this.directionList.hasOwnProperty(this.nodeID)) { // ajout de la direction
-            element.direction = this.directionList[this.nodeID];
+          if(this.directionList.hasOwnProperty(rootID)) { // ajout de la direction
+            element.direction = this.directionList[rootID];
         }
         element.children = simplifyObject;
 
@@ -391,7 +399,7 @@
 
         var networkContainer = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
         var filterContainer = document.getElementById("cwLayoutNetworkFilter" + this.nodeID);
-        var searchContainer = document.getElementById("cwLayoutNetworkSearch" + this.nodeID);        
+        var actionContainer = document.getElementById("cwLayoutNetworkAction" + this.nodeID);        
         var objectTypeNodes = this.network.getObjectTypeNodes();
         var ObjectTypeNode,externalfilter;
         var mutex= true;
@@ -402,7 +410,7 @@
         var x = - networkContainer.clientWidth / 2 + 70;
         var y = - networkContainer.clientHeight / 2 + 150;
         var step = 70;
-        
+
         // provide the data in the vis format
         var nodes = new vis.DataSet(); //this.network.getVisNodes());
         var edges = new vis.DataSet(this.network.getVisEdges()); //this.network.getVisEdges());
@@ -420,6 +428,9 @@
                   springLength: 130
                 },
                 minVelocity: 0.75,
+            },
+            interaction: {
+                keyboard: true
             }
         };
 
@@ -442,8 +453,8 @@
         }
 
         // Adding filter search
-        searchContainer.appendChild(this.network.getSearchFilterObject(this.nodeID));
-                
+        actionContainer.insertBefore(this.network.getSearchFilterObject(this.nodeID),actionContainer.firstChild);
+
 
         // Adding filter options
         //filterContainer.appendChild(this.network.getFilterOptions());
@@ -454,10 +465,11 @@
 
 
         // set height
-        var titleReact = document.querySelector(".page-title").getBoundingClientRect();
-        var searchReact = searchContainer.getBoundingClientRect();
+        var titleReact = document.querySelector(".page-title").getBoundingClientRect();        
+        var topBarReact = document.querySelector(".page-top").getBoundingClientRect();
+        var actionReact = actionContainer.getBoundingClientRect();
         var filterReact = filterContainer.getBoundingClientRect();                
-        var canvaHeight  = window.innerHeight - titleReact.height - searchReact.height - filterReact.height;
+        var canvaHeight  = window.innerHeight - titleReact.height - actionReact.height - filterReact.height - topBarReact.height;
         networkContainer.setAttribute('style','height:' + canvaHeight + 'px');
         
         var self = this;
@@ -560,6 +572,11 @@
         });
 
        
+        // Action for button
+        var physicsButton = document.getElementById("cwLayoutNetworkButtonsPhysics" + this.nodeID);
+        var clusterButton = document.getElementById("cwLayoutNetworkButtonsCluster" + this.nodeID);       
+        physicsButton.addEventListener('click', this.stopPhysics.bind(this)); 
+        clusterButton.addEventListener('click', this.clusterByHubsize.bind(this)); 
 
         // fill the search filter
         data.nodes.on("add", this.addSearchFilterElement.bind(this));
@@ -580,8 +597,12 @@
         // Interaction Click
         this.networkUI.on("click", function (params) {
             if(params.hasOwnProperty('nodes') && params.nodes.length === 1) {
-                var split = params.nodes[0].split("#");
-                self.openPopOut(split[0],split[1]);
+                if (self.networkUI.isCluster(params.nodes[0]) == true) {
+                    self.networkUI.openCluster(params.nodes[0]);
+                } else {
+                    var split = params.nodes[0].split("#");
+                    self.openPopOut(split[0],split[1]);
+                }
             } else if(params.hasOwnProperty('edges') && params.edges.length === 1) {
                 var edge = self.edges.get(params.edges[0]);
                 var from = edge.from.split("#");
@@ -654,9 +675,63 @@
     };
 
 
+    cwLayoutNetwork.prototype.stopPhysics = function (event) {
+        if(this.networkUI.physics.physicsEnabled == true) {
+            this.networkUI.physics.physicsEnabled = false;
+            event.target.innerHTML = "Enable Physics";
+        }
+        else {
+            this.networkUI.physics.physicsEnabled = true;
+            event.target.innerHTML = "Disable Physics";
+        }
+    };
+
+
+
+    cwLayoutNetwork.prototype.clusterByHubsize = function(event) {
+        var maxConnected = 15;
+        var data = {
+            nodes: this.nodes,
+            edges: this.edges
+        };
+        var self = this;
+
+        this.networkUI.setData(data);
+        var clusterOptionsByData = {
+            processProperties: function(clusterOptions, childNodes) {
+                var totalMass = 0;
+                var label = "";
+                for (var i = 0; i < childNodes.length; i++) {
+                    totalMass += childNodes[i].mass;
+                    label += childNodes[i].label + "\n";
+                }
+                
+                clusterOptions.mass = totalMass;
+
+                clusterOptions.label = label;
+                return clusterOptions;
+            },
+            joinCondition: function(nodeOptions,childNodeOptions) {
+                if(childNodeOptions.amountOfConnections >= maxConnected) return true;
+                else return false;
+            },       
+            clusterNodeProperties: {borderWidth:3, shape:'database', font:{size:9},size : 200}
+        };
+        this.networkUI.clusterByHubsize(maxConnected, clusterOptionsByData);
+
+        if(this.network.clustered) {
+            event.target.innerHTML = "Open the clusters";
+            this.network.clustered = true;
+        } else {
+            event.target.innerHTML = "Cluster Nodes";
+            this.network.clustered = false;
+        }
+    };
+
+
+
 
 // dealing with adding node with the menu
-
     cwLayoutNetwork.prototype.AddClosesNodes = function (event) {
         var option = {};
         option.ImpactTo = true;
