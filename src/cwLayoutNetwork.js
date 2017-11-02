@@ -32,8 +32,8 @@
         this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
         this.getExternalFilterNodes(true,this.options.CustomOptions['filterNode']);
 
-        this.clusterOption = false;
-        this.physicsOption = false;
+        this.clusterOption = true  ;
+        this.physicsOption = true;
     };
 
 
@@ -580,12 +580,11 @@
             var clusterButton = document.getElementById("cwLayoutNetworkButtonsCluster" + this.nodeID); 
             clusterButton.addEventListener('click', this.clusterByHubsize.bind(this));              
         }
-        if(this.physicsOption)
+        if(this.physicsOption){
             var physicsButton = document.getElementById("cwLayoutNetworkButtonsPhysics" + this.nodeID);
             physicsButton.addEventListener('click', this.stopPhysics.bind(this)); 
         }
  
-
         // fill the search filter
         data.nodes.on("add", this.addSearchFilterElement.bind(this));
         data.nodes.on("remove", this.removeSearchFilterElement.bind(this));
@@ -621,6 +620,7 @@
                 cwApi.customLibs.popWorldMap.to = to;
             };
         });
+
         this.networkUI.on("doubleClick", function (params) {
             if(params.hasOwnProperty('nodes') && params.nodes.length === 1) {
                 var split = params.nodes[0].split("#");
@@ -636,8 +636,7 @@
                 //networkContainer.style["visibility"] = "visible";
                 //$('.cwloading').hide(); 
             }, 1000);
-
-          });
+        });
 
  
 
