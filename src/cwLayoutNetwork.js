@@ -722,7 +722,7 @@
                 if(childNodeOptions.amountOfConnections >= maxConnected) return true;
                 else return false;
             },       
-            clusterNodeProperties: {borderWidth:3, shape:'database', font:{size:9},size : 200}
+            clusterNodeProperties: {borderWidth:3, shape:'box', font:{size:9},size : 200}
         };
         this.networkUI.clusterByHubsize(maxConnected, clusterOptionsByData);
 
