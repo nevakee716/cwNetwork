@@ -162,16 +162,15 @@
             var uuidAsso = uuid + "_" + uuidChild;     
             var uuidAssoReverse = uuidChild + "_" + uuid;       
             if(!this.edges.hasOwnProperty(uuidAsso) && !this.edges.hasOwnProperty(uuidAssoReverse)) { // si aucun edge existe
-                if(child.direction === "'to'") {
-                    this.edges[uuidAsso] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid,uuidChild,object.object_id,child.object_id,object.group,child.group,child.direction);
+                if(child.direction === "to") {
+                    this.edges[uuidAsso] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid,uuidChild,object.object_id,child.object_id,object.group,child.group,child.direction,child.edge);
                 } else {
-                    this.edges[uuidAssoReverse] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid,uuidChild,object.object_id,child.object_id,object.group,child.group,child.direction);                   
+                    this.edges[uuidAssoReverse] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid,uuidChild,object.object_id,child.object_id,object.group,child.group,child.direction,child.edge);                   
                 }
-                
             } else if(this.edges.hasOwnProperty(uuidAsso)) { // si le edge existe déja 
-                this.edges[uuidAsso].addDirection(child.direction);
+                this.edges[uuidAsso].addEdgeElement(child.direction,child.edge);
             } else if(this.edges.hasOwnProperty(uuidAssoReverse)) { // si le edge reverse existe déja
-                this.edges[uuidAssoReverse].addDirection(child.direction,true);
+                this.edges[uuidAssoReverse].addEdgeElement(child.direction,child.edge,true);
             }
         }  
     };
