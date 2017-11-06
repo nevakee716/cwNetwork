@@ -33,7 +33,7 @@
         this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
         this.getExternalFilterNodes(true,this.options.CustomOptions['filterNode']);
         this.edgeOption = true;
-        this.clusterOption = true  ;
+        this.clusterOption = false;
         this.physicsOption = true;
     };
 
