@@ -326,8 +326,8 @@
 
         output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');
         output.push('<div class="bootstrap-iso" id="cwLayoutNetworkAction' + this.nodeID + '">');
-        if(this.clusterOption) output.push('<button id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '"> Disable Physics</button>');
-        if(this.physicsOption) output.push('<button id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
+        if(this.physicsOption) output.push('<button id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '"> Disable Physics</button>');
+        if(this.clusterOptions) output.push('<button id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
         if(this.edgeOption) output.push('<button id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '"> Unzip Edges</button>');
         output.push('</div>');
         output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
