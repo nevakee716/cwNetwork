@@ -32,7 +32,7 @@
         this.getdirectionList(this.options.CustomOptions['arrowDirection']);
         this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
         this.getExternalFilterNodes(true,this.options.CustomOptions['filterNode']);
-
+        this.edgeOption = true;
         this.clusterOption = true  ;
         this.physicsOption = true;
     };
@@ -328,7 +328,7 @@
         output.push('<div class="bootstrap-iso" id="cwLayoutNetworkAction' + this.nodeID + '">');
         if(this.clusterOption) output.push('<button id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '"> Disable Physics</button>');
         if(this.physicsOption) output.push('<button id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
-        if(this.clusterOption) output.push('<button id="cwLayoutNetworkButtonsMergeEdge' + this.nodeID + '"> UnMerge Edges</button>');
+        if(this.edgeOption) output.push('<button id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '"> Unzip Edges</button>');
         output.push('</div>');
         output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
         this.object = this.originalObject.associations;
@@ -428,7 +428,7 @@
             nodes: nodes,
             edges: edges
         };
-        var options = {
+        this.networkOptions = {
             groups : this.groupsArt,
             physics: {
                 barnesHut: {
@@ -589,9 +589,9 @@
             physicsButton.addEventListener('click', this.stopPhysics.bind(this)); 
         }
 
-        if(this.clusterOption){
-            var mergeEdgeButton = document.getElementById("cwLayoutNetworkButtonsMergeEdge" + this.nodeID);
-            mergeEdgeButton.addEventListener('click', this.edgeZipButtonAction.bind(this)); 
+        if(this.edgeOption){
+            var zipEdgeButton = document.getElementById("cwLayoutNetworkButtonsZipEdge" + this.nodeID);
+            zipEdgeButton.addEventListener('click', this.edgeZipButtonAction.bind(this)); 
             this.createUnzipEdge();
         }
 
@@ -605,7 +605,7 @@
         this.activateStartingGroup();
 
         // initialize your network!/*# sourceMappingURL=bootstrap.min.css.map */
-        this.networkUI = new vis.Network(networkContainer, data, options);
+        this.networkUI = new vis.Network(networkContainer, data, this.networkOptions);
 
         // Creation du menu et binding
         this.createMenu(networkContainer);
@@ -695,14 +695,16 @@
 
 
     cwLayoutNetwork.prototype.stopPhysics = function (event) {
-        if(this.networkUI.physics.physicsEnabled == true) {
-            this.networkUI.physics.physicsEnabled = false;
+        if(this.networkUI.physics.options.enabled == true) {
+            this.networkOptions.physics.enabled = false;
             event.target.innerHTML = "Enable Physics";
         }
         else {
-            this.networkUI.physics.physicsEnabled = true;
+            this.networkOptions.physics.enabled = true;
             event.target.innerHTML = "Disable Physics";
         }
+        this.networkUI.setOptions(this.networkOptions);
+
     };
 
     cwLayoutNetwork.prototype.edgeZipButtonAction  = function (event) {
@@ -749,7 +751,7 @@
                     newEdge.physics = false;
                     newEdge.arrows = zipEdge.direction;
                     newEdge.label = zipEdge.label;   
-                    newEdge.id = edge.id + "#" + zipEdge.id;  
+                    newEdge.id = edge.id + "#" + zipEdge.uuid;  
                     newEdge.width = 1;           
                     self.edges.add(newEdge);
                 });                 
@@ -758,7 +760,7 @@
     };
 
     cwLayoutNetwork.prototype.clusterByHubsize = function(event) {
-        var maxConnected = 4;
+        var maxConnected = 25;
         var data = {
             nodes: this.nodes,
             edges: this.edges
@@ -787,6 +789,12 @@
             clusterNodeProperties: {borderWidth:3, shape:'box', font:{size:9},size : 200}
         };
         this.networkUI.clusterByHubsize(maxConnected, clusterOptionsByData);
+
+        this.edges.forEach(function(edge) {
+            if(edge.zipped === undefined) {
+                debugger;                
+            }    
+        }); 
 
         if(this.network.clustered) {
             event.target.innerHTML = "Open the clusters";
