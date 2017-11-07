@@ -33,8 +33,11 @@
         this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
         this.getExternalFilterNodes(true,this.options.CustomOptions['filterNode']);
         this.edgeOption = true;
-        this.clusterOption = false;
+        this.clusterOption = true;
         this.physicsOption = true;
+        this.CDSNodesOption = true;
+        this.CDSFilterOption = false;
+        this.nodeOptions = {"CDSFilterOption" : this.CDSFilterOption,"CDSNodesOption" : this.CDSNodesOption};
     };
 
 
@@ -72,6 +75,12 @@
     };
 
     cwLayoutNetwork.prototype.getFontAwesomeList = function(options) {
+        function string_as_unicode_escape(str){
+            return str.split("").map(function(s){
+                return "\\u"+("0000" + s.charCodeAt(0).toString(16)).slice(-4);
+            }).join("");
+        }
+
         var groups = {};
 
         if(options) {
@@ -86,6 +95,7 @@
                         groups[optionSplit[0]].icon = {};
                         groups[optionSplit[0]].icon.face = 'FontAwesome';
                         groups[optionSplit[0]].icon.code = unescape('%u' + optionSplit[2]);
+                        groups[optionSplit[0]].unicode = optionSplit[2];
                         if(optionSplit[3]) {
                             groups[optionSplit[0]].color = {};
                             groups[optionSplit[0]].color.border = optionSplit[3];
@@ -231,7 +241,8 @@
                         childrenArray = childrenArray.concat(this.simplify(nextChild,father,true));
                     } else { // adding regular node
                         element = {}; 
-                        element.name = this.multiLine(this.getItemDisplayString(nextChild),this.multiLineCount);
+                        element.name = this.multiLine(nextChild.name,this.multiLineCount);
+                        element.customDisplayString = this.multiLine(this.getItemDisplayString(nextChild),this.multiLineCount);
                         element.object_id = nextChild.object_id;
                         element.objectTypeScriptName = nextChild.objectTypeScriptName;
 
@@ -251,6 +262,7 @@
                             element.edge = {};
                             element.edge.label = this.multiLine(this.getItemDisplayString(child),this.multiLineCount);
                             element.edge.id = child.object_id;
+                            element.edge.objectTypeScriptName = child.objectTypeScriptName;
                             element.filterArray = filterArray; 
                             filtersGroup.forEach(function(filterGroup) {
                                 Object.keys(filterGroup).map(function(filterKey, index) {
@@ -319,7 +331,7 @@
         }      
        
         this.network = new cwApi.customLibs.cwLayoutNetwork.network();
-        this.network.searchForNodesAndEdges(simplifyObject);
+        this.network.searchForNodesAndEdges(simplifyObject,this.nodeOptions);
 
         if(isData) output.push('<div class="cw-visible" id="cwLayoutNetwork' + this.nodeID + '">'); 
         else output.push('<div id="cwLayoutNetwork' + this.nodeID + '">');
@@ -327,7 +339,7 @@
         output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');
         output.push('<div class="bootstrap-iso" id="cwLayoutNetworkAction' + this.nodeID + '">');
         if(this.physicsOption) output.push('<button id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '"> Disable Physics</button>');
-        if(this.clusterOptions) output.push('<button id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
+        if(this.clusterOption) output.push('<button id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
         if(this.edgeOption) output.push('<button id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '"> Unzip Edges</button>');
         output.push('</div>');
         output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
@@ -336,7 +348,8 @@
 
     cwLayoutNetwork.prototype.addObjectOfObjectPage = function (simplifyObject,object) {
         var rootID,element = {}; 
-        element.name = this.multiLine(this.getItemDisplayString(object),this.multiLineCount);
+        element.name = this.multiLine(object.name,this.multiLineCount);
+        element.customDisplayString = this.multiLine(this.getItemDisplayString(object),this.multiLineCount);
         element.object_id = object.object_id;
         element.objectTypeScriptName = object.objectTypeScriptName;
 
@@ -624,12 +637,7 @@
                 }
             } else if(params.hasOwnProperty('edges') && params.edges.length === 1) {
                 var edge = self.edges.get(params.edges[0]);
-                var from = edge.from.split("#");
-                var to = edge.to.split("#");
-                self.openPopOutFromEdge(from[0],from[1]);
-
-                if(cwApi.customLibs.popWorldMap === undefined) cwApi.customLibs.popWorldMap = {};
-                cwApi.customLibs.popWorldMap.to = to;
+                self.openPopOutFromEdge(edge);
             };
         });
 
@@ -664,11 +672,19 @@
 
     // Adding element to the search filter
     cwLayoutNetwork.prototype.addSearchFilterElement = function (event, properties, senderId) {
+
         var self = this;
         var html = "";
         properties.items.forEach(function(elem) {
             var node = self.nodes.get(elem);
-            html += "<option id=" + node.id + ">" + node.label + "</option>";
+            var label;
+            if(self.CDSFilterOption) label = node.label;
+            else label = node.name;
+            if(self.groupsArt && self.groupsArt[node.group] && self.groupsArt[node.group].unicode) {
+                html += '<option class="fa" id=' + node.id + '>&#x' + self.groupsArt[node.group].unicode + " " + label + '</option>'; 
+            } else {
+               html += '<option class="fa" id=' + node.id + '>' + label + '</option>'; 
+            }
         });
         $('select.selectNetworkSearch_' + this.nodeID)
             .append(html)
@@ -751,7 +767,9 @@
                     newEdge.physics = false;
                     newEdge.arrows = zipEdge.direction;
                     newEdge.label = zipEdge.label;   
+                    newEdge.scriptname = zipEdge.scriptname;  
                     newEdge.id = edge.id + "#" + zipEdge.uuid;  
+                    newEdge.object_id = zipEdge.id;
                     newEdge.width = 1;           
                     self.edges.add(newEdge);
                 });                 
@@ -760,7 +778,7 @@
     };
 
     cwLayoutNetwork.prototype.clusterByHubsize = function(event) {
-        var maxConnected = 25;
+        var maxConnected = 3;
         var data = {
             nodes: this.nodes,
             edges: this.edges
@@ -1047,10 +1065,28 @@
         }
     };
 
-    cwLayoutNetwork.prototype.openPopOutFromEdge = function(id,scriptname) {
-        var object = this.lookForObjects(id,scriptname,this.originalObject);
+    cwLayoutNetwork.prototype.openPopOutFromEdge = function(edge) {
+        var id,scriptname,object;
+        var from = edge.from.split("#");
+        scriptname = from[1];
         if(this.popOut[scriptname + "_edge"]) {
+            id = from[0];
+            object = this.lookForObjects(id,scriptname,this.originalObject);
+
+            if(cwApi.customLibs.popWorldMap === undefined) cwApi.customLibs.popWorldMap = {};
+            cwApi.customLibs.popWorldMap.to = to;
+
             cwApi.cwDiagramPopoutHelper.openDiagramPopout(object,this.popOut[scriptname + "_edge"]);
+            return;
+        }
+        scriptname = edge.scriptname;
+        if(this.popOut[scriptname]){
+            id = edge.object_id;
+            object = this.lookForObjects(id,scriptname,this.originalObject);
+            if(object) {
+                cwApi.cwDiagramPopoutHelper.openDiagramPopout(object,this.popOut[scriptname]);                
+            }
+            return;  
         }
     };
 

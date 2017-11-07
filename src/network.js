@@ -15,28 +15,28 @@
         return this.objectTypeNodes;
     };
 
-    network.prototype.searchForNodesAndEdges = function (object) {
+    network.prototype.searchForNodesAndEdges = function (object,nodeOptions) {
         var i;
         if(object.hasOwnProperty("children")) {
             for (i = 0; i < object.children.length; i += 1) {
-                this.addNode(object.children[i]);
+                this.addNode(object.children[i],nodeOptions);
                 this.addEdge(object.children[i],object);
-                this.searchForNodesAndEdges(object.children[i]);
+                this.searchForNodesAndEdges(object.children[i],nodeOptions);
             }
         } else { // in case of index
             for (i = 0; i < object.length; i += 1) {
-                this.addNode(object[i]);
-                this.searchForNodesAndEdges(object[i]);
+                this.addNode(object[i],nodeOptions);
+                this.searchForNodesAndEdges(object[i],nodeOptions);
             }    
         }
     };
 
 
-    network.prototype.addNode = function (object) {
+    network.prototype.addNode = function (object,nodeOptions) {
         if(!this.objectTypeNodes.hasOwnProperty(object.group)) {
             this.objectTypeNodes[object.group] = new cwApi.customLibs.cwLayoutNetwork.objectTypeNode(object.group,object.objectTypeScriptName); 
         }
-        this.objectTypeNodes[object.group].addNode(object.object_id,object.name,object.filterArray);
+        this.objectTypeNodes[object.group].addNode(object.object_id,object.name,object.customDisplayString,object.filterArray,nodeOptions);
 
     };
 

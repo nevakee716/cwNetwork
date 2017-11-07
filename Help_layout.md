@@ -1,10 +1,11 @@
 | **Name** | **cwLayoutNetwork** | **Version** | 
 | --- | --- | --- |
-| **Updated by** | Mathias PFAUWADEL | 3.7 |
+| **Updated by** | Mathias PFAUWADEL | 3.8 |
 
 
 ## Patch Notes
 
+* 3.8 : Adding 2 buttons to zip and unzip Edge and to disable physics
 * 3.7 : Network is now correctly zoom at start 
 * 3.6 : Adding Focus on (that all you to zoom on a node of the network)
 * 3.5 : Adding Legend (only for fontawesome icon)
@@ -18,7 +19,6 @@
 
 ## To be Done
 
-* SearchText Box
 * More Options
 * Add Translations i18n like Data/Common/i18n
 
@@ -114,6 +114,11 @@ Put the network under the associationNode of the sent flux, then add the node id
 
 This menu allow you to zoom on a object prevent on the network, it will go to his position, zoom on it, and select it.
 
+## Button Action
+
+Disable / Enable Physics : Allow to disable the physics and freely move the node
+
+Zip/ UnZip Edges: Allow to unmerge the edges, in case of hidden nodes, this will disable the name od the hidden object on the edge.
 
 ## RightClick Action
 

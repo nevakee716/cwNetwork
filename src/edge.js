@@ -10,7 +10,7 @@
     this.labels = [];
     if(edgeInfo) {
         this.zipped = true;
-        this.labels.push({"label" : edgeInfo.label,"id":edgeInfo.id,"direction" : direction,"uuid":this.labels.length});     
+        this.labels.push({"label" : edgeInfo.label,"id":edgeInfo.id,"scriptname":edgeInfo.objectTypeScriptName,"direction" : direction,"uuid":this.labels.length});     
     }
     if(direction === undefined || direction.indexOf('from') === -1) {
       this.fromUuid = fromUuid;
@@ -39,7 +39,7 @@
         if(direction == "from") newDirection = "to";
         else newDirection = "from";     
       }
-      this.labels.push({"label" : edgeInfo.label,"direction" : newDirection,"id":edgeInfo.id,"uuid":this.labels.length}); 
+      this.labels.push({"label" : edgeInfo.label,"direction" : newDirection,"id":edgeInfo.id,"scriptname":edgeInfo.objectTypeScriptName,"uuid":this.labels.length}); 
     }
 
     if(direction) {
