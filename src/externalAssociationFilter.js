@@ -25,8 +25,20 @@
         }
     };
 
+    externalAssociationFilter.prototype.addEdgeToFields = function (Ids,edge) {
+        var that = this;
+        Ids.forEach(function(id) {
+            if(!that.filterField[id].filteredEdges) {
+               that.filterField[id].filteredEdges = []; 
+            }
+            if(that.filterField[id].filteredEdges.indexOf(edge) === -1) {
+                that.filterField[id].filteredEdges.push(edge);
+            }            
+        });
+    };
 
-    externalAssociationFilter.prototype.addNodesTofield = function (Ids,element) {
+
+    externalAssociationFilter.prototype.addNodeToFields = function (Ids,element) {
         var that = this;
         Ids.forEach(function(id) {
             if(!that.filterField[id].filteredNodes) {
@@ -113,6 +125,13 @@
            return this.filterField[id].filteredNodes;
         }
     };
+
+    externalAssociationFilter.prototype.getEdgesToBeFiltered = function (id) {
+        if (this.filterField.hasOwnProperty(id)) {
+           return this.filterField[id].filteredEdges;
+        }
+    };
+    
 
 
 

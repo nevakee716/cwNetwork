@@ -33,7 +33,7 @@
         this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
         this.getExternalFilterNodes(true,this.options.CustomOptions['filterNode']);
         this.edgeOption = true;
-        this.clusterOption = true;
+        this.clusterOption = false;
         this.physicsOption = true;
         this.CDSNodesOption = true;
         this.CDSFilterOption = false;
@@ -229,7 +229,6 @@
                         
                         this.nodeFiltered[associationNode].forEach(function(groupFilterName) {
                             self.externalFilters[groupFilterName].addfield(filterElement.name,filterElement.object_id);
-                            self.externalFilters[groupFilterName].addNodesTofield([filterElement.object_id],father);
                             if(groupFilter[groupFilterName]) {
                                 groupFilter[groupFilterName].push(filterElement.object_id);
                             } else {
@@ -258,7 +257,7 @@
                             element.group = this.objects[element.object_id + "#" + element.objectTypeScriptName];
                         }
                         
-                        if(hiddenNode) { //lorsqu'un node est hidden ajouter le filtrage aussi au fils
+                        if(hiddenNode) { //lorsqu'un node est hidden ajouter les elements en edges
                             element.edge = {};
                             element.edge.label = this.multiLine(this.getItemDisplayString(child),this.multiLineCount);
                             element.edge.id = child.object_id;
@@ -266,9 +265,19 @@
                             element.filterArray = filterArray; 
                             filtersGroup.forEach(function(filterGroup) {
                                 Object.keys(filterGroup).map(function(filterKey, index) {
-                                    self.externalFilters[filterKey].addNodesTofield(filterGroup[filterKey],element);
+                                    // On ajoute le edge et les éléments pères, fils
+                                    self.externalFilters[filterKey].addEdgeToFields(filterGroup[filterKey],element.edge);
+                                    self.externalFilters[filterKey].addNodeToFields(filterGroup[filterKey],father); 
+                                    self.externalFilters[filterKey].addNodeToFields(filterGroup[filterKey],element); 
                                 });
                             });
+                        } else {
+                            filtersGroup.forEach(function(filterGroup) {
+                                Object.keys(filterGroup).map(function(filterKey, index) {
+                                    self.externalFilters[filterKey].addNodeToFields(filterGroup[filterKey],father);  
+                                });
+                            });
+                                                     
                         }
 
                         if(this.directionList.hasOwnProperty(associationNode)) { // ajout de la direction
@@ -515,7 +524,12 @@
                         self.network.show(id,group);
                         changeSet = self.network.getVisNode(id,group); // get all the node self should be put on
                         nodes.add(changeSet); // adding nodes into network
-                        //self.networkUI.selectNodes([changeSet[0].id]); //select the origin node
+                        for(var extF in self.externalFilters) {
+                            if(self.externalFilters.hasOwnProperty(extF)) {
+                               self.filterExternalAssociation(self.externalFilters[extF].label,self.externalFilters[extF].selectedId); 
+                            }
+                        }
+
                     }
                 } else {  // select or deselect all node
                     if($(this).context[0]) {
@@ -526,7 +540,7 @@
                             nodes.remove(changeSet);
                         }
                         if(self.networkUI) {
-                            self.colorAllEdges(nodes,edges); // on recolorise tous les noeuds
+                            self.colorAllEdges(); // on recolorise tous les noeuds
                         }
                         self.setExternalFilterToNone(); 
                     }
@@ -539,29 +553,18 @@
             var group = $(this).context['id'];
             var filterName = $(this).context.getAttribute('filterName');
             var nodesArray,id,nodeId,i,changeSet;
-            var globValues = $('select.selectNetworkAllGroups').val();
-            var nodesToHighlight,idsToHighlight,updateArray;
+            
             var allNodes;
             
             if(clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
                 id = $(this).context[clickedIndex]['id'];
-                if(id !== "0") {
-                    nodesToHighlight = self.externalFilters[filterName].getNodesToBeFiltered(id); // on recupere les nodes qui sont associés à la data filtré
-                    changeSet = self.network.ActionAndGetChangeset(nodesToHighlight,true); // on les ajoute dans le network
-                    self.fillFilter(changeSet); // add the filter value
-                    nodes.add(changeSet); // adding nodes into network
-                    idsToHighlight = [];
-                    nodesToHighlight.forEach(function(node) {
-                        idsToHighlight.push(node.object_id + "#" + node.objectTypeScriptName);
-                    });
-                    if(self.networkUI) {
-                        self.colorNodes(nodes,idsToHighlight);
-                        self.colorEdges(nodes,edges,idsToHighlight);
-                    }
+                self.externalFilters[filterName].selectedId = id;
+                if(id !== "0") { // On ne selectionne pas la case "None"
+                    self.filterExternalAssociation(filterName,id);
                 } else {
                     if(self.networkUI) {
-                        self.colorAllNodes(nodes);
-                        self.colorAllEdges(nodes,edges);                        
+                        self.colorAllNodes();
+                        self.colorAllEdges();                        
                     }
 
                 }
@@ -872,29 +875,56 @@
         this.nodes.add(changeSet); // adding nodes into network
     };
 
+    cwLayoutNetwork.prototype.filterExternalAssociation = function (filterName,id) {
+        
+        var changeSet,nodesToHighlight,nodesIdToHighlight,edgesToHighlight,edgesIdToHighlight,updateArray;
+        
+        edgesToHighlight = this.externalFilters[filterName].getEdgesToBeFiltered(id); // on recupere les nodes qui sont associés à la data filtré
+        nodesToHighlight = this.externalFilters[filterName].getNodesToBeFiltered(id); // on recupere les nodes qui sont associés à la data filtré
+        changeSet = this.network.ActionAndGetChangeset(nodesToHighlight,true); // Generate the changeSet
+        this.fillFilter(changeSet); // add the filter value
+        this.nodes.add(changeSet); // adding nodes into network
+        nodesIdToHighlight = [];
+        nodesToHighlight.forEach(function(node) {
+            nodesIdToHighlight.push(node.object_id + "#" + node.objectTypeScriptName);
+        });
+        edgesIdToHighlight = [];
+        edgesToHighlight.forEach(function(edge) {
+            edgesIdToHighlight.push(edge.id + "#" + edge.objectTypeScriptName);
+        });
 
+        if(this.networkUI) {
+            this.colorNodes(nodesIdToHighlight);
+            this.colorEdges(nodesIdToHighlight);
+            this.colorUnZipEdges(nodesIdToHighlight,edgesIdToHighlight);
+        }
+    };
 
 
 //manage color of the edge
 
-    cwLayoutNetwork.prototype.getEdgeColorFromNode = function (node) {
-        if(this.networkUI.groups.groups[node.group].icon) {
-            return this.networkUI.groups.groups[node.group].icon.color;
+    cwLayoutNetwork.prototype.getEdgeColorFromGroup = function (group) {
+        var color = {};
+        if(this.networkUI.groups.groups[group].icon) {
+           color.color = this.networkUI.groups.groups[group].icon.color;
         } else {
-            if(this.networkUI.groups.groups[node.group].color.hasOwnProperty("border")) {
-                return this.networkUI.groups.groups[node.group].color.border;    
+            if(this.networkUI.groups.groups[group].color.hasOwnProperty("border")) {
+                color.color = this.networkUI.groups.groups[group].color.border;    
             } else {
-                return this.networkUI.groups.groups[node.group].color;    
+                color.color = this.networkUI.groups.groups[group].color;    
             }  
         } 
+        color.highlight = color.color;
+        color.hover = color.color;
+        return color;
     };
 
 
 
-    cwLayoutNetwork.prototype.colorNodes = function (nodes,idsToHighlight) {
+    cwLayoutNetwork.prototype.colorNodes = function (idsToHighlight) {
         var updateArray = [];
         var self = this;
-        nodes.forEach(function(node) {
+        this.nodes.forEach(function(node) {
             if(idsToHighlight.indexOf(node.id) === -1) {
                 if(node.group.indexOf("Hidden") === -1) {
                     node.group = node.group + "Hidden";
@@ -904,45 +934,58 @@
             }
             if(self.networkUI.groups.groups[node.group]) {
                 if(self.networkUI.groups.groups[node.group].icon) {
-                    nodes.color = self.networkUI.groups.groups[node.group].icon.color;
+                    node.color = self.networkUI.groups.groups[node.group].icon.color;
                 } else {
                     node.color = self.networkUI.groups.groups[node.group].color;  
                 }  
             } 
             updateArray.push(node); 
         });
-        nodes.update(updateArray);
+        this.nodes.update(updateArray);
     };
 
-
-    cwLayoutNetwork.prototype.colorEdges = function (nodes,edges,idsToHighlight) {
+    cwLayoutNetwork.prototype.colorUnZipEdges = function (nodesIdToHighlight,edgesIdToHighlight) {
         var updateArray = [];
         var self = this;
-        var allNodes = nodes.get({returnType:"Object"});
-        edges.forEach(function(edge) {
+        var allNodes = this.nodes.get({returnType:"Object"});
+        this.edges.forEach(function(edge) {
+            if(edge.zipped === false){
+                var nodeID;
+                // select the node that the edge will inherit
+                if(nodesIdToHighlight.indexOf(edge.to) !== -1 && nodesIdToHighlight.indexOf(edge.from) !== -1 && edgesIdToHighlight.indexOf(edge.object_id + "#" + edge.scriptname) === -1) {
+                    edge.color = self.getEdgeColorFromGroup(allNodes[edge.to].group + "Hidden");
+                }
+                updateArray.push(edge);               
+            }
+        });
+        this.edges.update(updateArray);
+    };
+
+    cwLayoutNetwork.prototype.colorEdges = function (nodesIdToHighlight) {
+        var updateArray = [];
+        var self = this;
+        var allNodes = self.nodes.get({returnType:"Object"});
+        self.edges.forEach(function(edge) {
             var nodeID;
-            if(idsToHighlight.indexOf(edge.from) === -1)
-            {   
-                nodeID =  edge.from;
-            } 
-            else if(idsToHighlight.indexOf(edge.to) === -1) {
+            // select the node that the edge will inherit
+            if(nodesIdToHighlight.indexOf(edge.to) === -1) {
                 nodeID =  edge.to;
             } else {
                 nodeID =  edge.from; 
             }
             if(allNodes.hasOwnProperty(nodeID)) {
-                edge.color = self.getEdgeColorFromNode(allNodes[nodeID]);
+                edge.color = {};
+                edge.color = self.getEdgeColorFromGroup(allNodes[nodeID].group);
             }
-
-            updateArray.push(edge);
+            updateArray.push(edge);               
         });
-        edges.update(updateArray);
+        this.edges.update(updateArray);
     };
 
-    cwLayoutNetwork.prototype.colorAllNodes = function (nodes) {
+    cwLayoutNetwork.prototype.colorAllNodes = function () {
         var updateArray = [];
         var self = this;
-        nodes.forEach(function(node) {
+        this.nodes.forEach(function(node) {
             node.group = node.group.replace("Hidden",""); 
             if(self.networkUI.groups.groups[node.group].icon) {
                 node.color = self.networkUI.groups.groups[node.group].icon.color;
@@ -951,7 +994,7 @@
             } 
             updateArray.push(node); 
         });
-        nodes.update(updateArray);
+        this.nodes.update(updateArray);
     };
 
     cwLayoutNetwork.prototype.createMenu = function (container) {
@@ -991,23 +1034,23 @@
         this.networkUI.on("oncontext", vis.contextMenu(this.menu)); 
     };
 
-    cwLayoutNetwork.prototype.colorAllEdges = function (nodes,edges) {
+    cwLayoutNetwork.prototype.colorAllEdges = function () {
         var nodeID;
         var self = this;
         var updateArray = [];
-        var allNodes = nodes.get({returnType:"Object"});
-        edges.forEach(function(edge) {
+        var allNodes = this.nodes.get({returnType:"Object"});
+        this.edges.forEach(function(edge) {
             nodeID =  edge.from;
             if(allNodes.hasOwnProperty(nodeID)) {
-                edge.color = self.getEdgeColorFromNode(allNodes[nodeID]);
+                edge.color = self.getEdgeColorFromGroup(allNodes[nodeID].group);
             }
             updateArray.push(edge);
         });
-        edges.update(updateArray);
+        this.edges.update(updateArray);
     };
 
     cwLayoutNetwork.prototype.setExternalFilterToNone = function () {
-        $('select.selectNetworkExternal').selectpicker('val','None'); 
+        $('select.selectNetworkExternal_' + this.nodeID).selectpicker('val','None'); 
     };
 
     cwLayoutNetwork.prototype.fillFilter = function (changeSet) {
