@@ -57,13 +57,15 @@
         var that = this;
         var changeSet = [];
         var hasChanged; 
-        elements.forEach(function(elem) {
-            elem.name.replaceAll("\n"," ");
-            hasChanged = that.objectTypeNodes[elem.group].changeState(elem.object_id,state);  
-            if(hasChanged) { // on check si le node est pas déja présent dans le réseau
-                changeSet = changeSet.concat(that.getVisNode(elem.object_id,elem.group));
-            }
-        });
+        if(elements) {
+            elements.forEach(function(elem) {
+                elem.name.replaceAll("\n"," ");
+                hasChanged = that.objectTypeNodes[elem.group].changeState(elem.object_id,state);  
+                if(hasChanged) { // on check si le node est pas déja présent dans le réseau
+                    changeSet = changeSet.concat(that.getVisNode(elem.object_id,elem.group));
+                }
+            });            
+        }
         return changeSet;
     };
 

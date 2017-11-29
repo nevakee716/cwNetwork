@@ -526,7 +526,9 @@
                         nodes.add(changeSet); // adding nodes into network
                         for(var extF in self.externalFilters) {
                             if(self.externalFilters.hasOwnProperty(extF)) {
-                               self.filterExternalAssociation(self.externalFilters[extF].label,self.externalFilters[extF].selectedId); 
+                                if(self.externalFilters[extF].selectedId !== 0) { // On ne selectionne pas la case "None"
+                                    self.filterExternalAssociation(self.externalFilters[extF].label,self.externalFilters[extF].selectedId); 
+                                } 
                             }
                         }
 
@@ -540,7 +542,8 @@
                             nodes.remove(changeSet);
                         }
                         if(self.networkUI) {
-                            self.colorAllEdges(); // on recolorise tous les noeuds
+                            self.colorAllNodes();
+                            self.colorAllEdges();                        
                         }
                         self.setExternalFilterToNone(); 
                     }
@@ -566,7 +569,6 @@
                         self.colorAllNodes();
                         self.colorAllEdges();                        
                     }
-
                 }
             }
         });
@@ -876,7 +878,6 @@
     };
 
     cwLayoutNetwork.prototype.filterExternalAssociation = function (filterName,id) {
-        
         var changeSet,nodesToHighlight,nodesIdToHighlight,edgesToHighlight,edgesIdToHighlight,updateArray;
         
         edgesToHighlight = this.externalFilters[filterName].getEdgesToBeFiltered(id); // on recupere les nodes qui sont associés à la data filtré
@@ -884,14 +885,20 @@
         changeSet = this.network.ActionAndGetChangeset(nodesToHighlight,true); // Generate the changeSet
         this.fillFilter(changeSet); // add the filter value
         this.nodes.add(changeSet); // adding nodes into network
+        
         nodesIdToHighlight = [];
-        nodesToHighlight.forEach(function(node) {
-            nodesIdToHighlight.push(node.object_id + "#" + node.objectTypeScriptName);
-        });
+        if(nodesToHighlight) {
+            nodesToHighlight.forEach(function(node) {
+                nodesIdToHighlight.push(node.object_id + "#" + node.objectTypeScriptName);
+            });
+        }
+
         edgesIdToHighlight = [];
-        edgesToHighlight.forEach(function(edge) {
-            edgesIdToHighlight.push(edge.id + "#" + edge.objectTypeScriptName);
-        });
+        if(edgesToHighlight) {
+            edgesToHighlight.forEach(function(edge) {
+                edgesIdToHighlight.push(edge.id + "#" + edge.objectTypeScriptName);
+            });
+        }
 
         if(this.networkUI) {
             this.colorNodes(nodesIdToHighlight);
@@ -1043,6 +1050,8 @@
             nodeID =  edge.from;
             if(allNodes.hasOwnProperty(nodeID)) {
                 edge.color = self.getEdgeColorFromGroup(allNodes[nodeID].group);
+            } else {
+                edge.color = {inherit:'from'};  
             }
             updateArray.push(edge);
         });
@@ -1051,6 +1060,11 @@
 
     cwLayoutNetwork.prototype.setExternalFilterToNone = function () {
         $('select.selectNetworkExternal_' + this.nodeID).selectpicker('val','None'); 
+        for(var extF in this.externalFilters) {
+            if(this.externalFilters.hasOwnProperty(extF)) {
+                this.externalFilters[extF].selectedId = 0; 
+            }
+        }
     };
 
     cwLayoutNetwork.prototype.fillFilter = function (changeSet) {
