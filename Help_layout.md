@@ -1,10 +1,11 @@
 | **Name** | **cwLayoutNetwork** | **Version** | 
 | --- | --- | --- |
-| **Updated by** | Mathias PFAUWADEL | 3.8 |
+| **Updated by** | Mathias PFAUWADEL | 3.9 |
 
 
 ## Patch Notes
 
+* 3.9 : External Association Filter work with zippedEdges
 * 3.8 : Adding 2 buttons to zip and unzip Edge and to disable physics
 * 3.7 : Network is now correctly zoom at start 
 * 3.6 : Adding Focus on (that all you to zoom on a node of the network)
@@ -98,7 +99,7 @@ nodeID:Label of the filter
 For exemple : entite_20022_1066555881:Entity Filter
 (Can be use for application flux See exemples below)
 
-PS : the filter node should always be in first
+PS : the filter node should always be in first,
 
 ### Complementary Node :
 

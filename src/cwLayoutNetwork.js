@@ -524,14 +524,7 @@
                         self.network.show(id,group);
                         changeSet = self.network.getVisNode(id,group); // get all the node self should be put on
                         nodes.add(changeSet); // adding nodes into network
-                        for(var extF in self.externalFilters) {
-                            if(self.externalFilters.hasOwnProperty(extF)) {
-                                if(self.externalFilters[extF].selectedId !== 0) { // On ne selectionne pas la case "None"
-                                    self.filterExternalAssociation(self.externalFilters[extF].label,self.externalFilters[extF].selectedId); 
-                                } 
-                            }
-                        }
-
+                        self.setAllExternalFilter();
                     }
                 } else {  // select or deselect all node
                     if($(this).context[0]) {
@@ -868,13 +861,34 @@
         var group,changeSet;
         this.nodes.forEach(function(node) { 
             if(node.id === nodeID) {
-                group = node.group;
+                group = node.group.replace("Hidden","");
             }
         });
         nodeID = nodeID.split("#")[0];
         changeSet = this.network.getVisNode(nodeID,group,option,true); // get all the node self should be put on
         this.fillFilter(changeSet); // add the filter value
         this.nodes.add(changeSet); // adding nodes into network
+        this.setAllExternalFilter();
+    };
+
+    cwLayoutNetwork.prototype.setAllExternalFilter = function () {
+        for(var extF in this.externalFilters) {
+            if(this.externalFilters.hasOwnProperty(extF)) {
+                if(this.externalFilters[extF].selectedId !== 0) { // On ne selectionne pas la case "None"
+                    this.filterExternalAssociation(this.externalFilters[extF].label,this.externalFilters[extF].selectedId); 
+                } 
+            }
+        }
+    };
+
+
+    cwLayoutNetwork.prototype.setExternalFilterToNone = function () {
+        $('select.selectNetworkExternal_' + this.nodeID).selectpicker('val','None'); 
+        for(var extF in this.externalFilters) {
+            if(this.externalFilters.hasOwnProperty(extF)) {
+                this.externalFilters[extF].selectedId = 0; 
+            }
+        }
     };
 
     cwLayoutNetwork.prototype.filterExternalAssociation = function (filterName,id) {
@@ -1058,14 +1072,6 @@
         this.edges.update(updateArray);
     };
 
-    cwLayoutNetwork.prototype.setExternalFilterToNone = function () {
-        $('select.selectNetworkExternal_' + this.nodeID).selectpicker('val','None'); 
-        for(var extF in this.externalFilters) {
-            if(this.externalFilters.hasOwnProperty(extF)) {
-                this.externalFilters[extF].selectedId = 0; 
-            }
-        }
-    };
 
     cwLayoutNetwork.prototype.fillFilter = function (changeSet) {
         var groupArray = {};
