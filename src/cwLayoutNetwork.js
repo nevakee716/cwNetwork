@@ -322,7 +322,7 @@
     // obligatoire appeler par le system
     cwLayoutNetwork.prototype.drawAssociations = function (output, associationTitleText, object) {
         this.originalObject  = $.extend({}, object);
-        var simplifyObject, i, assoNode = {} , isData = false;;
+        var simplifyObject, i, assoNode = {} , isData = false;
         // keep the node of the layout
         assoNode[this.mmNode.NodeID] = object.associations[this.mmNode.NodeID];
         // complmentary node

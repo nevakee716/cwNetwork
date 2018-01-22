@@ -8,11 +8,8 @@
   var edge = function(fromUuid,toUuid, fromId, toId,fromGroup,toGroup,direction,edgeInfo) {
     this.size = 1;
     this.labels = [];
-    if(edgeInfo) {
-        this.zipped = true;
-        this.labels.push({"label" : edgeInfo.label,"id":edgeInfo.id,"scriptname":edgeInfo.objectTypeScriptName,"direction" : direction,"uuid":this.labels.length});     
-    }
-    if(direction === undefined || direction.indexOf('from') === -1) {
+    if(direction === undefined) direction = "to";
+    if(direction.indexOf('from') === -1) {
       this.fromUuid = fromUuid;
       this.toUuid = toUuid;
       this.fromGroup = fromGroup;
@@ -28,6 +25,10 @@
       this.toId = fromId; 
     }
     this.direction = 'to';
+    if(edgeInfo) {
+      this.zipped = true;
+      this.labels.push({"label" : edgeInfo.label,"id":edgeInfo.id,"scriptname":edgeInfo.objectTypeScriptName,"direction" : this.direction,"uuid":this.labels.length});     
+    }
   };
 
   //permet de lire les propriétés de l'asso et de choisir quoi afficher en fonction du champs custom
@@ -38,7 +39,8 @@
       if(reverse) {
         if(direction == "from") newDirection = "to";
         else newDirection = "from";     
-      }
+      } 
+      else if(newDirection === undefined ) newDirection = "to";
       this.labels.push({"label" : edgeInfo.label,"direction" : newDirection,"id":edgeInfo.id,"scriptname":edgeInfo.objectTypeScriptName,"uuid":this.labels.length}); 
     }
 
