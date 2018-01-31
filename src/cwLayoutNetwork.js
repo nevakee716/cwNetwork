@@ -20,6 +20,7 @@
         this.groupToSelectOnStart = [];
         this.objects = {};
         this.layoutsByNodeId = {};
+        this.clusters = [];
         this.init = true;
         this.clustered = false;
         this.edgeZipped = true;
@@ -34,7 +35,8 @@
         this.getExternalFilterNodes(true,this.options.CustomOptions['filterNode']);
         this.edgeOption = true;
         this.clusterOption = false;
-        this.physicsOption = true;
+        this.physicsOption = true;        
+        this.removeLonely = true;
         this.CDSNodesOption = true;
         this.CDSFilterOption = false;
         this.nodeOptions = {"CDSFilterOption" : this.CDSFilterOption,"CDSNodesOption" : this.CDSNodesOption};
@@ -350,6 +352,7 @@
         if(this.physicsOption) output.push('<button id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '"> Disable Physics</button>');
         if(this.clusterOption) output.push('<button id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
         if(this.edgeOption) output.push('<button id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '"> Unzip Edges</button>');
+        if(this.removeLonely) output.push('<button id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '"> Remove Lonely Nodes</button>');
         output.push('</div>');
         output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
         this.object = this.originalObject.associations;
@@ -454,7 +457,7 @@
             groups : this.groupsArt,
             physics: {
                 barnesHut: {
-                  springLength: 130
+                  springLength: 150
                 },
                 minVelocity: 0.75,
             },
@@ -606,6 +609,11 @@
             this.createUnzipEdge();
         }
 
+        if(this.removeLonely){
+            var removeLonelyButton = document.getElementById("cwLayoutNetworkButtonsLonelyNodes" + this.nodeID);
+            removeLonelyButton.addEventListener('click', this.removeLonelyButtonAction.bind(this)); 
+        }
+
 
         
         // fill the search filter
@@ -721,6 +729,7 @@
 
     };
 
+    
     cwLayoutNetwork.prototype.edgeZipButtonAction  = function (event) {
         var self = this;
         if(this.edgeZipped == true) {
@@ -775,53 +784,159 @@
         }); 
     };
 
+    cwLayoutNetwork.prototype.removeLonelyButtonAction  = function (event) {
+        var self = this;
+        this.nodes.forEach(function(node) {
+            var ncs = self.networkUI.getConnectedNodes(node.id);
+            if(ncs.length == 0) {
+                self.nodes.remove(node.id);
+                self.network.hide(node.id.split("#")[0],node.group);
+                $('select.selectNetworkPicker_' + self.nodeID + "." + node.group.replaceAll(" ","_")).each(function( index ) { // put values into filters
+                    if($(this).val()) {
+                        $(this).selectpicker('val',$(this).val().filter(item => item !== node.name));
+                    }
+                });
+            }
+        });       
+    };
+
+
+    Array.prototype.diff = function(a) {
+        return this.filter(function(i) {return a.indexOf(i) < 0;});
+    };
+
     cwLayoutNetwork.prototype.clusterByHubsize = function(event) {
-        var maxConnected = 3;
+        var maxConnected = 4;
+        var distFactor = 10000;
         var data = {
             nodes: this.nodes,
             edges: this.edges
         };
         var self = this;
-
+        var biggest = "";
         this.networkUI.setData(data);
-        var clusterOptionsByData = {
-            processProperties: function(clusterOptions, childNodes) {
-                var totalMass = 0;
-                var label = "";
-                for (var i = 0; i < childNodes.length; i++) {
-                    totalMass += childNodes[i].mass;
-                    label += childNodes[i].label + "\n";
+
+
+        var ncs,nodesToConnect = {};
+        // created
+        this.nodes.forEach(function(node) {
+            ncs = self.networkUI.getConnectedNodes(node.id);
+            if(ncs.length >= maxConnected - 1) {
+                nodesToConnect[node.id] = ncs;
+            }
+        });
+        var cc = 1;
+        var nodesToConnectNew,nodeToDelete = [];
+
+        // remove lonely node 
+        while(cc !== 0) {
+            cc = 0;
+            nodesToConnectNew = {};
+            for(var n in nodesToConnect) {
+                if(nodesToConnect.hasOwnProperty(n)){
+                    var ntd = [];
+                    nodesToConnect[n].forEach(function(nc) {
+                        if(!nodesToConnect.hasOwnProperty(nc)) {
+                            ntd.push(nc);
+                            cc = cc + 1;
+                        }
+                    }); 
+                    nodesToConnect[n] = nodesToConnect[n].diff(ntd);
+                    if(nodesToConnect[n].length >= maxConnected - 1) {
+                        nodesToConnectNew[n] = nodesToConnect[n];
+                    }
                 }
-                
-                clusterOptions.mass = totalMass;
-
-                clusterOptions.label = label;
-                return clusterOptions;
-            },
-            joinCondition: function(nodeOptions,childNodeOptions) {
-                if(childNodeOptions.amountOfConnections >= maxConnected) return true;
-                else return false;
-            },       
-            clusterNodeProperties: {borderWidth:3, shape:'box', font:{size:9},size : 200}
-        };
-        this.networkUI.clusterByHubsize(maxConnected, clusterOptionsByData);
-
-        this.edges.forEach(function(edge) {
-            if(edge.zipped === undefined) {
-                debugger;                
-            }    
-        }); 
-
-        if(this.network.clustered) {
-            event.target.innerHTML = "Open the clusters";
-            this.network.clustered = true;
-        } else {
-            event.target.innerHTML = "Cluster Nodes";
-            this.network.clustered = false;
+            }
+            nodesToConnect = nodesToConnectNew;
         }
+
+        var point,dist,center,distanceMax,nodesCount,cluster,nodePositions = self.networkUI.getPositions();
+        
+        
+        // cluster by distance
+        var loop = true;
+        while(loop) {
+            cluster = [];
+            biggest = {};
+            biggest.size = 0;
+            nodesCount = 0;
+            //determine  biggest
+            for(var n in nodesToConnect) {
+                if(nodesToConnect.hasOwnProperty(n)){
+                    if(nodesToConnect[n].length > biggest.size) {
+                        biggest.size = nodesToConnect[n].length;
+                        biggest.id = n;
+                        nodesCount +=1;
+                    }
+                }
+            }
+        
+            distanceMax = (nodesCount *distFactor) * nodesCount * distFactor;
+            center = nodePositions[biggest.id];
+            // position
+            for(var n in nodesToConnect) {
+                if(nodesToConnect.hasOwnProperty(n)){
+                    point = nodePositions[n];
+                    dist = (center.x - point.x)*(center.x - point.x) + (center.y - point.y)* (center.y - point.y)
+                    if(dist < distanceMax)  cluster.push(n);
+                }
+            }
+            cluster.forEach(function(c) {
+                delete nodesToConnect[c];
+            })
+            if(cluster.length < 2) loop = false;
+            else {
+                this.clusters.push(cluster);
+            }
+        }
+       
+
+        var step = 50;
+
+        this.clusters.forEach(function(cluster){
+            self.createCluster(cluster,step);
+        });
+
+        this.networkUI.on("afterDrawing", function (ctx) {
+            self.clusters.forEach(function(cluster){
+                var nodePosition = self.networkUI.getPositions();
+                nodePosition = nodePosition[cluster.toString()];
+                var n,x,y;
+                
+                var dist = Math.sqrt(cluster.length)*50;
+                var xAdd=0,yAdd=0;
+
+                for (var i = 0; i < cluster.length; i++) {
+                    if(xAdd >= dist) {
+                        xAdd = 0;
+                        yAdd += step; 
+                    }
+                    n = self.nodes.get(cluster[i]);
+                    x = nodePosition.x + xAdd - step/2;
+                    y = nodePosition.y + yAdd - step/2;
+                    xAdd += step;
+                    self.networkUI.moveNode(n.id,x,y);
+                }
+            }); 
+        });
     };
 
+    // dealing with adding node with the menu
+    cwLayoutNetwork.prototype.createCluster = function (group,step) {
+        var self = this;
+        var node = {id: group.toString(),  label: '',shape: 'square',size: Math.sqrt(group.length) *step / 2,physics:false };
+        // var node = {id: group.toString(),  label: '',shape: 'square',size:0,physics:false };
+        this.nodes.add(node);
+        this.nodes.forEach(function(node) {
+            if(group.indexOf(node.id) !== -1) {
+                node.physics = false;
+                self.nodes.remove(node.id);
+                self.nodes.add(node)
+            }
 
+        });
+       // this.networkUI.redraw(group);
+    };
 
 
 // dealing with adding node with the menu
