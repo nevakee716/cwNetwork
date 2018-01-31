@@ -39,6 +39,7 @@
         this.removeLonely = true;
         this.CDSNodesOption = true;
         this.CDSFilterOption = false;
+        this.physics = true;
         this.nodeOptions = {"CDSFilterOption" : this.CDSFilterOption,"CDSNodesOption" : this.CDSNodesOption};
     };
 
@@ -528,12 +529,14 @@
                         changeSet = self.network.getVisNode(id,group); // get all the node self should be put on
                         nodes.add(changeSet); // adding nodes into network
                         self.setAllExternalFilter();
+                        self.updatePhysics();
                     }
                 } else {  // select or deselect all node
                     if($(this).context[0]) {
                         var changeSet = self.network.SetAllAndGetNodesObject($(this).context[0].selected,group);
                         if($(this).context[0].selected === true) {
                             nodes.add(changeSet);
+                            self.updatePhysics();
                         } else {
                             nodes.remove(changeSet);
                         }
@@ -628,7 +631,9 @@
 
         // Creation du menu et binding
         this.createMenu(networkContainer);
+        networkContainer.addEventListener('RemoveNode', this.RemoveNodeEvent.bind(this));  
         networkContainer.addEventListener('AddClosesNodes', this.AddClosesNodes.bind(this));  
+        networkContainer.addEventListener('RemoveClosesNodes', this.RemoveClosesNodes.bind(this));  
         networkContainer.addEventListener('AddAllNodesFrom', this.AddAllNodesFrom.bind(this)); 
         networkContainer.addEventListener('AddAllNodesTo', this.AddAllNodesTo.bind(this)); 
 
@@ -717,16 +722,31 @@
 
 
     cwLayoutNetwork.prototype.stopPhysics = function (event) {
-        if(this.networkUI.physics.options.enabled == true) {
-            this.networkOptions.physics.enabled = false;
+        if(this.physics == true) {
+            this.physics = false;
             event.target.innerHTML = "Enable Physics";
         }
         else {
-            this.networkOptions.physics.enabled = true;
+            this.physics = true;
             event.target.innerHTML = "Disable Physics";
         }
-        this.networkUI.setOptions(this.networkOptions);
+        this.updatePhysics();
+    };
 
+    cwLayoutNetwork.prototype.updatePhysics = function () {
+        var self = this;
+        if(this.physics == true) {
+            this.nodes.forEach(function(node) {
+                node.physics = true;
+                self.nodes.update(node);
+            });
+        }
+        else {
+            this.nodes.forEach(function(node) {
+                node.physics = false;
+                self.nodes.update(node);
+            });
+        }
     };
 
     
@@ -784,21 +804,39 @@
         }); 
     };
 
+
+
     cwLayoutNetwork.prototype.removeLonelyButtonAction  = function (event) {
         var self = this;
         this.nodes.forEach(function(node) {
             var ncs = self.networkUI.getConnectedNodes(node.id);
             if(ncs.length == 0) {
+                self.removeNodes([node.id]);
+            }
+        });       
+    };
+
+    cwLayoutNetwork.prototype.RemoveNodeEvent  = function (event) {
+        var nodeID = event.data.d.nodes[0];
+        this.removeNodes([nodeID]);
+    };
+
+    cwLayoutNetwork.prototype.removeNodes = function (nodesID) {
+        var self = this;
+        nodesID.forEach(function(nodeID) {
+            var node = self.nodes.get(nodeID);
+            if(node) {
                 self.nodes.remove(node.id);
-                self.network.hide(node.id.split("#")[0],node.group);
-                $('select.selectNetworkPicker_' + self.nodeID + "." + node.group.replaceAll(" ","_")).each(function( index ) { // put values into filters
+                self.network.hide(node.id.split("#")[0],node.group.replace("Hidden",""));
+                $('select.selectNetworkPicker_' + self.nodeID + "." + node.group.replaceAll(" ","_").replace("Hidden","")).each(function( index ) { // put values into filters
                     if($(this).val()) {
                         $(this).selectpicker('val',$(this).val().filter(item => item !== node.name));
                     }
                 });
             }
-        });       
+        });
     };
+
 
 
     Array.prototype.diff = function(a) {
@@ -877,13 +915,13 @@
             for(var n in nodesToConnect) {
                 if(nodesToConnect.hasOwnProperty(n)){
                     point = nodePositions[n];
-                    dist = (center.x - point.x)*(center.x - point.x) + (center.y - point.y)* (center.y - point.y)
+                    dist = (center.x - point.x)*(center.x - point.x) + (center.y - point.y)* (center.y - point.y);
                     if(dist < distanceMax)  cluster.push(n);
                 }
             }
             cluster.forEach(function(c) {
                 delete nodesToConnect[c];
-            })
+            });
             if(cluster.length < 2) loop = false;
             else {
                 this.clusters.push(cluster);
@@ -931,7 +969,7 @@
             if(group.indexOf(node.id) !== -1) {
                 node.physics = false;
                 self.nodes.remove(node.id);
-                self.nodes.add(node)
+                self.nodes.add(node);
             }
 
         });
@@ -949,6 +987,31 @@
         option.NoOrigin = true;
         this.AddNodesToNetwork(event,option);
     };
+
+
+
+    // dealing with adding node with the menu
+    cwLayoutNetwork.prototype.RemoveClosesNodes = function (event) {
+        var nodeID = event.data.d.nodes[0];
+        var connected = this.networkUI.getConnectedNodes(nodeID);
+        if(connected) {
+            connected.push(nodeID);
+            this.removeNodes(connected);
+        } else {
+            this.removeNodes([nodeID]);
+        }
+        
+    };
+
+    cwLayoutNetwork.prototype.RemoveNodes = function (nodesID) {
+        var self = this;
+        nodesID.forEach(function(node) { 
+            if(node.id === nodeID) {
+                group = node.group.replace("Hidden","");
+            }
+        });
+    };
+
 
 
     cwLayoutNetwork.prototype.AddAllNodesFrom = function (event) {
@@ -1008,7 +1071,7 @@
 
     cwLayoutNetwork.prototype.filterExternalAssociation = function (filterName,id) {
         var changeSet,nodesToHighlight,nodesIdToHighlight,edgesToHighlight,edgesIdToHighlight,updateArray;
-        
+        this.updatePhysics();
         edgesToHighlight = this.externalFilters[filterName].getEdgesToBeFiltered(id); // on recupere les nodes qui sont associés à la data filtré
         nodesToHighlight = this.externalFilters[filterName].getNodesToBeFiltered(id); // on recupere les nodes qui sont associés à la data filtré
         changeSet = this.network.ActionAndGetChangeset(nodesToHighlight,true); // Generate the changeSet
@@ -1135,10 +1198,18 @@
 
     cwLayoutNetwork.prototype.createMenu = function (container) {
         var menuActions = [];
+        var menuAction5 = {};
+        menuAction5.title = "Remove Node";
+        menuAction5.eventName = "RemoveNode";
+        menuActions.push(menuAction5);
         var menuAction = {};
         menuAction.title = "Add Closes Nodes";
         menuAction.eventName = "AddClosesNodes";
         menuActions.push(menuAction);
+        var menuAction4 = {};
+        menuAction4.title = "Remove Closes Nodes";
+        menuAction4.eventName = "RemoveClosesNodes";
+        menuActions.push(menuAction4);
         var menuAction2 = {};
         menuAction2.title = "Add All Nodes From";
         menuAction2.eventName = "AddAllNodesFrom";

@@ -114,7 +114,7 @@
 
 
     network.prototype.getCloseNodes = function (id,edges,option) {
-        var i,tempNode;
+        var i,tempNode = null;
         var nodesArray = [];
         for (i = 0; i < edges.length; i += 1) {
             if(option.ImpactTo) { // on cherche les node qui partent de notre node
@@ -122,16 +122,15 @@
                     tempNode = this.objectTypeNodes[edges[i].toGroup].getVisDataIfDeactivated(edges[i].toId);  
                 } else if(edges[i].toUuid === id && edges[i].direction === 'to, from'){// si direction both sur le edge
                     tempNode = this.objectTypeNodes[edges[i].fromGroup].getVisDataIfDeactivated(edges[i].fromId);  
-                }
+                }    
             }
-            if(option.ImpactFrom) { // on cherche les node qui viennent de notre node
+            if(option.ImpactFrom && tempNode === null) { // on cherche les node qui viennent de notre node
                 if(edges[i].toUuid === id ) { 
                     tempNode = this.objectTypeNodes[edges[i].fromGroup].getVisDataIfDeactivated(edges[i].fromId);  
                 } else if(edges[i].fromUuid === id && edges[i].direction === 'to, from'){// si direction both sur le edge
                     tempNode = this.objectTypeNodes[edges[i].toGroup].getVisDataIfDeactivated(edges[i].toId);  
                 }
             }
-
             if(tempNode) {
                 if(option.rangeMax) {
                     nodesArray = nodesArray.concat(this.getCloseNodes(tempNode.id,edges,option));
