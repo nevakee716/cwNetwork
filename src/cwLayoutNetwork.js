@@ -34,7 +34,7 @@
         this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
         this.getExternalFilterNodes(true,this.options.CustomOptions['filterNode']);
         this.edgeOption = true;
-        this.clusterOption = false;
+        this.clusterOption = true;
         this.physicsOption = true;        
         this.removeLonely = true;
         this.CDSNodesOption = true;
@@ -328,7 +328,7 @@
         var simplifyObject, i, assoNode = {} , isData = false;
         // keep the node of the layout
         assoNode[this.mmNode.NodeID] = object.associations[this.mmNode.NodeID];
-        // complmentary node
+        // complementary node
         this.complementaryNode.forEach(function(nodeID) {
 			if(object.associations[nodeID]) {
         		assoNode[nodeID] = object.associations[nodeID];
@@ -467,23 +467,8 @@
             }
         };
 
+        this.createFilterObjects(filterContainer);
 
-        // Adding filter for all selector group
-        for (ObjectTypeNode in objectTypeNodes) {
-            if (objectTypeNodes.hasOwnProperty(ObjectTypeNode)) {
-                filterContainer.appendChild(objectTypeNodes[ObjectTypeNode].getFilterObject(this.nodeID,this.groupsArt));
-                i = i + 1;
-            }
-        }
-
-        // Adding filter for filtering by external association
-        var i = 0;
-        for (externalfilter in this.externalFilters) {
-            if (this.externalFilters.hasOwnProperty(externalfilter)) {
-                filterContainer.appendChild(this.externalFilters[externalfilter].getFilterObject("selectNetworkExternal_" + this.nodeID));
-                i = i + 1;
-            }
-        }
 
         // Adding filter search
         actionContainer.insertBefore(this.network.getSearchFilterObject(this.nodeID),actionContainer.firstChild);
@@ -495,7 +480,7 @@
         $('.selectNetworkPicker_' + this.nodeID).selectpicker(); 
         $('.selectNetworkExternal_' + this.nodeID).selectpicker(); 
         $('.selectNetworkSearch_' + this.nodeID).selectpicker(); 
-
+        $('.selectNetworkClusterByGroup_' + this.nodeID).selectpicker(); 
 
         // set height
         var titleReact = document.querySelector(".page-title").getBoundingClientRect();        
@@ -522,8 +507,7 @@
                     id = $(this).context[clickedIndex]['id'];
                     nodeId = id + "#" + scriptname;
                     if(newValue === false) { // hide a node
-                        nodes.remove(nodeId);
-                        self.network.hide(id,group);
+                        self.removeNodes([nodeId]);
                     } else { // add one node
                         self.network.show(id,group);
                         changeSet = self.network.getVisNode(id,group); // get all the node self should be put on
@@ -538,7 +522,7 @@
                             nodes.add(changeSet);
                             self.updatePhysics();
                         } else {
-                            nodes.remove(changeSet);
+                            self.removeNodes(changeSet);
                         }
                         if(self.networkUI) {
                             self.colorAllNodes();
@@ -549,6 +533,24 @@
                 }
             }
         });
+
+
+        // Cluster Group Filter
+        $('select.selectNetworkClusterByGroup_' + this.nodeID).on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+            var group = $(this).context['id'];
+            if(clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
+                var group = $(this).context[clickedIndex].innerHTML;
+                //self.disableGroupClusters();
+                if(clickedIndex !== 0) { // "exclusion du None"
+                    self.disableGroupClusters();
+                    self.clusterByGroup(group);
+                } else {
+                    self.disableGroupClusters();
+                }
+                $(this).selectpicker('val',""); 
+            }
+        });
+
 
         // External Filter
         $('select.selectNetworkExternal_' + this.nodeID).on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
@@ -591,7 +593,7 @@
                     options = {"nodes": [id]};
                     self.networkUI.setSelection(options);
                 } 
-                $(this).selectpicker('val',"" ); 
+                $(this).selectpicker('val',""); 
             }
         });
 
@@ -680,6 +682,74 @@
 
     };
 
+    // Create Filter selector
+    cwLayoutNetwork.prototype.createFilterObjects = function (filterContainer) {
+
+
+        filterContainer.className += " LayoutNetork_filterSection";
+
+        var externalfilter,objectTypeNode,objectTypeNodes = this.network.getObjectTypeNodes();
+
+        var filterGroupObject = document.createElement("div");
+        filterGroupObject.className = "LayoutNetork_filterGroup";
+
+
+        var filterGroupObjectTitle = document.createElement("div");
+        filterGroupObjectTitle.innerHTML  = "Objects Filters";
+        var filterGroupObjectFilters = document.createElement("div");
+        
+
+        var i = 0;
+        // Adding filter for all selector group
+        for (objectTypeNode in objectTypeNodes) {
+            if (objectTypeNodes.hasOwnProperty(objectTypeNode)) {
+                filterGroupObjectFilters.appendChild(objectTypeNodes[objectTypeNode].getFilterObject(this.nodeID,this.groupsArt));
+                i += 1;
+            }
+        }
+        if(i > 0) {
+            filterGroupObject.appendChild(filterGroupObjectTitle);
+            filterGroupObject.appendChild(filterGroupObjectFilters);
+            filterContainer.appendChild(filterGroupObject);
+        }
+
+        i = 0;
+        
+        var associationFilterObject = document.createElement("div");
+        associationFilterObject.className = "LayoutNetork_filterGroup";
+
+        var associationFilterObjectTitle = document.createElement("div");
+        associationFilterObjectTitle.innerHTML = "External Association Filters";
+        
+        var associationFilterObjectFilters = document.createElement("div");
+        for (externalfilter in this.externalFilters) {
+            if (this.externalFilters.hasOwnProperty(externalfilter)) {
+                associationFilterObjectFilters.appendChild(this.externalFilters[externalfilter].getFilterObject("selectNetworkExternal_" + this.nodeID));
+                i += 1;
+            }
+        }
+        if(i > 0) {
+            associationFilterObject.appendChild(associationFilterObjectTitle);
+            associationFilterObject.appendChild(associationFilterObjectFilters);
+            filterContainer.appendChild(associationFilterObject);
+        }
+
+        var clusterFilterObject = document.createElement("div");
+        clusterFilterObject.className = "LayoutNetork_filterGroup";
+
+        var clusterFilterObjectTitle = document.createElement("div");
+        clusterFilterObjectTitle.innerHTML = "Cluster by Groups";
+
+        var clusterFilterObjectFilter = document.createElement("div");
+        clusterFilterObjectFilter = this.network.getFilterClusterByGroup("selectNetworkClusterByGroup_" + this.nodeID);
+       
+        clusterFilterObject.appendChild(clusterFilterObjectTitle);
+        clusterFilterObject.appendChild(clusterFilterObjectFilter);
+        filterContainer.appendChild(clusterFilterObject);
+
+    };
+
+
 
     // Adding element to the search filter
     cwLayoutNetwork.prototype.addSearchFilterElement = function (event, properties, senderId) {
@@ -737,7 +807,7 @@
         var self = this;
         if(this.physics == true) {
             this.nodes.forEach(function(node) {
-                node.physics = true;
+                node.physics = !(node.cluster); 
                 self.nodes.update(node);
             });
         }
@@ -824,13 +894,34 @@
     cwLayoutNetwork.prototype.removeNodes = function (nodesID) {
         var self = this;
         nodesID.forEach(function(nodeID) {
-            var node = self.nodes.get(nodeID);
+            var node;
+            if(nodeID.hasOwnProperty("id")) {
+                node = self.nodes.get(nodeID.id);
+            } else {
+                node = self.nodes.get(nodeID);
+            }
             if(node) {
+                if(node.cluster) {
+                    var newClusters = [];
+                    self.clusters.forEach(function(cluster){
+                        if(cluster.head === node.id) {
+                            self.disableCluster(cluster);
+                        } else {
+                            cluster.nodes = cluster.nodes.filter(item => item !== node.id);
+                            if(cluster.nodes.length === 0) {
+                                self.disableCluster(cluster);
+                            } else {
+                                newClusters.push(cluster);
+                            }                  
+                        }
+                    });
+                    self.clusters = newClusters;
+                }
                 self.nodes.remove(node.id);
                 self.network.hide(node.id.split("#")[0],node.group.replace("Hidden",""));
                 $('select.selectNetworkPicker_' + self.nodeID + "." + node.group.replaceAll(" ","_").replace("Hidden","")).each(function( index ) { // put values into filters
                     if($(this).val()) {
-                        $(this).selectpicker('val',$(this).val().filter(item => item !== node.name));
+                        $(this).selectpicker('val',$(this).val().filter(item => item !== node.name.replaceAll("\n"," ")));
                     }
                 });
             }
@@ -845,7 +936,7 @@
 
     cwLayoutNetwork.prototype.clusterByHubsize = function(event) {
         var maxConnected = 4;
-        var distFactor = 10000;
+        var distFactor = 1000;
         var data = {
             nodes: this.nodes,
             edges: this.edges
@@ -894,7 +985,8 @@
         // cluster by distance
         var loop = true;
         while(loop) {
-            cluster = [];
+            cluster = {};
+            cluster.nodes = [];
             biggest = {};
             biggest.size = 0;
             nodesCount = 0;
@@ -916,66 +1008,133 @@
                 if(nodesToConnect.hasOwnProperty(n)){
                     point = nodePositions[n];
                     dist = (center.x - point.x)*(center.x - point.x) + (center.y - point.y)* (center.y - point.y);
-                    if(dist < distanceMax)  cluster.push(n);
+                    if(dist < distanceMax)  cluster.nodes.push(n);
                 }
             }
-            cluster.forEach(function(c) {
+            cluster.nodes.forEach(function(c) {
                 delete nodesToConnect[c];
             });
-            if(cluster.length < 2) loop = false;
+            if(cluster.nodes.length < 2) loop = false;
             else {
                 this.clusters.push(cluster);
             }
         }
-       
+    
+        this.activateClusterEvent();
+    };
 
-        var step = 50;
 
-        this.clusters.forEach(function(cluster){
-            self.createCluster(cluster,step);
+    cwLayoutNetwork.prototype.clusterByGroup = function(group) {
+        var cluster,nodeInCluster = {};
+        var self = this;
+        this.nodes.forEach(function(node) {
+            if(node.group === group) {
+                var ncs = self.networkUI.getConnectedNodes(node.id);
+                if(ncs.length > 0) {
+                    cluster = {};
+                    cluster.head = node.id;
+                    cluster.nodes = [];
+                    ncs.forEach(function(nc) {
+                        if(nodeInCluster.hasOwnProperty(nc)) { // if node already cluster
+                            if(nodeInCluster[nc].connectedNode < ncs.length) {
+                                cluster.nodes.push(nc);
+                                nodeInCluster[nc].cluster.nodes = nodeInCluster[nc].cluster.nodes.filter(item => item !== nc);
+                            }
+                        } else { // if node not clusterized
+                          nodeInCluster[nc] = {};  
+                          nodeInCluster[nc].cluster = cluster;
+                          nodeInCluster[nc].connectedNode = ncs.length;
+                          cluster.nodes.push(nc);
+                        }
+                    });
+                    self.clusters.push(cluster);
+                }
+            }
         });
 
-        this.networkUI.on("afterDrawing", function (ctx) {
-            self.clusters.forEach(function(cluster){
-                var nodePosition = self.networkUI.getPositions();
-                nodePosition = nodePosition[cluster.toString()];
-                var n,x,y;
-                
-                var dist = Math.sqrt(cluster.length)*50;
-                var xAdd=0,yAdd=0;
+        var filteredClusters = [];
+        self.clusters.forEach(function(cluster){
+            if(cluster.nodes.length > 0) filteredClusters.push(cluster);
+        });
+        this.clusters = filteredClusters;
+        this.activateClusterEvent();
+    };
 
-                for (var i = 0; i < cluster.length; i++) {
-                    if(xAdd >= dist) {
-                        xAdd = 0;
-                        yAdd += step; 
-                    }
-                    n = self.nodes.get(cluster[i]);
-                    x = nodePosition.x + xAdd - step/2;
-                    y = nodePosition.y + yAdd - step/2;
-                    xAdd += step;
-                    self.networkUI.moveNode(n.id,x,y);
+    cwLayoutNetwork.prototype.disableGroupClusters = function () {
+        var node,self = this;
+        self.clusters.forEach(function(cluster){
+            self.disableCluster(cluster);
+        });
+
+        this.clusters = [];
+    };
+
+    cwLayoutNetwork.prototype.disableCluster = function (cluster) {
+        var self = this;
+        cluster.nodes.forEach(function(nodeID) {
+            node = self.nodes.get(nodeID);
+            node.cluster = false;
+            node.physics = self.physics;
+            self.nodes.update(node);
+        });
+        if(cluster.head) {
+            var node = this.nodes.get(cluster.head);
+            node.physics = this.physics;
+            node.cluster = false;
+            node.size = undefined;
+            node.shape = undefined;
+            this.nodes.update(node);
+        }
+    };
+
+
+    cwLayoutNetwork.prototype.activateClusterEvent = function () {
+        var node,self = this;
+        self.clusters.forEach(function(cluster){
+            cluster.nodes.forEach(function(nodeID) {
+                node = self.nodes.get(nodeID);
+                node.physics = false;
+                node.cluster = true;
+                self.nodes.update(node);
+            });
+            if(cluster.head) {
+                var node = self.nodes.get(cluster.head);
+                node.physics = false;
+                node.size = 0;
+                node.shape = "square";
+                node.cluster = true;
+                self.nodes.update(node);
+            }
+        });
+
+
+        this.networkUI.on("beforeDrawing", function (ctx) {
+            self.clusters.forEach(function(cluster){
+                var nodePosition = self.networkUI.getPositions(cluster.nodes[0]);
+                nodePosition = nodePosition[cluster.nodes[0]];
+                var n = cluster.nodes.length;
+                var ystep= 60;
+                var labelmargin = 30;
+                var xmargin= 60;
+                var ymargin= 10;
+                
+                for(i=1;i < n;i++) {
+                   self.networkUI.moveNode(cluster.nodes[i],nodePosition.x,nodePosition.y+ystep*(i));
                 }
+                self.networkUI.moveNode(cluster.head,nodePosition.x,nodePosition.y-ymargin*2-labelmargin);
+   
+  
+                
+                var group = self.networkUI.groups.get(self.nodes.get(cluster.head).group);
+                ctx.strokeStyle = group.color.border;
+                ctx.lineWidth = 2;
+                ctx.fillStyle = group.color.background;
+                ctx.rect(nodePosition.x-xmargin, nodePosition.y-ymargin*2-labelmargin,2*xmargin,ystep*n+labelmargin);
+                ctx.fill();
+                ctx.stroke();
             }); 
         });
     };
-
-    // dealing with adding node with the menu
-    cwLayoutNetwork.prototype.createCluster = function (group,step) {
-        var self = this;
-        var node = {id: group.toString(),  label: '',shape: 'square',size: Math.sqrt(group.length) *step / 2,physics:false };
-        // var node = {id: group.toString(),  label: '',shape: 'square',size:0,physics:false };
-        this.nodes.add(node);
-        this.nodes.forEach(function(node) {
-            if(group.indexOf(node.id) !== -1) {
-                node.physics = false;
-                self.nodes.remove(node.id);
-                self.nodes.add(node);
-            }
-
-        });
-       // this.networkUI.redraw(group);
-    };
-
 
 // dealing with adding node with the menu
     cwLayoutNetwork.prototype.AddClosesNodes = function (event) {
@@ -1003,14 +1162,7 @@
         
     };
 
-    cwLayoutNetwork.prototype.RemoveNodes = function (nodesID) {
-        var self = this;
-        nodesID.forEach(function(node) { 
-            if(node.id === nodeID) {
-                group = node.group.replace("Hidden","");
-            }
-        });
-    };
+   
 
 
 

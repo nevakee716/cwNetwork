@@ -6,17 +6,20 @@
   display: block;
 }
 
-#cwLayoutNetwork {
-  display: block;
-}
-
 div.cwLayoutNetworkLegend {
 	display:flex;
 	width:80%
 }
-div.cwLayoutNetworkLegend div{
-	margin:auto;
-	font-size: 1rem;
+div.LayoutNetork_filterSection {
+	display:flex;
+}
+
+div.LayoutNetork_filterGroup {
+	display:block;
+}
+
+div.LayoutNetork_filterGroup div{
+	display:flex;
 }
 
 div.cwLayoutNetworkLegend i{

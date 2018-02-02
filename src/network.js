@@ -246,18 +246,20 @@
 
     };
 
-    network.prototype.getFilterAllGroups = function () {
+    network.prototype.getFilterClusterByGroup = function (className) {
 
       var filterObject;
         var object,objectType,node;
 
         filterObject = document.createElement("select");
-        filterObject.setAttribute('title','All Objects Groups');
-        filterObject.setAttribute('multiple','');
-        filterObject.setAttribute('data-actions-box','true');
-        filterObject.setAttribute('data-selected-text-format','static');
-        filterObject.setAttribute('data-size','10');
-        filterObject.className = "selectNetworkAllGroups";   
+        filterObject.className = className;  
+        
+        //Creation du None
+        object = document.createElement("option");
+        object.setAttribute('id',0);
+        object.textContent = 'None';
+        filterObject.appendChild(object);
+
         for (objectType in this.objectTypeNodes) {
             if (this.objectTypeNodes.hasOwnProperty(objectType)) {
                 object = document.createElement("option");
