@@ -67,6 +67,7 @@
     edgeVis.zipped = this.zipped;
     edgeVis.labels = this.labels;
     edgeVis.hidden = false;
+    edgeVis.hideByZipping = false;
     edgeVis.physics = true; 
     edgeVis.font = {};
     edgeVis.font.size = 6;

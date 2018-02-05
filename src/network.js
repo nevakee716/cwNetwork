@@ -246,19 +246,40 @@
 
     };
 
-    network.prototype.getFilterClusterByGroup = function (className) {
-
+    network.prototype.getFilterClusterByGroupHead = function (className) {
       var filterObject;
         var object,objectType,node;
 
         filterObject = document.createElement("select");
-        filterObject.className = className;  
-        
+        filterObject.className = className + "_head";  
+        filterObject.setAttribute('title',"Head Group");
+
         //Creation du None
         object = document.createElement("option");
         object.setAttribute('id',0);
         object.textContent = 'None';
         filterObject.appendChild(object);
+
+        for (objectType in this.objectTypeNodes) {
+            if (this.objectTypeNodes.hasOwnProperty(objectType)) {
+                object = document.createElement("option");
+                object.setAttribute('value',this.objectTypeNodes[objectType].label.replaceAll(" ","_"));
+                object.textContent = this.objectTypeNodes[objectType].label;
+                filterObject.appendChild(object);       
+            }
+        }   
+        return filterObject;
+    };
+
+    network.prototype.getFilterClusterByGroupChilds = function (className) {
+      var filterObject;
+        var object,objectType,node;
+
+        filterObject = document.createElement("select");
+        filterObject.className = className + "_child";  
+        filterObject.setAttribute('title',"Child Group");
+        filterObject.setAttribute('multiple','');
+
 
         for (objectType in this.objectTypeNodes) {
             if (this.objectTypeNodes.hasOwnProperty(objectType)) {

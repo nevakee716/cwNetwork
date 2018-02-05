@@ -23,6 +23,9 @@
         this.clusters = [];
         this.init = true;
         this.clustered = false;
+        this.clusterByGroupOption = {};
+        this.clusterByGroupOption.head = "";
+        this.clusterByGroupOption.child = [];
         this.edgeZipped = true;
         this.multiLineCount = this.options.CustomOptions['multiLineCount'];
         this.getspecificGroupList(this.options.CustomOptions['specificGroup']);        
@@ -350,10 +353,10 @@
 
         output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');
         output.push('<div class="bootstrap-iso" id="cwLayoutNetworkAction' + this.nodeID + '">');
-        if(this.physicsOption) output.push('<button id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '"> Disable Physics</button>');
-        if(this.clusterOption) output.push('<button id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
-        if(this.edgeOption) output.push('<button id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '"> Unzip Edges</button>');
-        if(this.removeLonely) output.push('<button id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '"> Remove Lonely Nodes</button>');
+        if(this.physicsOption) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '"> Disable Physics</button>');
+        if(this.clusterOption) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
+        if(this.edgeOption) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '"> Unzip Edges</button>');
+        if(this.removeLonely) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '"> Remove Lonely Nodes</button>');
         output.push('</div>');
         output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
         this.object = this.originalObject.associations;
@@ -480,7 +483,8 @@
         $('.selectNetworkPicker_' + this.nodeID).selectpicker(); 
         $('.selectNetworkExternal_' + this.nodeID).selectpicker(); 
         $('.selectNetworkSearch_' + this.nodeID).selectpicker(); 
-        $('.selectNetworkClusterByGroup_' + this.nodeID).selectpicker(); 
+        $('.selectNetworkClusterByGroup_' + this.nodeID + '_child').selectpicker(); 
+        $('.selectNetworkClusterByGroup_' + this.nodeID + '_head').selectpicker(); 
 
         // set height
         var titleReact = document.querySelector(".page-title").getBoundingClientRect();        
@@ -535,19 +539,27 @@
         });
 
 
-        // Cluster Group Filter
-        $('select.selectNetworkClusterByGroup_' + this.nodeID).on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+        // Cluster Group Filter Head
+        $('select.selectNetworkClusterByGroup_' + this.nodeID + "_head").on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
             var group = $(this).context['id'];
             if(clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-                var group = $(this).context[clickedIndex].innerHTML;
-                //self.disableGroupClusters();
-                if(clickedIndex !== 0) { // "exclusion du None"
-                    self.disableGroupClusters();
-                    self.clusterByGroup(group);
+                self.clusterByGroupOption.head = $(this).selectpicker('val').replaceAll("_"," ");;
+                self.clusterByGroup();
+            }
+        });
+
+        // Cluster Group Filter Child
+        $('select.selectNetworkClusterByGroup_' + this.nodeID + "_child").on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+            if(clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
+                self.clusterByGroupOption.child = [];
+                if($(this).selectpicker('val') && $(this).selectpicker('val').length > 0) {
+                    $(this).selectpicker('val').forEach(function(c) {
+                        self.clusterByGroupOption.child.push(c.replaceAll("_"," "));
+                    });                    
                 } else {
-                    self.disableGroupClusters();
+                    self.clusterByGroupOption.child = [];
                 }
-                $(this).selectpicker('val',""); 
+                self.clusterByGroup();
             }
         });
 
@@ -740,11 +752,14 @@
         var clusterFilterObjectTitle = document.createElement("div");
         clusterFilterObjectTitle.innerHTML = "Cluster by Groups";
 
-        var clusterFilterObjectFilter = document.createElement("div");
-        clusterFilterObjectFilter = this.network.getFilterClusterByGroup("selectNetworkClusterByGroup_" + this.nodeID);
-       
+        var clusterFilterObjectFilterHead = document.createElement("div");
+        clusterFilterObjectFilterHead = this.network.getFilterClusterByGroupHead("selectNetworkClusterByGroup_" + this.nodeID);
+        var clusterFilterObjectFilterChilds = document.createElement("div");
+        clusterFilterObjectFilterChilds = this.network.getFilterClusterByGroupChilds("selectNetworkClusterByGroup_" + this.nodeID);   
+
         clusterFilterObject.appendChild(clusterFilterObjectTitle);
-        clusterFilterObject.appendChild(clusterFilterObjectFilter);
+        clusterFilterObject.appendChild(clusterFilterObjectFilterHead);
+        clusterFilterObject.appendChild(clusterFilterObjectFilterChilds);
         filterContainer.appendChild(clusterFilterObject);
 
     };
@@ -828,10 +843,12 @@
             this.edges.forEach(function(edge) {
                 if(edge.zipped === true && edge.labels.length > 0) {
                     edge.hidden = true;
-                    edge.physics = false;    
+                    edge.physics = false;  
+                    edge.hideByZipping = true;  
                 } else if (edge.zipped === false) {
                     edge.hidden = false;
                     edge.physics = true;
+                    edge.hideByZipping = false;
                 }  
                 self.edges.update(edge);         
             }); 
@@ -842,9 +859,11 @@
                 if(edge.zipped === true && edge.labels.length > 0) {
                     edge.hidden = false;
                     edge.physics = true;    
+                    edge.hideByZipping = false;
                 } else if (edge.zipped === false) {
                     edge.hidden = true;
                     edge.physics = false;
+                    edge.hideByZipping = true;
                 }  
                 self.edges.update(edge);         
             });            
@@ -861,6 +880,7 @@
                     var newEdge = $.extend(true, {}, edge);
                     newEdge.zipped = false;
                     newEdge.hidden = true;
+                    newEdge.hideByZipping = true;
                     newEdge.physics = false;
                     newEdge.arrows = zipEdge.direction;
                     newEdge.label = zipEdge.label;   
@@ -908,6 +928,16 @@
                             self.disableCluster(cluster);
                         } else {
                             cluster.nodes = cluster.nodes.filter(item => item !== node.id);
+                            var connectedEdge = self.networkUI.getConnectedEdges(node.id);
+                            connectedEdge.forEach(function(edgeID) {
+                                var edge = self.edges.get(edgeID);
+                                if(edge.cluster == true) {
+                                    edge.cluster = false;
+                                    edge.hidden = edge.hideByZipping;
+                                    self.edges.update(edge);                    
+                                }
+                            });
+
                             if(cluster.nodes.length === 0) {
                                 self.disableCluster(cluster);
                             } else {
@@ -1024,28 +1054,36 @@
     };
 
 
-    cwLayoutNetwork.prototype.clusterByGroup = function(group) {
+    cwLayoutNetwork.prototype.clusterByGroup = function() {
+        this.disableGroupClusters();
+        if(this.clusterByGroupOption.head == "" || this.clusterByGroupOption.child.length < 1) {
+            return;
+        }
+
         var cluster,nodeInCluster = {};
         var self = this;
         this.nodes.forEach(function(node) {
-            if(node.group === group) {
+            if(node.group === self.clusterByGroupOption.head) {
                 var ncs = self.networkUI.getConnectedNodes(node.id);
                 if(ncs.length > 0) {
                     cluster = {};
                     cluster.head = node.id;
                     cluster.nodes = [];
                     ncs.forEach(function(nc) {
-                        if(nodeInCluster.hasOwnProperty(nc)) { // if node already cluster
-                            if(nodeInCluster[nc].connectedNode < ncs.length) {
-                                cluster.nodes.push(nc);
-                                nodeInCluster[nc].cluster.nodes = nodeInCluster[nc].cluster.nodes.filter(item => item !== nc);
+                        if(self.clusterByGroupOption.child.indexOf(self.nodes.get(nc).group) !== -1) {
+                            if(nodeInCluster.hasOwnProperty(nc)) { // if node already cluster
+                                if(nodeInCluster[nc].connectedNode < ncs.length) {
+                                    cluster.nodes.push(nc);
+                                    nodeInCluster[nc].cluster.nodes = nodeInCluster[nc].cluster.nodes.filter(item => item !== nc);
+                                }
+                            } else { // if node not clusterized
+                              nodeInCluster[nc] = {};  
+                              nodeInCluster[nc].cluster = cluster;
+                              nodeInCluster[nc].connectedNode = ncs.length;
+                              cluster.nodes.push(nc);
                             }
-                        } else { // if node not clusterized
-                          nodeInCluster[nc] = {};  
-                          nodeInCluster[nc].cluster = cluster;
-                          nodeInCluster[nc].connectedNode = ncs.length;
-                          cluster.nodes.push(nc);
                         }
+                        
                     });
                     self.clusters.push(cluster);
                 }
@@ -1076,6 +1114,15 @@
             node.cluster = false;
             node.physics = self.physics;
             self.nodes.update(node);
+            var connectedEdge = self.networkUI.getConnectedEdges(node.id);
+            connectedEdge.forEach(function(edgeID) {
+                var edge = self.edges.get(edgeID);
+                if(edge.cluster == true) {
+                    edge.cluster = false;
+                    edge.hidden = edge.hideByZipping;
+                    self.edges.update(edge);                    
+                }
+            });
         });
         if(cluster.head) {
             var node = this.nodes.get(cluster.head);
@@ -1100,12 +1147,60 @@
             if(cluster.head) {
                 var node = self.nodes.get(cluster.head);
                 node.physics = false;
+                var group = self.networkUI.groups.get(node.group);
+                if(!group || group.shape != "icon") {
+                    node.shape = "square";
+                }
                 node.size = 0;
-                node.shape = "square";
+                
                 node.cluster = true;
                 self.nodes.update(node);
+                var connectedEdge = self.networkUI.getConnectedEdges(node.id);
+                cluster.nodes.forEach(function(nodeID) {
+                    connectedEdge.forEach(function(edgeID) {
+                        if(edgeID.indexOf(nodeID) !== -1) {
+                            var edge = self.edges.get(edgeID);
+                            edge.hidden = true;
+                            edge.cluster = true;
+                            self.edges.update(edge);
+                        }
+                    });
+ 
+                });
+
             }
         });
+
+        function LightenDarkenColor(col, amt) {
+          
+            var usePound = false;
+          
+            if (col[0] == "#") {
+                col = col.slice(1);
+                usePound = true;
+            }
+         
+            var num = parseInt(col,16);
+         
+            var r = (num >> 16) + amt;
+         
+            if (r > 255) r = 255;
+            else if  (r < 0) r = 0;
+         
+            var b = ((num >> 8) & 0x00FF) + amt;
+         
+            if (b > 255) b = 255;
+            else if  (b < 0) b = 0;
+         
+            var g = (num & 0x0000FF) + amt;
+         
+            if (g > 255) g = 255;
+            else if (g < 0) g = 0;
+         
+            return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
+          
+        }
+
 
 
         this.networkUI.on("beforeDrawing", function (ctx) {
@@ -1114,27 +1209,33 @@
                 nodePosition = nodePosition[cluster.nodes[0]];
                 var n = cluster.nodes.length;
                 var ystep= 60;
-                var labelmargin = 30;
+                var labelmargin = 40;
                 var xmargin= 60;
                 var ymargin= 10;
-                
+                var headerOffset = 0;
+                if(group.shape === "icon") headerOffset = 20;
+
                 for(i=1;i < n;i++) {
                    self.networkUI.moveNode(cluster.nodes[i],nodePosition.x,nodePosition.y+ystep*(i));
                 }
-                self.networkUI.moveNode(cluster.head,nodePosition.x,nodePosition.y-ymargin*2-labelmargin);
+                self.networkUI.moveNode(cluster.head,nodePosition.x,nodePosition.y-ymargin*2-labelmargin - headerOffset);
    
   
                 
                 var group = self.networkUI.groups.get(self.nodes.get(cluster.head).group);
                 ctx.strokeStyle = group.color.border;
                 ctx.lineWidth = 2;
-                ctx.fillStyle = group.color.background;
+                if(group.shape === "icon") ctx.fillStyle = LightenDarkenColor(group.color.background,50);
+                else  ctx.fillStyle = group.color.background;
                 ctx.rect(nodePosition.x-xmargin, nodePosition.y-ymargin*2-labelmargin,2*xmargin,ystep*n+labelmargin);
                 ctx.fill();
                 ctx.stroke();
             }); 
         });
     };
+
+
+
 
 // dealing with adding node with the menu
     cwLayoutNetwork.prototype.AddClosesNodes = function (event) {
