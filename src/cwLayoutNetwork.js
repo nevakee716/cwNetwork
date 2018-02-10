@@ -823,19 +823,23 @@
     };
 
     cwLayoutNetwork.prototype.updatePhysics = function () {
-        var self = this;
+        var self = this,changeset = [];
+        
         if(this.physics == true) {
             this.nodes.forEach(function(node) {
                 node.physics = !(node.cluster); 
+                changeset.push(node);
                 self.nodes.update(node);
             });
         }
         else {
             this.nodes.forEach(function(node) {
                 node.physics = false;
-                self.nodes.update(node);
+                changeset.push(node);
+                
             });
         }
+        self.nodes.update(changeset);
     };
 
     
@@ -901,13 +905,15 @@
 
 
     cwLayoutNetwork.prototype.removeLonelyButtonAction  = function (event) {
-        var self = this;
+        var self = this,changeSetNode = [];
         this.nodes.forEach(function(node) {
             var ncs = self.networkUI.getConnectedNodes(node.id);
             if(ncs.length == 0) {
-                self.removeNodes([node.id]);
+                changeSetNode.push(node.id);
             }
-        });       
+        });   
+        self.removeNodes(changeSetNode);  
+
     };
 
     cwLayoutNetwork.prototype.RemoveNodeEvent  = function (event) {
@@ -916,7 +922,8 @@
     };
 
     cwLayoutNetwork.prototype.removeNodes = function (nodesID) {
-        var self = this;
+        var self = this,changeSetNode = [];
+
         nodesID.forEach(function(nodeID) {
             var node;
             if(nodeID.hasOwnProperty("id")) {
@@ -951,7 +958,7 @@
                     });
                     self.clusters = newClusters;
                 }
-                self.nodes.remove(node.id);
+                changeSetNode.push(node.id);
                 self.network.hide(node.id.split("#")[0],node.group.replace("Hidden",""));
                 $('select.selectNetworkPicker_' + self.nodeID + "." + node.group.replaceAll(" ","_").replace("Hidden","")).each(function( index ) { // put values into filters
                     if($(this).val()) {
@@ -960,6 +967,7 @@
                 });
             }
         });
+        self.nodes.remove(changeSetNode);
     };
 
 
@@ -1130,40 +1138,45 @@
     };
 
     cwLayoutNetwork.prototype.disableCluster = function (cluster) {
-        var self = this;
+        var self = this,changeSetNode = [],changeSetEdge = [];
         cluster.nodes.forEach(function(nodeID) {
             node = self.nodes.get(nodeID);
             node.cluster = false;
             node.physics = self.physics;
-            self.nodes.update(node);
+            changeSetNode.push(node);
+
             var connectedEdge = self.networkUI.getConnectedEdges(node.id);
             connectedEdge.forEach(function(edgeID) {
                 var edge = self.edges.get(edgeID);
                 if(edge.cluster == true) {
                     edge.cluster = false;
                     edge.hidden = edge.hideByZipping;
-                    self.edges.update(edge);                    
+                    changeSetEdge.push(edge);                   
                 }
             });
         });
+
         if(cluster.head) {
             var node = this.nodes.get(cluster.head);
             node.physics = this.physics;
             node.cluster = false;
             node.size = undefined;
             node.shape = undefined;
-            this.nodes.update(node);
+            changeSetNode.push(node);
         }
+        this.edges.update(changeSetEdge); 
+        this.nodes.update(changeSetNode);
     };
 
 
     cwLayoutNetwork.prototype.activateClusterEvent = function () {
-        var connectedEdge,head,node,self = this;
+        var connectedEdge,head,node,self = this,changeSetNode=[],changeSetEdge=[];
         self.clusters.forEach(function(cluster){
             cluster.nodes.forEach(function(nodeID) {
                 node = self.nodes.get(nodeID);
                 node.physics = false;
                 node.cluster = true;
+                changeSetNode.push(node);
                 self.nodes.update(node);
             });
 
@@ -1175,7 +1188,7 @@
                     if((edge.from === nodeID && cluster.nodes.indexOf(edge.to) !== -1) || (edge.to === nodeID && cluster.nodes.indexOf(edge.from) !== -1)) {
                         edge.hidden = true;
                         edge.cluster = true;
-                        self.edges.update(edge);
+                        changeSetEdge.push(edge);
                     }
                 });
             });
@@ -1191,7 +1204,7 @@
                 }
                 head.size = 0;
                 head.cluster = true;
-                self.nodes.update(head);
+                changeSetNode.push(head);
                 connectedEdge = self.networkUI.getConnectedEdges(head.id);
                 cluster.nodes.forEach(function(nodeID) {
                     connectedEdge.forEach(function(edgeID) {
@@ -1199,12 +1212,14 @@
                             var edge = self.edges.get(edgeID);
                             edge.hidden = true;
                             edge.cluster = true;
-                            self.edges.update(edge);
+                            changeSetEdge.push(edge);
                         }
                     });
                 });
             }
         });
+        this.edges.update(changeSetEdge);
+        this.nodes.update(changeSetNode);
 
         function LightenDarkenColor(col, amt) {
           
