@@ -37,7 +37,7 @@
         this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
         this.getExternalFilterNodes(true,this.options.CustomOptions['filterNode']);
         this.edgeOption = true;
-        this.clusterOption = true;
+        this.clusterOption = false;
         this.physicsOption = true;        
         this.removeLonely = true;
         this.CDSNodesOption = true;
@@ -357,6 +357,7 @@
         if(this.clusterOption) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
         if(this.edgeOption) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '"> Unzip Edges</button>');
         if(this.removeLonely) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '"> Remove Lonely Nodes</button>');
+        output.push('<button id="cwLayoutNetworkButtonsDownload' + this.nodeID + '"><i class="fa fa-download" aria-hidden="true"></i></button>');
         output.push('</div>');
         output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
         this.object = this.originalObject.associations;
@@ -630,6 +631,9 @@
             var removeLonelyButton = document.getElementById("cwLayoutNetworkButtonsLonelyNodes" + this.nodeID);
             removeLonelyButton.addEventListener('click', this.removeLonelyButtonAction.bind(this)); 
         }
+        var downloadButton = document.getElementById("cwLayoutNetworkButtonsDownload" + this.nodeID);
+        downloadButton.addEventListener('click', this.downloadImage.bind(this)); 
+
 
 
         
@@ -1054,44 +1058,62 @@
     };
 
 
+
+
+
     cwLayoutNetwork.prototype.clusterByGroup = function() {
         this.disableGroupClusters();
         if(this.clusterByGroupOption.head == "" || this.clusterByGroupOption.child.length < 1) {
             return;
         }
 
-        var cluster,nodeInCluster = {};
+        var cluster,nodeInCluster = {},heads = [];
         var self = this;
-        this.nodes.forEach(function(node) {
-            if(node.group === self.clusterByGroupOption.head) {
+        var i = 0;
+
+
+
+        var nodes = this.nodes.get();
+        nodes.sort(function(a, b) {
+            return self.networkUI.getConnectedNodes(b.id).length - self.networkUI.getConnectedNodes(a.id).length;
+        });
+
+        nodes.forEach(function(node) {
+            if(node.group === self.clusterByGroupOption.head && !nodeInCluster.hasOwnProperty(node.id)) {
                 var ncs = self.networkUI.getConnectedNodes(node.id);
                 if(ncs.length > 0) {
                     cluster = {};
                     cluster.head = node.id;
                     cluster.nodes = [];
+                    heads.push(node.id);
                     ncs.forEach(function(nc) {
-                        if(self.clusterByGroupOption.child.indexOf(self.nodes.get(nc).group) !== -1) {
-                            if(nodeInCluster.hasOwnProperty(nc)) { // if node already cluster
-                                if(nodeInCluster[nc].connectedNode < ncs.length) {
-                                    cluster.nodes.push(nc);
-                                    nodeInCluster[nc].cluster.nodes = nodeInCluster[nc].cluster.nodes.filter(item => item !== nc);
+                        if(heads.indexOf(nc) === -1) {
+                            if(self.clusterByGroupOption.child.indexOf(self.nodes.get(nc).group) !== -1) { // if in child group
+                                if(nodeInCluster.hasOwnProperty(nc)) { // if node already cluster
+                                    if(nodeInCluster[nc].connectedNode < ncs.length) {
+                                        cluster.nodes.push(nc);
+                                        self.clusters[nodeInCluster[nc].i].nodes = self.clusters[nodeInCluster[nc].i].nodes.filter(item => item !== nc);
+                                        nodeInCluster[nc] = {}; 
+                                        nodeInCluster[nc].i = i;
+                                        nodeInCluster[nc].connectedNode = ncs.length;
+                                    }
+                                } else { // if node not clusterized
+                                  nodeInCluster[nc] = {};  
+                                  nodeInCluster[nc].connectedNode = ncs.length;
+                                  nodeInCluster[nc].i = i;
+                                  cluster.nodes.push(nc);
                                 }
-                            } else { // if node not clusterized
-                              nodeInCluster[nc] = {};  
-                              nodeInCluster[nc].cluster = cluster;
-                              nodeInCluster[nc].connectedNode = ncs.length;
-                              cluster.nodes.push(nc);
                             }
                         }
-                        
                     });
                     self.clusters.push(cluster);
+                    i++;
                 }
             }
         });
 
         var filteredClusters = [];
-        self.clusters.forEach(function(cluster){
+        self.clusters.forEach(function(cluster){ // remove cluster which are empty
             if(cluster.nodes.length > 0) filteredClusters.push(cluster);
         });
         this.clusters = filteredClusters;
@@ -1136,7 +1158,7 @@
 
 
     cwLayoutNetwork.prototype.activateClusterEvent = function () {
-        var node,self = this;
+        var connectedEdge,head,node,self = this;
         self.clusters.forEach(function(cluster){
             cluster.nodes.forEach(function(nodeID) {
                 node = self.nodes.get(nodeID);
@@ -1144,18 +1166,33 @@
                 node.cluster = true;
                 self.nodes.update(node);
             });
+
+            // hide connection inside the cluster
+            cluster.nodes.forEach(function(nodeID) {
+                connectedEdge = self.networkUI.getConnectedEdges(nodeID);
+                connectedEdge.forEach(function(edgeID) {
+                    var edge = self.edges.get(edgeID);
+                    if((edge.from === nodeID && cluster.nodes.indexOf(edge.to) !== -1) || (edge.to === nodeID && cluster.nodes.indexOf(edge.from) !== -1)) {
+                        edge.hidden = true;
+                        edge.cluster = true;
+                        self.edges.update(edge);
+                    }
+                });
+            });
+
+
+            // reshape the head and hide connection between head and cluster node
             if(cluster.head) {
-                var node = self.nodes.get(cluster.head);
-                node.physics = false;
-                var group = self.networkUI.groups.get(node.group);
+                head = self.nodes.get(cluster.head);
+                head.physics = false;
+                var group = self.networkUI.groups.get(head.group);
                 if(!group || group.shape != "icon") {
-                    node.shape = "square";
+                    head.shape = "square";
                 }
-                node.size = 0;
-                
-                node.cluster = true;
-                self.nodes.update(node);
-                var connectedEdge = self.networkUI.getConnectedEdges(node.id);
+                head.size = 0;
+                head.cluster = true;
+                self.nodes.update(head);
+                connectedEdge = self.networkUI.getConnectedEdges(head.id);
                 cluster.nodes.forEach(function(nodeID) {
                     connectedEdge.forEach(function(edgeID) {
                         if(edgeID.indexOf(nodeID) !== -1) {
@@ -1165,9 +1202,7 @@
                             self.edges.update(edge);
                         }
                     });
- 
                 });
-
             }
         });
 
@@ -1213,19 +1248,18 @@
                 var xmargin= 60;
                 var ymargin= 10;
                 var headerOffset = 0;
+
+                var group = self.networkUI.groups.get(self.nodes.get(cluster.head).group);
                 if(group.shape === "icon") headerOffset = 20;
 
                 for(i=1;i < n;i++) {
                    self.networkUI.moveNode(cluster.nodes[i],nodePosition.x,nodePosition.y+ystep*(i));
                 }
                 self.networkUI.moveNode(cluster.head,nodePosition.x,nodePosition.y-ymargin*2-labelmargin - headerOffset);
-   
-  
-                
-                var group = self.networkUI.groups.get(self.nodes.get(cluster.head).group);
+
                 ctx.strokeStyle = group.color.border;
                 ctx.lineWidth = 2;
-                if(group.shape === "icon") ctx.fillStyle = LightenDarkenColor(group.color.background,50);
+                if(group.shape === "icon") ctx.fillStyle = LightenDarkenColor(group.color.background,100);
                 else  ctx.fillStyle = group.color.background;
                 ctx.rect(nodePosition.x-xmargin, nodePosition.y-ymargin*2-labelmargin,2*xmargin,ystep*n+labelmargin);
                 ctx.fill();
@@ -1234,6 +1268,41 @@
         });
     };
 
+
+
+    cwLayoutNetwork.prototype.downloadImage = function (event) {
+
+        function downloadURI(uri, name) {
+            var link = document.createElement("a");
+            link.download = name;
+            link.href = uri;
+            link.click();
+        }
+
+        try {
+            this.networkUI.fit();
+            var container = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
+            var oldheight = container.offsetHeight; 
+            var scale = this.networkUI.getScale(); // change size of the canva to have element in good resolution
+            container.style.width = (container.offsetWidth * 2/scale ).toString() + "px";
+            container.style.height = (container.offsetHeight * 2/scale ).toString() + "px";
+            this.networkUI.redraw();
+            downloadURI(container.firstElementChild.firstElementChild.toDataURL('image/png'),cwAPI.getPageTitle() + ".png");
+            this.networkUI.on("afterDrawing",function (ctx) {});
+            container.style.height = oldheight + "px";
+            container.style.width = "";
+            
+            this.networkUI.redraw();
+            this.networkUI.fit();
+        }
+        catch (e) {
+            console.log(e);
+        }
+
+
+
+
+    };
 
 
 
