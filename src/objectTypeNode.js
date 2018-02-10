@@ -72,14 +72,32 @@
         filterObject.setAttribute('name',this.label);
         filterObject.setAttribute('id',this.label);
         filterObject.setAttribute('scriptname',this.scriptname);
+
+        var array = [];
         for (node in this.nodes) {
             if (this.nodes.hasOwnProperty(node)) {
-                object = document.createElement("option");
-                object.setAttribute('id',this.nodes[node].getId());
-                object.textContent = this.nodes[node].getLabel().replaceAll("\n"," ");
-                filterObject.appendChild(object);
+                var element = {};
+                element.id = this.nodes[node].getId();
+                element.label = this.nodes[node].getLabel().replaceAll("\n"," ");
+                array.push(element);
             }                                                                                                                                                                                                                                                                                                                                                                                                            
         }
+        array.sort(function (a, b) {
+            var nameA=a.label.toLowerCase(), nameB=b.label.toLowerCase();
+            if (nameA < nameB) //sort string ascending
+                return -1;
+            if (nameA > nameB)
+                return 1;
+            return 0; //default return value (no sorting)
+        });
+
+        array.forEach(function(element) {
+            object = document.createElement("option");
+            object.setAttribute('id',element.id);
+            object.textContent = element.label; 
+            filterObject.appendChild(object);
+        });
+
         return filterObject;
     };
 
