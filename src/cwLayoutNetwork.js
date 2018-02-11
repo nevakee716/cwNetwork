@@ -80,6 +80,36 @@
         }
     };
 
+    cwLayoutNetwork.prototype.LightenDarkenColor = function(col, amt) {
+          
+        var usePound = false;
+      
+        if (col[0] == "#") {
+            col = col.slice(1);
+            usePound = true;
+        }
+     
+        var num = parseInt(col,16);
+     
+        var r = (num >> 16) + amt;
+     
+        if (r > 255) r = 255;
+        else if  (r < 0) r = 0;
+     
+        var b = ((num >> 8) & 0x00FF) + amt;
+     
+        if (b > 255) b = 255;
+        else if  (b < 0) b = 0;
+     
+        var g = (num & 0x0000FF) + amt;
+     
+        if (g > 255) g = 255;
+        else if (g < 0) g = 0;
+     
+        return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
+      
+    };
+
     cwLayoutNetwork.prototype.getFontAwesomeList = function(options) {
         function string_as_unicode_escape(str){
             return str.split("").map(function(s){
@@ -107,8 +137,8 @@
                             groups[optionSplit[0]].color.border = optionSplit[3];
                             groups[optionSplit[0]].color.background = optionSplit[3];
                             groups[optionSplit[0]].color.highlight = {};
-                            groups[optionSplit[0]].color.highlight.border = optionSplit[3];
-                            groups[optionSplit[0]].color.highlight.background = optionSplit[3];
+                            groups[optionSplit[0]].color.highlight.border = this.LightenDarkenColor(optionSplit[3],-50);
+                            groups[optionSplit[0]].color.highlight.background = this.LightenDarkenColor(optionSplit[3],-50);
                             groups[optionSplit[0]].icon.color = optionSplit[3];   
                         }
                         groups[optionSplit[0]].icon.size = '40'; 
@@ -118,12 +148,12 @@
                         groups[optionSplit[0]].shape = optionSplit[1];
                         if(optionSplit[2]) {
                             groups[optionSplit[0]].color = {};
-                            if(optionSplit[3]) {groups[optionSplit[0]].color.border = optionSplit[3];}
-                            else {groups[optionSplit[0]].color.border = optionSplit[2];}
+                            if(optionSplit[3]) groups[optionSplit[0]].color.border = optionSplit[3];
+                            else groups[optionSplit[0]].color.border = this.LightenDarkenColor(optionSplit[2],50);
                             groups[optionSplit[0]].color.background = optionSplit[2];
                             groups[optionSplit[0]].color.highlight = {};
-                            groups[optionSplit[0]].color.highlight.border = optionSplit[2];
-                            groups[optionSplit[0]].color.highlight.background = optionSplit[2];
+                            groups[optionSplit[0]].color.highlight.border = this.LightenDarkenColor(optionSplit[2],-50);
+                            groups[optionSplit[0]].color.highlight.background = this.LightenDarkenColor(optionSplit[2],-50);
                         }                
                     }
                                  
@@ -938,7 +968,7 @@
                         if(cluster.head === node.id) {
                             self.disableCluster(cluster);
                         } else {
-                            cluster.nodes = cluster.nodes.filter(item => item !== node.id);
+                            cluster.nodes = cluster.nodes.filter(function(item) { return item !== node.id;});
                             var connectedEdge = self.networkUI.getConnectedEdges(node.id);
                             connectedEdge.forEach(function(edgeID) {
                                 var edge = self.edges.get(edgeID);
@@ -962,7 +992,7 @@
                 self.network.hide(node.id.split("#")[0],node.group.replace("Hidden",""));
                 $('select.selectNetworkPicker_' + self.nodeID + "." + node.group.replaceAll(" ","_").replace("Hidden","")).each(function( index ) { // put values into filters
                     if($(this).val()) {
-                        $(this).selectpicker('val',$(this).val().filter(item => item !== node.name.replaceAll("\n"," ")));
+                        $(this).selectpicker('val',$(this).val().filter(function(item) { return item !== node.name.replaceAll("\n"," ");}));
                     }
                 });
             }
@@ -1100,7 +1130,7 @@
                                 if(nodeInCluster.hasOwnProperty(nc)) { // if node already cluster
                                     if(nodeInCluster[nc].connectedNode < ncs.length) {
                                         cluster.nodes.push(nc);
-                                        self.clusters[nodeInCluster[nc].i].nodes = self.clusters[nodeInCluster[nc].i].nodes.filter(item => item !== nc);
+                                        self.clusters[nodeInCluster[nc].i].nodes = self.clusters[nodeInCluster[nc].i].nodes.filter(function(item) { return item !== nc;});
                                         nodeInCluster[nc] = {}; 
                                         nodeInCluster[nc].i = i;
                                         nodeInCluster[nc].connectedNode = ncs.length;
@@ -1221,35 +1251,7 @@
         this.edges.update(changeSetEdge);
         this.nodes.update(changeSetNode);
 
-        function LightenDarkenColor(col, amt) {
-          
-            var usePound = false;
-          
-            if (col[0] == "#") {
-                col = col.slice(1);
-                usePound = true;
-            }
-         
-            var num = parseInt(col,16);
-         
-            var r = (num >> 16) + amt;
-         
-            if (r > 255) r = 255;
-            else if  (r < 0) r = 0;
-         
-            var b = ((num >> 8) & 0x00FF) + amt;
-         
-            if (b > 255) b = 255;
-            else if  (b < 0) b = 0;
-         
-            var g = (num & 0x0000FF) + amt;
-         
-            if (g > 255) g = 255;
-            else if (g < 0) g = 0;
-         
-            return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
-          
-        }
+
 
 
 
@@ -1274,7 +1276,7 @@
 
                 ctx.strokeStyle = group.color.border;
                 ctx.lineWidth = 2;
-                if(group.shape === "icon") ctx.fillStyle = LightenDarkenColor(group.color.background,100);
+                if(group.shape === "icon") ctx.fillStyle = self.LightenDarkenColor(group.color.background,100);
                 else  ctx.fillStyle = group.color.background;
                 ctx.rect(nodePosition.x-xmargin, nodePosition.y-ymargin*2-labelmargin,2*xmargin,ystep*n+labelmargin);
                 ctx.fill();
@@ -1287,11 +1289,29 @@
 
     cwLayoutNetwork.prototype.downloadImage = function (event) {
 
-        function downloadURI(uri, name) {
+        function downloadURI(canvas, name) {
             var link = document.createElement("a");
-            link.download = name;
-            link.href = uri;
-            link.click();
+            //link.download = name;
+            //link.href = uri;
+            //link.click();
+            //var blob = new Blob([uri], { type: "image/png" });
+            //window.navigator.msSaveOrOpenBlob(uri, name);
+
+            if (canvas.msToBlob) { //for IE
+                var blob = canvas.msToBlob();
+                window.navigator.msSaveBlob(blob, name);
+            } else {
+                //other browsers
+                link.href = canvas.toDataURL('image/png');
+                link.download = name;
+                // create a mouse event
+                var event = new MouseEvent('click');
+
+                // dispatching it will open a save as dialog in FF
+                link.dispatchEvent(event);
+            }
+
+
         }
 
         try {
@@ -1302,7 +1322,7 @@
             container.style.width = (container.offsetWidth * 2/scale ).toString() + "px";
             container.style.height = (container.offsetHeight * 2/scale ).toString() + "px";
             this.networkUI.redraw();
-            downloadURI(container.firstElementChild.firstElementChild.toDataURL('image/png'),cwAPI.getPageTitle() + ".png");
+            downloadURI(container.firstElementChild.firstElementChild,cwAPI.getPageTitle() + ".png");
             this.networkUI.on("afterDrawing",function (ctx) {});
             container.style.height = oldheight + "px";
             container.style.width = "";
