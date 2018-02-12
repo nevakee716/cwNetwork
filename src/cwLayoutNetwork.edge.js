@@ -5,7 +5,7 @@
 /*global cwAPI, jQuery */
 (function (cwApi, $) {
     "use strict";
-    if(cwApi && cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
+    if(cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
       var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
     } else {
     // constructor

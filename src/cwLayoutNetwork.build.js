@@ -5,7 +5,7 @@
 /*global cwAPI, jQuery */
 (function (cwApi, $) {
     "use strict";
-    if(cwApi && cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
+    if(cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
       var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
     } else {
     // constructor
@@ -253,7 +253,10 @@
         }
         var downloadButton = document.getElementById("cwLayoutNetworkButtonsDownload" + this.nodeID);
         downloadButton.addEventListener('click', this.downloadImage.bind(this)); 
-     
+
+
+
+        
         // fill the search filter
         data.nodes.on("add", this.addSearchFilterElement.bind(this));
         data.nodes.on("remove", this.removeSearchFilterElement.bind(this));

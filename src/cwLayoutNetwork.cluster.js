@@ -5,7 +5,7 @@
 /*global cwAPI, jQuery */
 (function (cwApi, $) {
     "use strict";
-    if(cwApi && cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
+    if(cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
       var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
     } else {
     // constructor
@@ -131,7 +131,7 @@
         });
 
         nodes.forEach(function(node) {
-            if(node.group === self.clusterByGroupOption.head && !nodeInCluster.hasOwnProperty(node.id)) {
+            if((node.group === self.clusterByGroupOption.head || node.group === self.clusterByGroupOption.head + "Hidden") && !nodeInCluster.hasOwnProperty(node.id)) {
                 var ncs = self.networkUI.getConnectedNodes(node.id);
                 if(ncs.length > 0) {
                     cluster = {};
@@ -140,7 +140,7 @@
                     heads.push(node.id);
                     ncs.forEach(function(nc) {
                         if(heads.indexOf(nc) === -1) {
-                            if(self.clusterByGroupOption.child.indexOf(self.nodes.get(nc).group) !== -1) { // if in child group
+                            if(self.clusterByGroupOption.child.indexOf(self.nodes.get(nc).group.replace("Hidden","")) !== -1 ) { // if in child group
                                 if(nodeInCluster.hasOwnProperty(nc)) { // if node already cluster
                                     if(nodeInCluster[nc].connectedNode < ncs.length) {
                                         cluster.nodes.push(nc);
