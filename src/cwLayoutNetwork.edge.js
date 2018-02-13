@@ -19,6 +19,7 @@
     
     cwLayoutNetwork.prototype.edgeZipButtonAction  = function (event) {
         var self = this;
+        var changeSetEdges = [];
         if(this.edgeZipped == true) {
             event.target.innerHTML = "Zip Edges";
             this.edgeZipped = false;
@@ -32,7 +33,7 @@
                     edge.physics = true;
                     edge.hideByZipping = false;
                 }  
-                self.edges.update(edge);         
+                changeSetEdges.push(edge);     
             }); 
         } else {
             event.target.innerHTML = "unZip Edges";
@@ -47,10 +48,11 @@
                     edge.physics = false;
                     edge.hideByZipping = true;
                 }  
-                self.edges.update(edge);         
+                changeSetEdges.push(edge);          
             });            
         }
-        this.networkUI.redraw();
+        this.edges.update(changeSetEdges); 
+        // this.networkUI.redraw();
 
     };
 
