@@ -42,7 +42,8 @@
         this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);
         this.getdirectionList(this.options.CustomOptions['arrowDirection']);
         this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
-        this.getExternalFilterNodes(true,this.options.CustomOptions['filterNode']);
+        this.getExternalFilterNodes(this.options.CustomOptions['filterNode'],this.options.CustomOptions['filterNodeBehaviour']);
+        this.getExternalFilterToSelectOnStart(this.options.CustomOptions['externalFilterToSelectOnStart']);       
         this.edgeOption = true;
         this.clusterOption = false;
         this.physicsOption = true;        

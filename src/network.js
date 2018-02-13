@@ -36,7 +36,7 @@
         if(!this.objectTypeNodes.hasOwnProperty(object.group)) {
             this.objectTypeNodes[object.group] = new cwApi.customLibs.cwLayoutNetwork.objectTypeNode(object.group,object.objectTypeScriptName); 
         }
-        this.objectTypeNodes[object.group].addNode(object.object_id,object.name,object.customDisplayString,object.filterArray,nodeOptions);
+        this.objectTypeNodes[object.group].addNode(object.object_id,object.name,object.customDisplayString,object.icon,object.filterArray,nodeOptions);
 
     };
 

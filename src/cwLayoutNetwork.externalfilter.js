@@ -39,6 +39,9 @@
     cwLayoutNetwork.prototype.filterExternalAssociation = function (filterName,id) {
         var changeSet,nodesToHighlight,nodesIdToHighlight,edgesToHighlight,edgesIdToHighlight,updateArray;
         this.updatePhysics();
+
+        
+
         edgesToHighlight = this.externalFilters[filterName].getEdgesToBeFiltered(id); // on recupere les nodes qui sont associés à la data filtré
         nodesToHighlight = this.externalFilters[filterName].getNodesToBeFiltered(id); // on recupere les nodes qui sont associés à la data filtré
         changeSet = this.network.ActionAndGetChangeset(nodesToHighlight,true); // Generate the changeSet
@@ -62,7 +65,7 @@
         if(this.networkUI) {
             this.colorNodes(nodesIdToHighlight);
             this.colorEdges(nodesIdToHighlight);
-            this.colorUnZipEdges(nodesIdToHighlight,edgesIdToHighlight);
+            if(edgesIdToHighlight.length > 0) this.colorUnZipEdges(nodesIdToHighlight,edgesIdToHighlight);
         }
     };
 

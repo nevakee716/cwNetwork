@@ -172,14 +172,7 @@
         this.activateClusterEvent();
     };
 
-    cwLayoutNetwork.prototype.disableGroupClusters = function () {
-        var node,self = this;
-        self.clusters.forEach(function(cluster){
-            self.disableCluster(cluster);
-        });
 
-        this.clusters = [];
-    };
 
     cwLayoutNetwork.prototype.disableCluster = function (cluster) {
         var self = this,changeSetNode = [],changeSetEdge = [];

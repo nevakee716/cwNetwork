@@ -197,6 +197,7 @@
                 id = $(this).context[clickedIndex]['id'];
                 self.externalFilters[filterName].selectedId = id;
                 if(id !== "0") { // On ne selectionne pas la case "None"
+                    if(self.externalFilters[filterName].behaviour === "absolute") self.deActivateAllGroup();
                     self.filterExternalAssociation(filterName,id);
                 } else {
                     if(self.networkUI) {
@@ -264,9 +265,15 @@
         // Activate Starting groups
         this.activateStartingGroup();
 
-        // initialize your network!/*# sourceMappingURL=bootstrap.min.css.map */
+        // initialize your network 
         this.networkUI = new vis.Network(networkContainer, data, this.networkOptions);
 
+
+
+        // Activate Starting groups
+        this.activateStartingExternalFilter();
+
+        
         // Creation du menu et binding
         this.createMenu(networkContainer);
         networkContainer.addEventListener('RemoveNode', this.RemoveNodeEvent.bind(this));  
@@ -316,13 +323,7 @@
     };
 
 
-    // Adding group at start
-    cwLayoutNetwork.prototype.activateStartingGroup = function (event) {
-        var self = this;
-        this.groupToSelectOnStart.forEach(function(group) {
-            $('.selectNetworkPicker_' + self.nodeID + "." + group.replaceAll(" ","_")).selectpicker('selectAll');
-        });
-    };
+
 
 
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;

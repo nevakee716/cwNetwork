@@ -69,7 +69,12 @@
                         element.customDisplayString = this.multiLine(this.getItemDisplayString(nextChild),this.multiLineCount);
                         element.object_id = nextChild.object_id;
                         element.objectTypeScriptName = nextChild.objectTypeScriptName;
-
+                        if(nextChild.properties.icon && nextChild.properties.color) {
+                            element.icon = {};
+                            element.icon.code = nextChild.properties.icon;
+                            element.icon.color = nextChild.properties.color;
+                        }
+                        else element.icon = null;
                         // on check si l'element appartient deja a un group
                         if(!this.objects.hasOwnProperty(element.object_id + "#" + element.objectTypeScriptName)) {
                             if(this.specificGroup.hasOwnProperty(associationNode)) { // mise en place du groupe
@@ -96,14 +101,7 @@
                                     self.externalFilters[filterKey].addNodeToFields(filterGroup[filterKey],element); 
                                 });
                             });
-                        } else {
-                            filtersGroup.forEach(function(filterGroup) {
-                                Object.keys(filterGroup).map(function(filterKey, index) {
-                                    self.externalFilters[filterKey].addNodeToFields(filterGroup[filterKey],father);  
-                                });
-                            });
-                                                     
-                        }
+                        } 
 
                         if(this.directionList.hasOwnProperty(associationNode)) { // ajout de la direction
                             element.direction = this.directionList[associationNode];
@@ -115,7 +113,11 @@
                 }
             } 
         }
-
+        filtersGroup.forEach(function(filterGroup) {
+            Object.keys(filterGroup).map(function(filterKey, index) {
+                self.externalFilters[filterKey].addNodeToFields(filterGroup[filterKey],father);  
+            });
+        });   
         return childrenArray;
     };
 

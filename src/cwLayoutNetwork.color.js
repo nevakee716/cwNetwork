@@ -52,17 +52,20 @@
 
     cwLayoutNetwork.prototype.getEdgeColorFromGroup = function (group) {
         var color = {};
-        if(this.networkUI.groups.groups[group].icon) {
-           color.color = this.networkUI.groups.groups[group].icon.color;
-        } else {
-            if(this.networkUI.groups.groups[group].color.hasOwnProperty("border")) {
-                color.color = this.networkUI.groups.groups[group].color.border;    
+        if(this.networkUI.groups.groups[group]) {
+            if(this.networkUI.groups.groups[group].icon) {
+               color.color = this.networkUI.groups.groups[group].icon.color;
             } else {
-                color.color = this.networkUI.groups.groups[group].color;    
-            }  
-        } 
-        color.highlight = color.color;
-        color.hover = color.color;
+                if(this.networkUI.groups.groups[group].color.hasOwnProperty("border")) {
+                    color.color = this.networkUI.groups.groups[group].color.border;    
+                } else {
+                    color.color = this.networkUI.groups.groups[group].color;    
+                }  
+            } 
+            color.highlight = color.color;
+            color.hover = color.color;            
+        }
+        
         return color;
     };
 

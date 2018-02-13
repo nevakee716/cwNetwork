@@ -101,6 +101,8 @@
         filterContainer.appendChild(clusterFilterObject);
 
     };
-    
+  
+
+
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;
 }(cwAPI, jQuery));
