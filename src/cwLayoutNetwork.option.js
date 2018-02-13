@@ -146,9 +146,9 @@
     };
 
 
-    cwLayoutNetwork.prototype.getExternalFilterNodes = function(nodeType,customOptions) {
-        var optionList = customOptions.split("#");
-        for (var i = 0; i < optionList.length; i += 1) {
+    cwLayoutNetwork.prototype.getExternalFilterNodes = function(nodesOptions,filterBehaviour) {
+        var i,optionList = nodesOptions.split("#");
+        for (i = 0; i < optionList.length; i += 1) {
             if(optionList[i] !== "") {
                 var optionSplit = optionList[i].split(":");
                 if(this.externalFilters.hasOwnProperty(optionSplit[1])) {
@@ -164,7 +164,25 @@
                 }
             }
         }
+
+        optionList = filterBehaviour.split("#");
+        for (i = 0; i < optionList.length; i += 1) {
+            if(optionList[i] !== "") {
+                var optionSplit = optionList[i].split(":");
+                if(this.externalFilters.hasOwnProperty(optionSplit[0])) {
+                    this.externalFilters[optionSplit[0]].behaviour = optionSplit[1]; 
+                } 
+            }
+        }
+
     };
-    
+  
+
+    cwLayoutNetwork.prototype.getExternalFilterToSelectOnStart = function(options) {
+        if(options) {
+            this.externalFilterToSelectOnStart = options.split(":");
+        }
+    };
+
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;
 }(cwAPI, jQuery));

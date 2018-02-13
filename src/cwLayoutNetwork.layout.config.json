@@ -49,7 +49,13 @@
     {
         "Id": "filterNode",
         "DisplayName": "Filter Association",
-        "Description": "Select Nodes that would be use to filter Node. Use comma separator",
+        "Description": "Select Nodes that would be use to filter Node. nodeID:FilterName#nodeID2:FilterName2",
+        "Type": 0
+    },
+    {
+        "Id": "filterNodeBehaviour",
+        "DisplayName": "Filter Association Behaviour",
+        "Description": "FilterName:Behaviour",
         "Type": 0
     },
     {
@@ -57,5 +63,18 @@
         "DisplayName": "Complementary Node",
         "Description": "Select Nodes you want to add that are not under your layout network (see documentation for exemple)",
         "Type": 0
-    }]
+    },
+    {
+        "Id": "clusterToSelectOnStart",
+        "DisplayName": "Cluster To Select On Start",
+        "Description": "List the Cluster you want to apply when the network is started. Head#Child,Child2",
+        "Type": 0
+    },
+    {
+        "Id": "externalFilterToSelectOnStart",
+        "DisplayName": "External Filter To Select On Start",
+        "Description": "filterName:IdOfItem",
+        "Type": 0
+    }
+    ]
 }
