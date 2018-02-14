@@ -71,10 +71,11 @@
         var associationFilterObjectTitle = document.createElement("div");
         associationFilterObjectTitle.innerHTML = "External Association Filters";
         
-        var associationFilterObjectFilters = document.createElement("div");
+        var initID,associationFilterObjectFilters = document.createElement("div");
         for (externalfilter in this.externalFilters) {
             if (this.externalFilters.hasOwnProperty(externalfilter)) {
-                associationFilterObjectFilters.appendChild(this.externalFilters[externalfilter].getFilterObject("selectNetworkExternal_" + this.nodeID));
+                if(this.externalFilterToSelectOnStart && externalfilter === this.externalFilterToSelectOnStart[0]) {initID = this.externalFilterToSelectOnStart[1];}
+                associationFilterObjectFilters.appendChild(this.externalFilters[externalfilter].getFilterObject("selectNetworkExternal_" + this.nodeID,initID));
                 i += 1;
             }
         }

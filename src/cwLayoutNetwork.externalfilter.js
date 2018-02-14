@@ -26,13 +26,23 @@
         }
     };
 
-
     cwLayoutNetwork.prototype.setExternalFilterToNone = function () {
         $('select.selectNetworkExternal_' + this.nodeID).selectpicker('val','None'); 
         for(var extF in this.externalFilters) {
             if(this.externalFilters.hasOwnProperty(extF)) {
                 this.externalFilters[extF].selectedId = 0; 
             }
+        }
+    };
+
+    cwLayoutNetwork.prototype.setExternalFilterToValue = function (filterName,id) {
+        try {
+            this.externalFilters[filterName].selectedId = parseInt(this.externalFilterToSelectOnStart[1]);
+            this.filterExternalAssociation(filterName,id); 
+            $('select.selectNetworkExternal_' + this.nodeID + "." + filterName).selectpicker('val',this.externalFilters[filterName].filterField[id].name); 
+        }
+        catch(e) {
+            console.log(e);
         }
     };
 

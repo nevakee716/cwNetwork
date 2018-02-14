@@ -181,6 +181,7 @@
     cwLayoutNetwork.prototype.getExternalFilterToSelectOnStart = function(options) {
         if(options) {
             this.externalFilterToSelectOnStart = options.split(":");
+           this.externalFilterToSelectOnStart[1] =  parseInt(this.externalFilterToSelectOnStart[1]);
         }
     };
 

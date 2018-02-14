@@ -36,9 +36,7 @@
     cwLayoutNetwork.prototype.activateStartingExternalFilter = function () {
         if(this.externalFilterToSelectOnStart) {
             var filterName = this.externalFilterToSelectOnStart[0],id = parseInt(this.externalFilterToSelectOnStart[1]);
-
-            this.externalFilters[filterName].selectedId = parseInt(this.externalFilterToSelectOnStart[1]);
-            this.filterExternalAssociation(filterName,id);           
+            this.setExternalFilterToValue(filterName,id);
         }
 
     };
@@ -53,13 +51,15 @@
 
     // Adding group at start
     cwLayoutNetwork.prototype.deActivateAllGroup = function (event) {
-        var changeset = [], self = this;
+        var OT,changeset = [], self = this;
         
         this.disableGroupClusters();
-        this.networkUI.groups.groupsArray.forEach(function(group) {
-            changeset = changeset.concat(self.network.SetAllAndGetNodesObject(false,group));
-            $('.selectNetworkPicker_' + self.nodeID + "." + group.replaceAll(" ","_")).selectpicker('val',"");
-        });
+        for(OT in self.network.objectTypeNodes) {
+            if(self.network.objectTypeNodes.hasOwnProperty(OT)) {
+                changeset = changeset.concat(self.network.SetAllAndGetNodesObject(false,OT));
+                $('.selectNetworkPicker_' + self.nodeID + "." + OT.replaceAll(" ","_")).selectpicker('val',"");                
+            }
+        }
         this.nodes.remove(changeset);
     };
 

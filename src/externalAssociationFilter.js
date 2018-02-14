@@ -159,7 +159,7 @@
         filterObject.setAttribute('data-size','5');
        //filterObject.setAttribute('data-width','fit');
         
-        filterObject.className = classname;
+        filterObject.className = classname + " " + this.label;
         filterObject.setAttribute('filterName',this.label);
 
         //Creation du None
