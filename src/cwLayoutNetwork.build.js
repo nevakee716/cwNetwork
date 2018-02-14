@@ -200,6 +200,7 @@
                     if(self.externalFilters[filterName].behaviour === "absolute") self.deActivateAllGroup();
                     self.filterExternalAssociation(filterName,id);
                 } else {
+                    self.setExternalFilterToNone();
                     if(self.networkUI) {
                         self.colorAllNodes();
                         self.colorAllEdges();                        
