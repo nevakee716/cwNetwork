@@ -33,7 +33,6 @@
         this.clusterByGroupOption = {};
         this.clusterByGroupOption.head = "";
         this.clusterByGroupOption.child = [];
-        this.edgeZipped = true;
         this.multiLineCount = this.options.CustomOptions['multiLineCount'];
         this.getspecificGroupList(this.options.CustomOptions['specificGroup']);        
         this.getPopOutList(this.options.CustomOptions['popOutList']);
@@ -43,11 +42,15 @@
         this.getdirectionList(this.options.CustomOptions['arrowDirection']);
         this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
         this.getExternalFilterNodes(this.options.CustomOptions['filterNode'],this.options.CustomOptions['filterNodeBehaviour']);
-        this.getExternalFilterToSelectOnStart(this.options.CustomOptions['externalFilterToSelectOnStart']);       
-        this.edgeOption = true;
-        this.clusterOption = false;
-        this.physicsOption = true;        
-        this.removeLonely = true;
+        this.getExternalFilterToSelectOnStart(this.options.CustomOptions['externalFilterToSelectOnStart']);  
+        this.getStartingCluster(this.options.CustomOptions['clusterToSelectOnStart']);
+
+
+        this.edgeOption = this.options.CustomOptions['zipEdgeOption'];
+        this.edgeZipped = this.options.CustomOptions['zipEdgeInitState'];
+        this.clusterOption = this.options.CustomOptions['clusterOn'];
+        this.physicsOption = this.options.CustomOptions['physicsOn'];       
+        this.removeLonely = this.options.CustomOptions['removeLonelyOn'];
         this.CDSNodesOption = true;
         this.CDSFilterOption = false;
         this.physics = true;

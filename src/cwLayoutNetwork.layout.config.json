@@ -65,6 +65,12 @@
         "Type": 0
     },
     {
+        "Id": "clusterOn",
+        "DisplayName": "Activate Cluster",
+        "Description": "Check to Activate the cluster",
+        "Type": 1
+    },
+    {
         "Id": "clusterToSelectOnStart",
         "DisplayName": "Cluster To Select On Start",
         "Description": "List the Cluster you want to apply when the network is started. Head#Child,Child2",
@@ -75,6 +81,30 @@
         "DisplayName": "External Filter To Select On Start",
         "Description": "filterName:IdOfItem",
         "Type": 0
+    },
+    {
+        "Id": "zipEdgeOption",
+        "DisplayName": "Activate UnzipEdge Option",
+        "Description": "Activate the button to unzip edge",
+        "Type": 1
+    },  
+    {
+        "Id": "zipEdgeInitState",
+        "DisplayName": "Edge Zip at Start",
+        "Description": "Activate this button to zip the edge at start",
+        "Type": 1
+    },
+    {
+        "Id": "physicsOn",
+        "DisplayName": "Physics Button",
+        "Description": "Activate button to disable the physics",
+        "Type": 1
+    },
+    {
+        "Id": "removeLonelyOn",
+        "DisplayName": "Remove Lonely Objects",
+        "Description": "Activate the option to remove lonely object",
+        "Type": 1
     }
     ]
 }

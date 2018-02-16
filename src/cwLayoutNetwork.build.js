@@ -104,6 +104,7 @@
         $('.selectNetworkPicker_' + this.nodeID).selectpicker(); 
         $('.selectNetworkExternal_' + this.nodeID).selectpicker(); 
         $('.selectNetworkSearch_' + this.nodeID).selectpicker(); 
+        
         $('.selectNetworkClusterByGroup_' + this.nodeID + '_child').selectpicker(); 
         $('.selectNetworkClusterByGroup_' + this.nodeID + '_head').selectpicker(); 
 
@@ -169,6 +170,7 @@
             }
         });
 
+
         // Cluster Group Filter Child
         $('select.selectNetworkClusterByGroup_' + this.nodeID + "_child").on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
             if(clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
@@ -183,7 +185,7 @@
                 self.clusterByGroup();
             }
         });
-
+    
 
         // External Filter
         $('select.selectNetworkExternal_' + this.nodeID).on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
@@ -234,10 +236,11 @@
 
        
         // Action for button
-        if(this.clusterOption) {
+        /* if(this.clusterOption) {
             var clusterButton = document.getElementById("cwLayoutNetworkButtonsCluster" + this.nodeID); 
             clusterButton.addEventListener('click', this.clusterByHubsize.bind(this));              
-        }
+        }*/
+
         if(this.physicsOption){
             var physicsButton = document.getElementById("cwLayoutNetworkButtonsPhysics" + this.nodeID);
             physicsButton.addEventListener('click', this.stopPhysics.bind(this)); 
@@ -245,8 +248,15 @@
 
         if(this.edgeOption){
             var zipEdgeButton = document.getElementById("cwLayoutNetworkButtonsZipEdge" + this.nodeID);
-            zipEdgeButton.addEventListener('click', this.edgeZipButtonAction.bind(this)); 
+            zipEdgeButton.addEventListener('click', this.edgeZipButtonAction.bind(this));
             this.createUnzipEdge();
+
+            var event = {};
+            event.target = zipEdgeButton;
+            if(this.edgeZipped === false) {
+                this.edgeZipped = true;
+                this.edgeZipButtonAction(event);
+            }
         }
 
         if(this.removeLonely){
@@ -271,10 +281,12 @@
 
 
 
-        // Activate Starting groups
+        // Activate External Filter
         this.activateStartingExternalFilter();
 
-        
+        // Activate Cluster
+        this.activateStartingCluster();
+
         // Creation du menu et binding
         this.createMenu(networkContainer);
         networkContainer.addEventListener('RemoveNode', this.RemoveNodeEvent.bind(this));  
@@ -304,6 +316,7 @@
                 self.openObjectPage(split[0],split[1]);
             }
         });
+        
 
         var stop = false;
         this.networkUI.on("stabilizationIterationsDone", function () {

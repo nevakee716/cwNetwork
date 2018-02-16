@@ -145,6 +145,18 @@
         }
     };
 
+    cwLayoutNetwork.prototype.getStartingCluster = function(options) {
+        try {
+            if(options) {
+                this.clusterByGroupOption.head = options.split("#")[0];
+                this.clusterByGroupOption.child = options.split("#")[1].split(",");
+            }           
+        } catch(e) {
+            console.log(e);
+        }
+
+    };
+
 
     cwLayoutNetwork.prototype.getExternalFilterNodes = function(nodesOptions,filterBehaviour) {
         var i,optionList = nodesOptions.split("#");

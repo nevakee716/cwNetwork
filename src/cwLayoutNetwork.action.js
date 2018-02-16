@@ -24,6 +24,21 @@
     };
 
 
+
+    // Adding group at start
+    cwLayoutNetwork.prototype.activateStartingCluster = function (event) {
+        var self = this;
+        $('select.selectNetworkClusterByGroup_' + self.nodeID + "_head").selectpicker('val',this.clusterByGroupOption.head); 
+        $('select.selectNetworkClusterByGroup_' + self.nodeID + "_child").selectpicker('val',this.clusterByGroupOption.child); 
+        self.clusterByGroup();
+    };
+
+
+
+
+
+
+
     // Adding all group
     cwLayoutNetwork.prototype.activateAllGroup = function (event) {
         var self = this;
@@ -43,6 +58,7 @@
 
     cwLayoutNetwork.prototype.disableGroupClusters = function () {
         var node,self = this;
+        this.networkUI.off("afterDrawing");
         self.clusters.forEach(function(cluster){
             self.disableCluster(cluster);
         });

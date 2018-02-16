@@ -85,21 +85,23 @@
             filterContainer.appendChild(associationFilterObject);
         }
 
-        var clusterFilterObject = document.createElement("div");
-        clusterFilterObject.className = "LayoutNetork_filterGroup";
+        if(this.clusterOption) {
+            var clusterFilterObject = document.createElement("div");
+            clusterFilterObject.className = "LayoutNetork_filterGroup";
 
-        var clusterFilterObjectTitle = document.createElement("div");
-        clusterFilterObjectTitle.innerHTML = "Cluster by Groups";
+            var clusterFilterObjectTitle = document.createElement("div");
+            clusterFilterObjectTitle.innerHTML = "Cluster by Groups";
 
-        var clusterFilterObjectFilterHead = document.createElement("div");
-        clusterFilterObjectFilterHead = this.network.getFilterClusterByGroupHead("selectNetworkClusterByGroup_" + this.nodeID);
-        var clusterFilterObjectFilterChilds = document.createElement("div");
-        clusterFilterObjectFilterChilds = this.network.getFilterClusterByGroupChilds("selectNetworkClusterByGroup_" + this.nodeID);   
+            var clusterFilterObjectFilterHead = document.createElement("div");
+            clusterFilterObjectFilterHead = this.network.getFilterClusterByGroupHead("selectNetworkClusterByGroup_" + this.nodeID);
+            var clusterFilterObjectFilterChilds = document.createElement("div");
+            clusterFilterObjectFilterChilds = this.network.getFilterClusterByGroupChilds("selectNetworkClusterByGroup_" + this.nodeID);   
 
-        clusterFilterObject.appendChild(clusterFilterObjectTitle);
-        clusterFilterObject.appendChild(clusterFilterObjectFilterHead);
-        clusterFilterObject.appendChild(clusterFilterObjectFilterChilds);
-        filterContainer.appendChild(clusterFilterObject);
+            clusterFilterObject.appendChild(clusterFilterObjectTitle);
+            clusterFilterObject.appendChild(clusterFilterObjectFilterHead);
+            clusterFilterObject.appendChild(clusterFilterObjectFilterChilds);
+            filterContainer.appendChild(clusterFilterObject);
+        }
 
     };
   
