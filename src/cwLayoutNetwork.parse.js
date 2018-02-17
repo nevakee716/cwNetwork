@@ -34,6 +34,28 @@
         return getDisplayStringFromLayout(this.layoutsByNodeId[item.nodeID]);
     };
 
+    cwLayoutNetwork.prototype.getAssociationDisplayString = function(item){
+        var assoNodeID,assoItem = {},l, getDisplayStringFromLayout = function(layout,assoItem){
+            return layout.displayProperty.getDisplayString(assoItem);
+        };
+        try {
+            assoItem.name = item.iName;
+            assoItem.objectTypeScriptName = item.iObjectTypeScriptName;
+            assoItem.properties = item.iProperties;
+
+            assoNodeID = this.viewSchema.NodesByID[item.nodeID].IntersectionSchemaNodeId;
+            if (!this.layoutsByNodeId.hasOwnProperty(assoNodeID)){
+                var layoutOptions = this.viewSchema.NodesByID[assoNodeID].LayoutOptions;
+                this.layoutsByNodeId[assoNodeID] = new cwApi.cwLayouts[this.viewSchema.NodesByID[assoNodeID].LayoutName](layoutOptions, this.viewSchema);
+            } 
+            return getDisplayStringFromLayout(this.layoutsByNodeId[assoNodeID],assoItem);
+        } catch(e) {
+            console.log(e);
+            return;
+        }
+        
+    };
+
     cwLayoutNetwork.prototype.simplify = function (child,father,hiddenNode) {
         var childrenArray = [];
         var filterArray = [];
@@ -101,7 +123,13 @@
                                     self.externalFilters[filterKey].addNodeToFields(filterGroup[filterKey],element); 
                                 });
                             });
-                        } 
+                        } else { // association properties
+                            if(nextChild.iProperties) {
+                                element.edge = {};
+                                element.edge.label = this.multiLine(this.getAssociationDisplayString(nextChild),this.multiLineCount);
+                                element.edge.id = child.object_id;
+                            } 
+                        }
 
                         if(this.directionList.hasOwnProperty(associationNode)) { // ajout de la direction
                             element.direction = this.directionList[associationNode];
@@ -122,7 +150,7 @@
     };
 
     cwLayoutNetwork.prototype.multiLine = function(name,size) {
-        if(size !== "" && size > 0) {
+        if(name && size !== "" && size > 0) {
             var nameSplit = name.split(" "); 
             var carry = 0;
             var multiLineName = "";
@@ -137,7 +165,7 @@
             }
             multiLineName = multiLineName + nameSplit[nameSplit.length - 1];
 
-            return multiLineName ;            
+            return multiLineName.trim() ;            
         } else {
             return name;
         }
