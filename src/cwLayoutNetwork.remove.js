@@ -87,10 +87,10 @@
         var nodeID = event.data.d.nodes[0];
         var connected = this.networkUI.getConnectedNodes(nodeID);
         if(connected) {
-            connected.push(nodeID);
+            //connected.push(nodeID);
             this.removeNodes(connected);
         } else {
-            this.removeNodes([nodeID]);
+            //this.removeNodes([nodeID]);
         }
         
     };

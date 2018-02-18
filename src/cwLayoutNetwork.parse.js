@@ -113,6 +113,7 @@
                             element.edge = {};
                             element.edge.label = this.multiLine(this.getItemDisplayString(child),this.multiLineCount);
                             element.edge.id = child.object_id;
+                            element.edge.unique = false;
                             element.edge.objectTypeScriptName = child.objectTypeScriptName;
                             element.filterArray = filterArray; 
                             filtersGroup.forEach(function(filterGroup) {
@@ -126,6 +127,7 @@
                         } else { // association properties
                             if(nextChild.iProperties) {
                                 element.edge = {};
+                                element.edge.unique = true;
                                 element.edge.label = this.multiLine(this.getAssociationDisplayString(nextChild),this.multiLineCount);
                                 element.edge.id = child.object_id;
                             } 

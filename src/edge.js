@@ -8,48 +8,53 @@
   var edge = function(fromUuid,toUuid, fromId, toId,fromGroup,toGroup,direction,edgeInfo) {
     this.size = 1;
     this.labels = [];
-    if(direction === undefined) direction = "to";
-    if(direction.indexOf('from') === -1) {
-      this.fromUuid = fromUuid;
-      this.toUuid = toUuid;
-      this.fromGroup = fromGroup;
-      this.toGroup = toGroup;
-      this.fromId = fromId;
-      this.toId = toId;   
-    } else {
+    this.direction = {};
+    this.direction.to = false;
+    this.direction.from = false;
+
+    if(direction == 'from') {
       this.fromUuid = toUuid;
       this.toUuid = fromUuid;
       this.fromGroup = toGroup; 
       this.toGroup = fromGroup;
       this.fromId = toId;
       this.toId = fromId; 
+      this.direction.to = true;
+      direction = 'to';
+    } else {
+      this.fromUuid = fromUuid;
+      this.toUuid = toUuid;
+      this.fromGroup = fromGroup;
+      this.toGroup = toGroup;
+      this.fromId = fromId;
+      this.toId = toId;   
+      if(direction == 'to') this.direction.to = true;
     }
-    this.direction = 'to';
-    if(edgeInfo) {
+    if(edgeInfo && edgeInfo.unique) {
+      this.label = edgeInfo.label;
+    } else {
       this.zipped = true;
-      this.labels.push({"label" : edgeInfo.label,"id":edgeInfo.id,"scriptname":edgeInfo.objectTypeScriptName,"direction" : this.direction,"uuid":this.labels.length});     
+      this.labels.push({"label" : edgeInfo.label,"id":edgeInfo.id,"scriptname":edgeInfo.objectTypeScriptName,"direction" : direction,"uuid":this.labels.length});     
     }
   };
 
   //permet de lire les propriétés de l'asso et de choisir quoi afficher en fonction du champs custom
   edge.prototype.addEdgeElement = function(direction,edgeInfo,reverse) {
     var newDirection = direction;
-    if(edgeInfo) {
+    if(edgeInfo && !edgeInfo.unique) {
       this.zipped = true;
       if(reverse) {
         if(direction == "from") newDirection = "to";
         else newDirection = "from";     
       } 
-      else if(newDirection === undefined ) newDirection = "to";
+      //else if(newDirection === undefined ) newDirection = "to";
       this.labels.push({"label" : edgeInfo.label,"direction" : newDirection,"id":edgeInfo.id,"scriptname":edgeInfo.objectTypeScriptName,"uuid":this.labels.length}); 
-    }
-
-    if(direction) {
-      if(direction === "from" || (direction === "to" && reverse)) {
-        this.direction = 'to, from';
-      }
       this.size = this.size + 3;
     }
+
+    if(direction === 'to' && reverse || direction === 'from' && !reverse) this.direction.from = true;
+    else if(direction === 'from' && reverse || direction === 'to' && !reverse) this.direction.to = true;
+    
   };
 
 
@@ -59,9 +64,7 @@
     edgeVis.id = this.fromUuid + "#" + this.toUuid;
     edgeVis.from = this.fromUuid;
     edgeVis.to = this.toUuid; 
-    if(this.direction) {
-      edgeVis.arrows = this.direction;     
-    }  
+    edgeVis.arrows = this.getDirection();     
     edgeVis.color = {inherit:'from'};  
     edgeVis.width = this.size;
     edgeVis.zipped = this.zipped;
@@ -71,6 +74,7 @@
     edgeVis.physics = true; 
     edgeVis.font = {};
     edgeVis.font.size = 6;
+    edgeVis.label = this.label;
     return edgeVis;
   };
 
@@ -83,10 +87,19 @@
     edge.toGroup = this.toGroup;   
     edge.fromUuid = this.fromUuid;
     edge.toUuid = this.toUuid; 
-    edge.direction = this.direction; 
+    edge.direction = this.getDirection();   
     return edge;
   };
 
+  //permet de lire les propriétés de l'asso et de choisir quoi afficher en fonction du champs custom
+  edge.prototype.getDirection = function() {
+    if(this.direction.to && this.direction.from) return 'to, from';
+    else if(this.direction.to) return 'to';
+    else if(this.direction.from) return 'from';
+    return;
+  };
+
+    
 
   if (!cwApi.customLibs) {
     cwApi.customLibs = {};
