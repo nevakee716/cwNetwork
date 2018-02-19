@@ -177,40 +177,44 @@
 
    // obligatoire appeler par le system
     cwLayoutNetwork.prototype.drawAssociations = function (output, associationTitleText, object) {
-        this.originalObject  = $.extend({}, object);
-        var simplifyObject, i, assoNode = {} , isData = false;
-        // keep the node of the layout
-        assoNode[this.mmNode.NodeID] = object.associations[this.mmNode.NodeID];
-        // complementary node
-        this.complementaryNode.forEach(function(nodeID) {
-            if(object.associations[nodeID]) {
-                assoNode[nodeID] = object.associations[nodeID];
-            }
-        });
-
-        this.originalObject.associations = assoNode;     
-        var simplifyObject = this.simplify(this.originalObject);
-        if(simplifyObject.length > 0) isData = true;
-        if(!cwAPI.isIndexPage()) {
-            simplifyObject = this.addObjectOfObjectPage(simplifyObject,object);
-        }      
-       
-        this.network = new cwApi.customLibs.cwLayoutNetwork.network();
-        this.network.searchForNodesAndEdges(simplifyObject,this.nodeOptions);
-
-        if(isData) output.push('<div class="cw-visible" id="cwLayoutNetwork' + this.nodeID + '">'); 
-        else output.push('<div id="cwLayoutNetwork' + this.nodeID + '">');
-
-        output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');
-        output.push('<div class="bootstrap-iso" id="cwLayoutNetworkAction' + this.nodeID + '">');
-        if(this.physicsOption) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '"> Disable Physics</button>');
-        //if(this.clusterOption) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
-        if(this.edgeOption) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '"> Unzip Edges</button>');
-        if(this.removeLonely) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '"> Remove Lonely Nodes</button>');
-        output.push('<button id="cwLayoutNetworkButtonsDownload' + this.nodeID + '"><i class="fa fa-download" aria-hidden="true"></i></button>');
-        output.push('</div>');
-        output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
-        this.object = this.originalObject.associations;
+        try {
+            this.originalObject  = $.extend({}, object);
+            var simplifyObject, i, assoNode = {} , isData = false;
+            // keep the node of the layout
+            assoNode[this.mmNode.NodeID] = object.associations[this.mmNode.NodeID];
+            // complementary node
+            this.complementaryNode.forEach(function(nodeID) {
+                if(object.associations[nodeID]) {
+                    assoNode[nodeID] = object.associations[nodeID];
+                }
+            });
+    
+            this.originalObject.associations = assoNode;     
+            var simplifyObject = this.simplify(this.originalObject);
+            if(simplifyObject.length > 0) isData = true;
+            if(!cwAPI.isIndexPage()) {
+                simplifyObject = this.addObjectOfObjectPage(simplifyObject,object);
+            }      
+           
+            this.network = new cwApi.customLibs.cwLayoutNetwork.network();
+            this.network.searchForNodesAndEdges(simplifyObject,this.nodeOptions);
+    
+            if(isData) output.push('<div class="cw-visible" id="cwLayoutNetwork' + this.nodeID + '">'); 
+            else output.push('<div id="cwLayoutNetwork' + this.nodeID + '">');
+    
+            output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');
+            output.push('<div class="bootstrap-iso" id="cwLayoutNetworkAction' + this.nodeID + '">');
+            if(this.physicsOption) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '"> Disable Physics</button>');
+            //if(this.clusterOption) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsCluster' + this.nodeID + '"> Cluster Nodes</button>');
+            if(this.edgeOption) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '"> Unzip Edges</button>');
+            if(this.removeLonely) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '"> Remove Lonely Nodes</button>');
+            output.push('<button id="cwLayoutNetworkButtonsDownload' + this.nodeID + '"><i class="fa fa-download" aria-hidden="true"></i></button>');
+            output.push('</div>');
+            output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
+            this.object = this.originalObject.associations;
+        } catch(e) {
+            return ;
+        }   
     };
 
     cwLayoutNetwork.prototype.addObjectOfObjectPage = function (simplifyObject,object) {
