@@ -1,10 +1,11 @@
 | **Name** | **cwLayoutNetwork** | **Version** | 
 | --- | --- | --- |
-| **Updated by** | Mathias PFAUWADEL | 3.9 |
+| **Updated by** | Mathias PFAUWADEL | 4.0 |
 
 
 ## Patch Notes
 
+* 4.0 : Cluster, Download Image, display association custom display string
 * 3.9 : External Association Filter work with zippedEdges
 * 3.8 : Adding 2 buttons to zip and unzip Edge and to disable physics
 * 3.7 : Network is now correctly zoom at start 
@@ -45,7 +46,7 @@ You can use filter to choose which item to display
 
 <img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/nodeSetup.png" alt="Drawing" style="width: 95%;"/>
 
-## Options
+## Options in the evolve Designer
 
 ### Hidden Nodes : 
 
@@ -89,7 +90,7 @@ The direction can be 'to' or 'from'.
 For exemple, processus_niveau_2_20006_883051288,'to'#processus_niveau_2_20005_1079817132,'from'  
 Use to, if you want the arrow that arrive to this node.
 Use from, if you want the arrow to leave from this node.
-
+If you don't a direction to a node, it will be display without arrow.
 <img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/5.png" alt="Drawing" style="width: 95%;"/>
 
 ### Filter Node :
@@ -101,6 +102,12 @@ For exemple : entite_20022_1066555881:Entity Filter
 
 PS : the filter node should always be in first,
 
+### Filter Association Behaviour
+
+An association filter can have the give absolute, it mean it will delete all the other, then display the node which have the association. If you put nothing, the filter will add the node that have the association then add hidden to the element which do not have the association.
+For exemple : Entity Filter:absolute
+(Can be use for application flux See exemples below)
+
 ### Complementary Node :
 
 <img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/ComplementaryNode.png" alt="Drawing" style="width: 95%;"/>
@@ -108,6 +115,31 @@ PS : the filter node should always be in first,
 If you want to add a side Node, use this option
 For exemple, if you are on the objectPage of an application, you want to display sent and received flux.
 Put the network under the associationNode of the sent flux, then add the node id of the received flux in this option. Use comma as a splitter
+
+### Cluster On
+C:\dev_layout\debug_layout\libs\Network\src\cwLayoutNetwork.parse.js
+Activate the cluster option, that allow you to cluster element according to the group.
+PS : the cluster doesn't duplicate the object, and it try to put the element in the bigger cluster. To move a cluster click on the first element
+
+### Cluster To Select On Start
+
+List the cluster you want to apply when the network started. The syntax is Head#Child,Child2.
+
+### External Filter To Select On Start
+
+filterName:IdOfItem
+
+### Activate UnzipEdge Option
+
+Activate the button to unzip edge
+
+### Edge Zip at Start
+
+Zip the edge on start
+
+### Remove Lonely Objects
+
+Activate the option to remove lonely object. When you click on the button, it will delete from the network the node that have no connection.
 
 ## Focus On
 
@@ -135,7 +167,17 @@ This will add on the network, the node that have a path (even indirect) that lea
 ### Add All Nodes To
 This will add on the network, the node that have a path (even indirect) that go in the selected Node
 
-## Application Map
+### Remove Node
+This will remove the node
+
+### Remove Close Nodes
+This will remove all the node that are directly connected to the object
+
+## Download Button
+
+You can click on the download button <i class="fa fa-download" aria-hidden="true"></i>, to download a png of the network
+
+## Exemple : Application Map
 
 Here we have the following metamodel : 
 
@@ -155,9 +197,16 @@ You can now go in the Entity Filter and highlight only the node that are connect
 PS : if you selected an entity, and all the node connected to the entity are not on the network yet, the entity will add them
 
 
-## Organisation Map
+## Exemple : Organisation Map
 
 <img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/9.png" alt="Drawing" style="width: 95%;"/>
+
+## Exemple : Using Custom Display String to display RACI on the network
+
+<img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/ex3Screen.png" alt="Drawing" style="width: 95%;"/>
+<img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/ex3Config1.png" alt="Drawing" style="width: 95%;"/>
+<img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/ex3Config2.png" alt="Drawing" style="width: 95%;"/>
+
 
 
 
