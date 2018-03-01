@@ -74,7 +74,7 @@ You can assign a shape (ellipse, circle, database, box, diamond, dot, star, tria
 ) to a group.
 Use NameGroup,shape,color,borderColor(optionnal)||NameGroup2,shape2,color2,borderColor2(optionnal)
 
-You can also assign a FontAwesome Icon to a group.(go to this website to find the code http://fontawesome.io/icons/) Use NameGroup,icon,FontAwesomeUnicode,color||NameGroup2,icon,FontAwesomeUnicode2,color2. 
+You can also assign a FontAwesome Icon to a group.(go to this website to find the code https://fontawesome.com/v4.7.0/) Use NameGroup,icon,FontAwesomeUnicode,color||NameGroup2,icon,FontAwesomeUnicode2,color2. 
 
 You can mix Icon and shape like that : 
 Flux,icon,f0ec,#FF8C00||Application,icon,f10a,#4F90C1||Entité,box,#FF8C00,#4F90C1

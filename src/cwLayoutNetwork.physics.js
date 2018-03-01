@@ -35,7 +35,6 @@
             this.nodes.forEach(function(node) {
                 node.physics = !(node.cluster); 
                 changeset.push(node);
-                self.nodes.update(node);
             });
         }
         else {

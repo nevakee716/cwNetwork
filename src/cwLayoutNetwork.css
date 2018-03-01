@@ -20,6 +20,7 @@ div.LayoutNetork_filterGroup {
 
 div.LayoutNetork_filterGroup div{
 	display:flex;
+	flex-wrap: wrap;
 }
 
 div.cwLayoutNetworkLegend i{

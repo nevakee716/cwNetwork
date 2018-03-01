@@ -50,7 +50,7 @@
             } 
             return getDisplayStringFromLayout(this.layoutsByNodeId[assoNodeID],assoItem);
         } catch(e) {
-            console.log(e);
+            //console.log(e);
             return;
         }
         

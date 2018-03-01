@@ -16,9 +16,7 @@
         };
     }
 
-   Array.prototype.diff = function(a) {
-        return this.filter(function(i) {return a.indexOf(i) < 0;});
-    };
+
 
     cwLayoutNetwork.prototype.clusterByHubsize = function(event) {
         var maxConnected = 4;
@@ -56,7 +54,7 @@
                             cc = cc + 1;
                         }
                     }); 
-                    nodesToConnect[n] = nodesToConnect[n].diff(ntd);
+                   // nodesToConnect[n] = nodesToConnect[n].diff(ntd);
                     if(nodesToConnect[n].length >= maxConnected - 1) {
                         nodesToConnectNew[n] = nodesToConnect[n];
                     }
