@@ -10,6 +10,7 @@
         this.filterField = {};
         this.label = label;
         this.nodesID = [nodeID];
+        this.groups = [];
 
     };
 
@@ -39,14 +40,15 @@
 
 
     externalAssociationFilter.prototype.addNodeToFields = function (Ids,element) {
-        var that = this;
+        var self = this;
         Ids.forEach(function(id) {
-            if(!that.filterField[id].filteredNodes) {
-               that.filterField[id].filteredNodes = []; 
+            if(!self.filterField[id].filteredNodes) {
+               self.filterField[id].filteredNodes = []; 
             }
-            if(that.filterField[id].filteredNodes.indexOf(element) === -1) {
-                that.filterField[id].filteredNodes.push(element);
-            }            
+            if(self.filterField[id].filteredNodes.indexOf(element) === -1) {
+                self.filterField[id].filteredNodes.push(element);
+            }
+            if(self.groups.indexOf(element.group) === -1)    self.groups.push(element.group);         
         });
     };
 
@@ -131,7 +133,25 @@
            return this.filterField[id].filteredEdges;
         }
     };
+   
+
+    externalAssociationFilter.prototype.getNodesToBeFilteredForSelectedId = function () {
+        if (this.filterField.hasOwnProperty(this.selectedId)) {
+           return this.filterField[this.selectedId].filteredNodes;
+        }
+    };
+
+    externalAssociationFilter.prototype.getEdgesToBeFilteredForSelectedId = function () {
+        if (this.filterField.hasOwnProperty(this.selectedId)) {
+           return this.filterField[this.selectedId].filteredEdges;
+        }
+    };
+
+
     
+
+
+
 
 
 

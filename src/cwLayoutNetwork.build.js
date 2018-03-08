@@ -198,16 +198,12 @@
             if(clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
                 id = $(this).context[clickedIndex]['id'];
                 self.externalFilters[filterName].selectedId = id;
-                if(id !== "0") { // On ne selectionne pas la case "None"
-                    if(self.externalFilters[filterName].behaviour === "absolute") self.deActivateAllGroup();
-                    self.filterExternalAssociation(filterName,id);
-                } else {
-                    self.setExternalFilterToNone();
-                    if(self.networkUI) {
-                        self.colorAllNodes();
-                        self.colorAllEdges();                        
-                    }
+                if(self.externalFilterBehaviour.absolute === true && id !== "0") {
+                	self.deActivateAllGroup();
+                	self.setExternalFilterToNone();
+                	self.setExternalFilterToValue(filterName,id);
                 }
+                self.setAllExternalFilter();
             }
         });
 
@@ -266,21 +262,34 @@
         var downloadButton = document.getElementById("cwLayoutNetworkButtonsDownload" + this.nodeID);
         downloadButton.addEventListener('click', this.downloadImage.bind(this)); 
 
+        var deSelectAllButton = document.getElementById("cwLayoutNetworkDeselectAll" + this.nodeID);
+        deSelectAllButton.addEventListener('click', this.deActivateAllGroup.bind(this)); 
+
+        var selectAllButton = document.getElementById("cwLayoutNetworkSelectAll" + this.nodeID);
+        selectAllButton.addEventListener('click', this.activateAllGroup.bind(this)); 
 
 
-        
         // fill the search filter
         data.nodes.on("add", this.addSearchFilterElement.bind(this));
         data.nodes.on("remove", this.removeSearchFilterElement.bind(this));
 
-        // Activate Starting groups
-        this.activateStartingGroup();
+        if(!this.wiggle) {
+        	// Activate Starting groups
+        	this.activateStartingGroup();
+        }
 
         // initialize your network 
         this.networkUI = new vis.Network(networkContainer, data, this.networkOptions);
 
 
+        if(this.wiggle) {
+        	// Activate Starting groups
+        	this.activateStartingGroup();
+        }
 
+        // before drawing event
+        this.networkUI.on("beforeDrawing", this.beforeDrawing.bind(this));
+        
         // Activate External Filter
         this.activateStartingExternalFilter();
 
