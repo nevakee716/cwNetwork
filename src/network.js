@@ -59,10 +59,12 @@
         var hasChanged; 
         if(elements) {
             elements.forEach(function(elem) {
-                elem.name.replaceAll("\n"," ");
-                hasChanged = that.objectTypeNodes[elem.group].changeState(elem.object_id,state);  
-                if(hasChanged) { // on check si le node est pas déja présent dans le réseau
-                    changeSet = changeSet.concat(that.getVisNode(elem.object_id,elem.group));
+                if(elem) {
+                    elem.name.replaceAll("\n"," ");
+                    hasChanged = that.objectTypeNodes[elem.group].changeState(elem.object_id,state);  
+                    if(hasChanged) { // on check si le node est pas déja présent dans le réseau
+                        changeSet = changeSet.concat(that.getVisNode(elem.object_id,elem.group));
+                    }
                 }
             });            
         }
@@ -147,7 +149,9 @@
                 if(option.rangeMax) {
                     nodesArray = nodesArray.concat(this.getCloseNodes(tempNode.id,edges,option));
                 }
-                nodesArray.push(tempNode); 
+                if(tempNode.alreadyInNetwork !== true) {
+                    nodesArray.push(tempNode); 
+                }
             }
             tempNode = null;
             

@@ -46,7 +46,7 @@
             obj.name = this.label
         }
         else {
-            obj.label = this.label
+            obj.label = this.label;
         }
         obj.font = {'size': 9};
         if(this.icon) {
@@ -65,11 +65,14 @@
     };
 
     node.prototype.getVisDataIfDeactivated = function () {
+        var node;
         if(this.status === false) {
             this.status = true;
            return this.getVisData();
         } else {
-            return null;
+            node = this.getVisData();
+            node.alreadyInNetwork = true;
+            return node;
         }
     };
 
