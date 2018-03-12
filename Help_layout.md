@@ -1,10 +1,11 @@
 | **Name** | **cwLayoutNetwork** | **Version** | 
 | --- | --- | --- |
-| **Updated by** | Mathias PFAUWADEL | 4.0 |
+| **Updated by** | Mathias PFAUWADEL | 4.1 |
 
 
 ## Patch Notes
 
+* 4.1 : Can now select multiple element in externalFilter
 * 4.0 : Cluster, Download Image, display association custom display string
 * 3.9 : External Association Filter work with zippedEdges
 * 3.8 : Adding 2 buttons to zip and unzip Edge and to disable physics
@@ -125,9 +126,6 @@ PS : the cluster doesn't duplicate the object, and it try to put the element in 
 
 List the cluster you want to apply when the network started. The syntax is Head#Child,Child2.
 
-### External Filter To Select On Start
-
-filterName:IdOfItem
 
 ### Activate UnzipEdge Option
 
@@ -173,9 +171,16 @@ This will remove the node
 ### Remove Close Nodes
 This will remove all the node that are directly connected to the object
 
-## Download Button
+## External Filter Association Button
+By clicking, on the button you can change the behaviour of the external association filter : 
+* Absolute : disable all node, then add the node of the external filter
+* Addition : Add the node of the external filter
+* Highlight : Hightlight the node of the external filter
 
+## Download Button
 You can click on the download button <i class="fa fa-download" aria-hidden="true"></i>, to download a png of the network
+(on huge network, it work only with edge)
+
 
 ## Exemple : Application Map
 
