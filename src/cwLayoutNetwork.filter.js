@@ -69,8 +69,14 @@
         associationFilterObject.className = "LayoutNetork_filterGroup";
 
         var associationFilterObjectTitle = document.createElement("div");
-        associationFilterObjectTitle.innerHTML = "External Association Filters";
-        
+        associationFilterObjectTitle.innerHTML = "External Association : ";
+        var associationFilterObjectBehaviour = document.createElement("div");
+        var associationFilterObjectBehaviourButton = document.createElement("button");
+        associationFilterObjectBehaviourButton.innerHTML = "Highlight";
+        associationFilterObjectBehaviourButton.addEventListener("click", this.externalfilterModifyBehaviour.bind(this));
+        associationFilterObjectBehaviour.appendChild(associationFilterObjectBehaviourButton);
+
+
         var initID,associationFilterObjectFilters = document.createElement("div");
         for (externalfilter in this.externalFilters) {
             if (this.externalFilters.hasOwnProperty(externalfilter)) {
@@ -80,7 +86,9 @@
             }
         }
         if(i > 0) {
+            associationFilterObjectTitle.appendChild(associationFilterObjectBehaviour);
             associationFilterObject.appendChild(associationFilterObjectTitle);
+            
             associationFilterObject.appendChild(associationFilterObjectFilters);
             filterContainer.appendChild(associationFilterObject);
         }

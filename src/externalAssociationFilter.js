@@ -11,6 +11,7 @@
         this.label = label;
         this.nodesID = [nodeID];
         this.groups = [];
+        this.selectedId = [];
 
     };
 
@@ -122,29 +123,51 @@
         return this.policy;
     };
 
-    externalAssociationFilter.prototype.getNodesToBeFiltered = function (id) {
-        if (this.filterField.hasOwnProperty(id)) {
-           return this.filterField[id].filteredNodes;
-        }
-    };
 
-    externalAssociationFilter.prototype.getEdgesToBeFiltered = function (id) {
-        if (this.filterField.hasOwnProperty(id)) {
-           return this.filterField[id].filteredEdges;
-        }
-    };
    
 
-    externalAssociationFilter.prototype.getNodesToBeFilteredForSelectedId = function () {
-        if (this.filterField.hasOwnProperty(this.selectedId)) {
-           return this.filterField[this.selectedId].filteredNodes;
+    function ArrNoDupe(a) {
+        var r = [],temp = {};
+        for (var i = 0; i < a.length; i++) {
+            if(!temp.hasOwnProperty(a[i].object_id + "#" + a[i].objectTypeScriptName)) {
+                temp[a[i].object_id + "#" + a[i].objectTypeScriptName] = true;
+                r.push(a[i]);
+            }
         }
+        return r;
+    }
+
+    function ArrNoDupeEdge(a) {
+        var r = [],temp = {};
+        for (var i = 0; i < a.length; i++) {
+            if(!temp.hasOwnProperty(a[i].id + "#" + a[i].objectTypeScriptName)) {
+                temp[a[i].id + "#" + a[i].objectTypeScriptName] = true;
+                r.push(a[i]);
+            }
+        }
+        return r;
+    }
+
+    externalAssociationFilter.prototype.getNodesToBeFiltered = function () {
+        var result = [],self = this;
+        if(this.selectedId.length === 0) return [];
+        this.selectedId.forEach(function(e) {
+            result = result.concat(self.filterField[e].filteredNodes);
+        });
+        return ArrNoDupe(result);
     };
 
-    externalAssociationFilter.prototype.getEdgesToBeFilteredForSelectedId = function () {
-        if (this.filterField.hasOwnProperty(this.selectedId)) {
-           return this.filterField[this.selectedId].filteredEdges;
-        }
+    externalAssociationFilter.prototype.getEdgesToBeFiltered = function () {
+        var result = [],self = this;
+        if(this.selectedId.length === 0) return [];
+        this.selectedId.forEach(function(e) {
+            if(self.filterField[e].hasOwnProperty("filteredEdges")) {
+                result = result.concat(self.filterField[e].filteredEdges);
+            }
+            
+        });
+        return ArrNoDupeEdge(result);
+
     };
 
 
@@ -171,22 +194,16 @@
         var id;
 
         filterObject = document.createElement("select");
-        //filterObject.setAttribute('multiple','');
+        filterObject.setAttribute('multiple','');
         filterObject.setAttribute('title',this.label);
         filterObject.setAttribute('data-live-search','true');
-        filterObject.setAttribute('data-selected-text-format','count > 2');
+        filterObject.setAttribute('data-selected-text-format','static');
         filterObject.setAttribute('data-actions-box','true');
         filterObject.setAttribute('data-size','5');
        //filterObject.setAttribute('data-width','fit');
         
         filterObject.className = classname + " " + this.label;
         filterObject.setAttribute('filterName',this.label);
-
-        //Creation du None
-        object = document.createElement("option");
-        object.setAttribute('id',0);
-        object.textContent = 'None';
-        filterObject.appendChild(object);
 
         for (id in this.filterField) {
             if (this.filterField.hasOwnProperty(id)) {

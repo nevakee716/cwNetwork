@@ -24,39 +24,42 @@
         noID = true;
         for(var extF in this.externalFilters) {
             if(this.externalFilters.hasOwnProperty(extF)) {
-                if(this.externalFilters[extF].selectedId != "0") noID = false;
-                n = this.externalFilters[extF].getNodesToBeFilteredForSelectedId();
-                e = this.externalFilters[extF].getEdgesToBeFilteredForSelectedId();
-                if(this.externalFilterBehaviour.or === true) {
-                    if(n) nodesToHighlight = nodesToHighlight.concat(n);
-                    if(e) edgesToHighlight = edgesToHighlight.concat(e);
-                } else {
-                    if(n) {
-                        if(nodesToHighlight.length === 0) nodesToHighlight = nodesToHighlight.concat(n);
-                        else {
-                            ntd = [];
-                            nodesToHighlight.forEach(function(node) {
-                                present = false;
-                                n.forEach(function(nn) {
-                                    if(nn.object_id == node.object_id && nn.group == node.group) present = true;
+                if(this.externalFilters[extF].selectedId.length !== 0) {
+                    noID = false;
+                    n = this.externalFilters[extF].getNodesToBeFiltered();
+                    e = this.externalFilters[extF].getEdgesToBeFiltered();
+                    if(this.externalFilterBehaviour.or === true) {
+                        if(n) nodesToHighlight = nodesToHighlight.concat(n);
+                        if(e) edgesToHighlight = edgesToHighlight.concat(e);
+                    } else {
+                        if(n) {
+                            if(nodesToHighlight.length === 0) nodesToHighlight = nodesToHighlight.concat(n);
+                            else {
+                                ntd = [];
+                                nodesToHighlight.forEach(function(node) {
+                                    present = false;
+                                    n.forEach(function(nn) {
+                                        if(nn.object_id == node.object_id && nn.group == node.group) present = true;
+                                    });
+                                    if(present === true) ntd.push(node);
                                 });
-                                if(present === true) ntd.push(node);
-                            });
-                            nodesToHighlight = ntd;
+                                nodesToHighlight = ntd;
+                            }
                         }
-                    }
-                    if(e) {
-                        if(edgesToHighlight.length === 0) edgesToHighlight = edgesToHighlight.concat(e);
-                        else {
-                            etd = [];
-                            edgesToHighlight.forEach(function(edge) {
-                                present = false;
-                                e.forEach(function(ee) {
-                                    if(ee.object_id == edge.object_id) present = true;
+                        if(e) {
+                            if(edgesToHighlight.length === 0) edgesToHighlight = edgesToHighlight.concat(e);
+                            else {
+                                etd = [];
+                                edgesToHighlight.forEach(function(edge) {
+                                    present = false;
+                                    e.forEach(function(ee) {
+                                        debugger;
+                                        if(ee.object_id == edge.object_id) present = true;
+                                    });
+                                    if(present === true) etd.push(edge);
                                 });
-                                if(present === true) etd.push(edge);
-                            });
-                            edgesToHighlight = etd; 
+                                edgesToHighlight = etd; 
+                            }
                         }
                     }
                 }
@@ -95,25 +98,62 @@
     };
 
     cwLayoutNetwork.prototype.setExternalFilterToNone = function () {
-        $('select.selectNetworkExternal_' + this.nodeID).selectpicker('val','None'); 
+        $('select.selectNetworkExternal_' + this.nodeID).selectpicker('val',''); 
         for(var extF in this.externalFilters) {
             if(this.externalFilters.hasOwnProperty(extF)) {
-                this.externalFilters[extF].selectedId = 0; 
+                this.externalFilters[extF].selectedId = []; 
             }
         }
     };
 
-    cwLayoutNetwork.prototype.setExternalFilterToValue = function (filterName,id) {
+
+    cwLayoutNetwork.prototype.externalfilterModifyBehaviour = function (elem) {
+        if(this.externalFilterBehaviour.absolute == true) {
+            elem.target.innerText = "Highlight";
+            this.externalFilterBehaviour.add = false ;
+            this.externalFilterBehaviour.absolute = false;
+        } else if(this.externalFilterBehaviour.add == true) {
+            elem.target.innerText = "Absolute";
+            this.externalFilterBehaviour.absolute = true;
+            this.externalFilterBehaviour.add = true;
+        } else {
+            elem.target.innerText = "Addition";
+            this.externalFilterBehaviour.add = true;
+            this.externalFilterBehaviour.absolute = false;
+        }
+    };
+
+
+
+    cwLayoutNetwork.prototype.addExternalFilterValue = function (filterName,id) {
+        if(this.externalFilters[filterName].selectedId.indexOf(id) === -1) {
+            this.externalFilters[filterName].selectedId.push(id);
+        } 
+    };
+
+
+    cwLayoutNetwork.prototype.removeExternalFilterValue = function (filterName,id) {
+        this.externalFilters[filterName].selectedId.splice(this.externalFilters[filterName].selectedId.indexOf(id), 1);
+    };
+
+
+    cwLayoutNetwork.prototype.addAllExternalFilterValue = function (filterName) {
         try {
-            this.externalFilters[filterName].selectedId = id;
-            $('select.selectNetworkExternal_' + this.nodeID + "." + filterName).selectpicker('val',this.externalFilters[filterName].filterField[id].name); 
+            this.externalFilters[filterName].selectedId = Object.keys(this.externalFilters[filterName].filterField);
         }
         catch(e) {
             console.log(e);
         }
     };
 
-
+    cwLayoutNetwork.prototype.removeAllExternalFilterValue = function (filterName) {
+        try {
+            this.externalFilters[filterName].selectedId = [];
+        }
+        catch(e) {
+            console.log(e);
+        }
+    };
 
 
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;

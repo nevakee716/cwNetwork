@@ -194,17 +194,29 @@
             var nodesArray,id,nodeId,i,changeSet;
             
             var allNodes;
-            
+
+            if(self.externalFilterBehaviour.absolute === true) {
+                self.deActivateAllGroup();
+            }
+
             if(clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
                 id = $(this).context[clickedIndex]['id'];
-                self.externalFilters[filterName].selectedId = id;
-                if(self.externalFilterBehaviour.absolute === true && id !== "0") {
-                	self.deActivateAllGroup();
-                	self.setExternalFilterToNone();
-                	self.setExternalFilterToValue(filterName,id);
+                if(newValue === false) { // hide a node
+                    self.removeExternalFilterValue(filterName,id);
+                } else {
+                    self.addExternalFilterValue(filterName,id);
                 }
-                self.setAllExternalFilter();
+            } else {  // select or deselect all node
+                if($(this).context[0]) {
+                    if($(this).context[0].selected === true) {
+                        self.addAllExternalFilterValue(filterName,id);
+                    } else {
+                        self.removeAllExternalFilterValue(filterName,id);
+                    }
+                }
             }
+            self.setAllExternalFilter();
+
         });
 
         // Event for filter
@@ -290,8 +302,6 @@
         // before drawing event
         this.networkUI.on("beforeDrawing", this.beforeDrawing.bind(this));
         
-        // Activate External Filter
-        this.activateStartingExternalFilter();
 
         // Activate Cluster
         this.activateStartingCluster();

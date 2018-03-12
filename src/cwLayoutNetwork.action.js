@@ -47,14 +47,6 @@
         });
     };
 
-    // Enable External Filter
-    cwLayoutNetwork.prototype.activateStartingExternalFilter = function () {
-        if(this.externalFilterToSelectOnStart) {
-            var filterName = this.externalFilterToSelectOnStart[0],id = parseInt(this.externalFilterToSelectOnStart[1]);
-            this.setExternalFilterToValue(filterName,id);
-        }
-
-    };
 
     cwLayoutNetwork.prototype.disableGroupClusters = function () {
         var node,self = this;
