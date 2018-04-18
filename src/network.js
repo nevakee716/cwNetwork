@@ -107,7 +107,7 @@
             nodesArray.push(originNode);
         }
         if(option && (option.rangeMin || option.rangeMax)) {
-            this.maxLoop = 100;
+            this.maxLoop = 2000;
             nodesArray = nodesArray.concat(this.getCloseNodes(originNode.id,edges,option));
         }
         return nodesArray;
