@@ -96,7 +96,8 @@
     };
 
     cwLayoutNetwork.prototype.openPopOut = function(id,scriptname) {
-        var object = this.lookForObjects(id,scriptname,this.originalObject);
+        var object = {};
+        object.object_id = id;
         if(this.popOut[scriptname]) {
             cwApi.cwDiagramPopoutHelper.openDiagramPopout(object,this.popOut[scriptname]);
         }
