@@ -54,6 +54,7 @@ The C:\Casewise\Evolve\Site\bin\evolve.json containes now all of your layout, if
 ## Installation offline
 
 * unzip the zip file
+* Put the contenant of Evolve in Casewise\Evolve
 * Put the contenant of src in Casewise\Evolve\Site\bin\webDesigner\custom\Marketplace\libs\LAYOUT_or_Specific_NAME\src
 * Put the contenant of external in Casewise\Evolve\Site\bin\webDesigner\js\external
 * Put the contenant of modules in Casewise\Evolve\Site\bin\webDesigner\libs\modules
