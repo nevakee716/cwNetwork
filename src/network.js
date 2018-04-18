@@ -107,7 +107,7 @@
             nodesArray.push(originNode);
         }
         if(option && (option.rangeMin || option.rangeMax)) {
-            this.maxLoop = 2000;
+            this.tempNodeIds = {};
             nodesArray = nodesArray.concat(this.getCloseNodes(originNode.id,edges,option));
         }
         return nodesArray;
@@ -119,8 +119,12 @@
     network.prototype.getCloseNodes = function (id,edges,option) {
         var i,tempNode = null;
         var nodesArray = [];
-        this.maxLoop = this.maxLoop - 1;
-        if(this.maxLoop < 0) return nodesArray;
+        if(this.tempNodeIds[id] === true) {
+            return nodesArray;
+        } else {
+            this.tempNodeIds[id] = true;
+        }
+        
         for (i = 0; i < edges.length; i += 1) {
             
             if(option.ImpactTo && option.ImpactFrom) { // on cherche les node qui partent de notre node
