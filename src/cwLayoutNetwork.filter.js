@@ -71,10 +71,6 @@
         var associationFilterObjectTitle = document.createElement("div");
         associationFilterObjectTitle.innerHTML = "External Association : ";
         var associationFilterObjectBehaviour = document.createElement("div");
-        var associationFilterObjectBehaviourButton = document.createElement("button");
-        associationFilterObjectBehaviourButton.innerHTML = "Highlight";
-        associationFilterObjectBehaviourButton.addEventListener("click", this.externalfilterModifyBehaviour.bind(this));
-        associationFilterObjectBehaviour.appendChild(associationFilterObjectBehaviourButton);
 
 
         var initID,associationFilterObjectFilters = document.createElement("div");

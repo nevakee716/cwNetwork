@@ -280,6 +280,10 @@
         var selectAllButton = document.getElementById("cwLayoutNetworkSelectAll" + this.nodeID);
         selectAllButton.addEventListener('click', this.activateAllGroup.bind(this)); 
 
+        var behaviourButton = document.getElementById("cwLayoutNetworkButtonsBehaviour" + this.nodeID);
+        behaviourButton.addEventListener("click", this.externalfilterModifyBehaviour.bind(this));
+
+
 
         // fill the search filter
         data.nodes.on("add", this.addSearchFilterElement.bind(this));

@@ -45,9 +45,9 @@
         return nodeVisData;
     };
 
-    objectTypeNode.prototype.getVisDataIfDeactivated = function (id) {
+    objectTypeNode.prototype.getVisDataIfDeactivated = function (id,option) {
         var nodeVisData;
-        nodeVisData = this.nodes[id].getVisDataIfDeactivated();
+        nodeVisData = this.nodes[id].getVisDataIfDeactivated(option);
         if(nodeVisData) {
             nodeVisData.group = this.label;
             nodeVisData.id = nodeVisData.id + "#" + this.scriptname;        

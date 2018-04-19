@@ -209,6 +209,10 @@
             output.push('<button class="bootstrap-iso" id="cwLayoutNetworkSelectAll' + this.nodeID + '"> Select All</button>');
             if(this.edgeOption) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '"> Unzip Edges</button>');
             if(this.removeLonely) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '"> Remove Lonely Nodes</button>');
+            output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsBehaviour' + this.nodeID + '">Behviour Highlight</button>');
+
+
+
             output.push('<button id="cwLayoutNetworkButtonsDownload' + this.nodeID + '"><i class="fa fa-download" aria-hidden="true"></i></button>');
             output.push('</div>');
             output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');

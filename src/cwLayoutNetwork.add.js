@@ -50,14 +50,13 @@
     };
 
     cwLayoutNetwork.prototype.AddNodesToNetwork = function (event,option) {
-        var nodeID = event.data.d.nodes[0];
-        var group,changeSet;
+        var nodeID,group,changeSet,nodeIDFull = event.data.d.nodes[0];
         this.nodes.forEach(function(node) { 
-            if(node.id === nodeID) {
+            if(node.id === nodeIDFull) {
                 group = node.group.replace("Hidden","");
             }
         });
-        nodeID = nodeID.split("#")[0];
+        nodeID = nodeIDFull.split("#")[0];
         
 
         if(this.externalFilterBehaviour.absolute === true) {
@@ -66,6 +65,7 @@
         if(this.externalFilterBehaviour.highlight === true) {
             option.highlight  = true;
         } 
+
 
         changeSet = this.network.getVisNode(nodeID,group,option); // get all the node self should be put on
 
@@ -84,16 +84,17 @@
         }
         this.setExternalFilterToNone(); 
 
-        this.fillFilter(changeSet); // add the filter value
+        
 
         if(this.externalFilterBehaviour.highlight === false) {
+            this.fillFilter(changeSet); // add the filter value
             this.nodes.add(changeSet); // adding nodes into network
         } else {
             var nodesIdToHighlight = [];
             changeSet.forEach(function(c) { 
                 nodesIdToHighlight.push(c.id);
             });
-            nodesIdToHighlight.push(nodeID);
+            nodesIdToHighlight.push(nodeIDFull);
             if(this.networkUI) {
                 this.colorNodes(nodesIdToHighlight);
                 this.colorEdges(nodesIdToHighlight);

@@ -109,17 +109,17 @@
 
     cwLayoutNetwork.prototype.externalfilterModifyBehaviour = function (elem) {
         if(this.externalFilterBehaviour.absolute == true) {
-            elem.target.innerText = "Highlight";
+            elem.target.innerText = "Behaviour : Highlight";
             this.externalFilterBehaviour.add = false ;
             this.externalFilterBehaviour.absolute = false;
             this.externalFilterBehaviour.highlight = true;
         } else if(this.externalFilterBehaviour.add == true) {
-            elem.target.innerText = "Absolute";
+            elem.target.innerText = "Behaviour : Absolute";
             this.externalFilterBehaviour.absolute = true;
             this.externalFilterBehaviour.add = true;
             this.externalFilterBehaviour.highlight = false;
         } else {
-            elem.target.innerText = "Addition";
+            elem.target.innerText = "Behaviour : Addition";
             this.externalFilterBehaviour.add = true;
             this.externalFilterBehaviour.absolute = false;
             this.externalFilterBehaviour.highlight = false;
