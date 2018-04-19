@@ -57,7 +57,7 @@
         this.clusters = [];
     };
 
-    // Adding group at start
+    // Remove all group
     cwLayoutNetwork.prototype.deActivateAllGroup = function (event) {
         var OT,changeset = [], self = this;
         

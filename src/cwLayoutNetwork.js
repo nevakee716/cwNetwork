@@ -23,7 +23,8 @@
         this.externalFilterBehaviour = {};
         this.externalFilterBehaviour.add = false;
         this.externalFilterBehaviour.absolute = false;     
-        this.externalFilterBehaviour.or = false;              
+        this.externalFilterBehaviour.or = false;    
+        this.externalFilterBehaviour.highlight = true;          
         this.nodeFiltered = [];
         this.popOut = [];
         this.specificGroup = [];

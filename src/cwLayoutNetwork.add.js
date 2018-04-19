@@ -58,10 +58,49 @@
             }
         });
         nodeID = nodeID.split("#")[0];
-        changeSet = this.network.getVisNode(nodeID,group,option,true); // get all the node self should be put on
+        
+
+        if(this.externalFilterBehaviour.absolute === true) {
+            this.deActivateAllGroup();
+        }
+        if(this.externalFilterBehaviour.highlight === true) {
+            option.highlight  = true;
+        } 
+
+        changeSet = this.network.getVisNode(nodeID,group,option); // get all the node self should be put on
+
+        if(this.externalFilterBehaviour.absolute === true) {
+            var originObj = this.network.objectTypeNodes[group].getVisDataIfDeactivated(nodeID);
+            if(originObj.alreadyInNetwork !== true) {
+                changeSet.push(originObj);
+            }
+        }
+
+
+
+        if(this.networkUI) {
+            this.colorAllNodes();
+            this.colorAllEdges();                        
+        }
+        this.setExternalFilterToNone(); 
+
         this.fillFilter(changeSet); // add the filter value
-        this.nodes.add(changeSet); // adding nodes into network
-        this.setAllExternalFilter();
+
+        if(this.externalFilterBehaviour.highlight === false) {
+            this.nodes.add(changeSet); // adding nodes into network
+        } else {
+            var nodesIdToHighlight = [];
+            changeSet.forEach(function(c) { 
+                nodesIdToHighlight.push(c.id);
+            });
+            nodesIdToHighlight.push(nodeID);
+            if(this.networkUI) {
+                this.colorNodes(nodesIdToHighlight);
+                this.colorEdges(nodesIdToHighlight);
+            }
+        }
+
+
     };
 
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;

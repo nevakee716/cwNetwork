@@ -112,14 +112,17 @@
             elem.target.innerText = "Highlight";
             this.externalFilterBehaviour.add = false ;
             this.externalFilterBehaviour.absolute = false;
+            this.externalFilterBehaviour.highlight = true;
         } else if(this.externalFilterBehaviour.add == true) {
             elem.target.innerText = "Absolute";
             this.externalFilterBehaviour.absolute = true;
             this.externalFilterBehaviour.add = true;
+            this.externalFilterBehaviour.highlight = false;
         } else {
             elem.target.innerText = "Addition";
             this.externalFilterBehaviour.add = true;
             this.externalFilterBehaviour.absolute = false;
+            this.externalFilterBehaviour.highlight = false;
         }
     };
 

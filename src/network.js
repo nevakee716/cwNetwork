@@ -116,6 +116,7 @@
 
 
 
+
     network.prototype.getCloseNodes = function (id,edges,option) {
         var i,tempNode = null;
         var nodesArray = [];
@@ -156,7 +157,7 @@
                 if(option.rangeMax) {
                     nodesArray = nodesArray.concat(this.getCloseNodes(tempNode.id,edges,option));
                 }
-                if(tempNode.alreadyInNetwork !== true) {
+                if(tempNode.alreadyInNetwork !== true || option.highlight) {
                     nodesArray.push(tempNode); 
                 }
             }
