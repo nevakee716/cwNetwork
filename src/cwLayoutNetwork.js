@@ -54,12 +54,14 @@
         this.edgeOption = this.options.CustomOptions['zipEdgeOption'];
         this.edgeZipped = this.options.CustomOptions['zipEdgeInitState'];
         this.clusterOption = this.options.CustomOptions['clusterOn'];
-        this.physicsOption = this.options.CustomOptions['physicsOn'];       
+        this.physicsOption = this.options.CustomOptions['physicsOn'];   
+        this.physicsOptionInitialState = this.options.CustomOptions['physicsInitialState'];   
         this.removeLonely = this.options.CustomOptions['removeLonelyOn'];
         this.CDSNodesOption = true;
         this.CDSFilterOption = false;
         this.physics = true;
         this.nodeOptions = {"CDSFilterOption" : this.CDSFilterOption,"CDSNodesOption" : this.CDSNodesOption};
+        
     };
 
 

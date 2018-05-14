@@ -15,9 +15,9 @@
         return this.scriptname;
     };
 
-    objectTypeNode.prototype.addNode = function (object_id,label,customDisplayString,icon,filterArray,nodeOptions) {
+    objectTypeNode.prototype.addNode = function (object_id,label,customDisplayString,icon,filterArray,nodeOptions,networkInfo) {
         if(!this.nodes.hasOwnProperty(object_id)) {
-            this.nodes[object_id] = new cwApi.customLibs.cwLayoutNetwork.node(object_id,label,customDisplayString,icon,false,filterArray,nodeOptions);
+            this.nodes[object_id] = new cwApi.customLibs.cwLayoutNetwork.node(object_id,label,customDisplayString,icon,false,filterArray,nodeOptions,networkInfo);
         }  
     };
 
@@ -44,6 +44,50 @@
         nodeVisData.id = nodeVisData.id + "#" + this.scriptname;
         return nodeVisData;
     };
+
+    objectTypeNode.prototype.getEnabledVisData = function (id) {
+        var visData = [];
+        var nodeVisData;
+        var node;
+        for (node in this.nodes) {
+            if (this.nodes.hasOwnProperty(node)) {
+                nodeVisData = this.nodes[node].getEnabledVisData();
+                if(nodeVisData) {
+                    nodeVisData.group = this.label;
+                    nodeVisData.id = nodeVisData.id + "#" + this.scriptname;
+                    visData.push(nodeVisData);
+                }
+
+            }
+        }
+        return visData;
+
+    };
+
+    objectTypeNode.prototype.getAllNodeForSaving = function () {
+        var nodeData,nodeDataOut,node,outData = [];
+        for (node in this.nodes) {
+            if (this.nodes.hasOwnProperty(node)) {
+                nodeData = this.nodes[node].getDataForExport();
+                nodeDataOut = {};
+                if(nodeData) {
+                    nodeDataOut.x = nodeData.x;
+                    nodeDataOut.y = nodeData.y;
+                    nodeDataOut.name = nodeData.name;
+                    nodeDataOut.group = this.label;
+                    nodeDataOut.objectTypeScriptName = this.scriptname;
+                    nodeDataOut.status = nodeData.status;                    
+                    nodeDataOut.id = nodeData.id + "#" + this.scriptname;
+                    nodeDataOut.idShort = nodeData.id;
+                    outData.push(nodeDataOut);
+                }
+            }
+        }
+        return outData;
+    };
+
+
+
 
     objectTypeNode.prototype.getVisDataIfDeactivated = function (id,option) {
         var nodeVisData;

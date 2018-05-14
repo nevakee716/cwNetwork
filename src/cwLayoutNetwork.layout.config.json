@@ -59,6 +59,12 @@
         "Type": 0
     },
     {
+        "Id": "externalFilterToSelectOnStart",
+        "DisplayName": "External Filter To Select On Start",
+        "Description": "filterName:IdOfItem",
+        "Type": 0
+    },
+    {
         "Id": "complementaryNode",
         "DisplayName": "Complementary Node",
         "Description": "Select Nodes you want to add that are not under your layout network (see documentation for exemple)",
@@ -77,12 +83,6 @@
         "Type": 0
     },
     {
-        "Id": "externalFilterToSelectOnStart",
-        "DisplayName": "External Filter To Select On Start",
-        "Description": "filterName:IdOfItem",
-        "Type": 0
-    },
-    {
         "Id": "zipEdgeOption",
         "DisplayName": "Activate UnzipEdge Option",
         "Description": "Activate the button to unzip edge",
@@ -98,6 +98,12 @@
         "Id": "physicsOn",
         "DisplayName": "Physics Button",
         "Description": "Activate button to disable the physics",
+        "Type": 1
+    },
+    {
+        "Id": "physicsInitialState",
+        "DisplayName": "Physics Initially Activated",
+        "Description": "Activate the physics at beginning",
         "Type": 1
     },
     {

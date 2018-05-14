@@ -28,9 +28,21 @@
         this.updatePhysics();
     };
 
-    cwLayoutNetwork.prototype.updatePhysics = function () {
+    cwLayoutNetwork.prototype.updatePhysicsButton = function () {
+        if(this.physics == false) {
+            event.target.innerHTML = "Enable Physics";
+        }
+        else {
+            event.target.innerHTML = "Disable Physics";
+        }
+    };
+
+    cwLayoutNetwork.prototype.updatePhysics = function (state) {
         var self = this,changeset = [];
-        
+        if(state !== undefined) {
+            this.physics = state;
+            this.updatePhysicsButton();
+        }
         if(this.physics == true) {
             this.nodes.forEach(function(node) {
                 node.physics = !(node.cluster); 

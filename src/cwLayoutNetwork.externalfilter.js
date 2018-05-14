@@ -159,5 +159,69 @@
     };
 
 
+
+    cwLayoutNetwork.prototype.addNetwork = function (node,father) {
+        if(this.networkConfiguration === undefined) {
+            this.networkConfiguration = {};
+            this.networkConfiguration.selected = {};
+            this.networkConfiguration.nodes = {};
+        }
+        if(this.networkConfiguration.nodes[node.object_id] === undefined) {
+            this.networkConfiguration.nodes[node.object_id] = {};
+            this.networkConfiguration.nodes[node.object_id].label = node.name;
+            this.networkConfiguration.nodes[node.object_id].configuration = JSON.parse(node.properties.configuration.replaceAll("\\",""));
+            this.networkConfiguration.nodes[node.object_id].obj = node;
+            node.associations = {};
+            node.associations[this.nodeID] = {};
+            node.associations[this.nodeID].associationScriptName = "CAPINETWORKTOASSONETWORKANYOBJECTTOANYOBJECT";
+            node.associations[this.nodeID].displayName = "Present on Network";           
+            node.associations[this.nodeID].items = []; 
+            node.associations[this.nodeID].nodeId = this.nodeID;
+        } 
+        var newItem = {};
+        newItem.name = father.name;
+        newItem.intersectionObjectUID = node.iProperties.uniqueidentifier;
+        newItem.targetObjectID = father.object_id;
+        newItem.isNew = "false";
+        newItem.targetObjectTypeScriptName = father.objectTypeScriptName;
+        this.networkConfiguration.nodes[node.object_id].obj.associations[this.nodeID].items.push(newItem);
+
+    };
+
+
+    cwLayoutNetwork.prototype.getNetworkConfigurationFilterObject = function (classname) {
+        var filterObject;
+        var object;
+        var id;
+
+        filterObject = document.createElement("select");
+        filterObject.setAttribute('data-live-search','true');
+        filterObject.setAttribute('data-actions-box','true');
+        filterObject.setAttribute('data-size','5');
+       //filterObject.setAttribute('data-width','fit');
+        
+        filterObject.className = classname + " Network";
+        filterObject.setAttribute('filterName',"Network");
+
+
+        object = document.createElement("option");
+        object.setAttribute('id',0);
+        object.textContent = "None";
+        filterObject.appendChild(object);
+
+        for (id in this.networkConfiguration.nodes) {
+            if (this.networkConfiguration.nodes.hasOwnProperty(id)) {
+                object = document.createElement("option");
+                object.setAttribute('id',id);
+                object.textContent = this.networkConfiguration.nodes[id].label;
+                filterObject.appendChild(object);
+            }                                                                                                                                                                                                                                                                                                                                                                                                            
+        }
+
+        return filterObject;
+    };
+
+
+
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;
 }(cwAPI, jQuery));

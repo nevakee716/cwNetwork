@@ -70,7 +70,6 @@
 
         var associationFilterObjectTitle = document.createElement("div");
         associationFilterObjectTitle.innerHTML = "External Association : ";
-        var associationFilterObjectBehaviour = document.createElement("div");
 
 
         var initID,associationFilterObjectFilters = document.createElement("div");
@@ -82,7 +81,6 @@
             }
         }
         if(i > 0) {
-            associationFilterObjectTitle.appendChild(associationFilterObjectBehaviour);
             associationFilterObject.appendChild(associationFilterObjectTitle);
             
             associationFilterObject.appendChild(associationFilterObjectFilters);
@@ -106,6 +104,25 @@
             clusterFilterObject.appendChild(clusterFilterObjectFilterChilds);
             filterContainer.appendChild(clusterFilterObject);
         }
+        if(this.networkConfiguration) {
+             var configurationFilterObject = document.createElement("div");
+            configurationFilterObject.className = "LayoutNetork_filterGroup";
+
+            var configurationFilterObjectTitle = document.createElement("div");
+            configurationFilterObjectTitle.innerHTML = "Network : ";
+
+            configurationFilterObject.appendChild(configurationFilterObjectTitle);
+            configurationFilterObject.appendChild(this.getNetworkConfigurationFilterObject("selectNetworkConfiguration_" + this.nodeID));
+            filterContainer.appendChild(configurationFilterObject);
+            var configurationFilterObjectButton = document.createElement("button");
+            configurationFilterObjectButton.innerHTML = '<i class="fa fa-floppy-o" aria-hidden="true"></i>';
+            configurationFilterObjectButton.id = "nodeConfigurationSaveButton_" + this.nodeID ;
+            configurationFilterObject.appendChild(configurationFilterObjectButton);
+            
+            filterContainer.appendChild(configurationFilterObject);
+        }
+
+
 
     };
   

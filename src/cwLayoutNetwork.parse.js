@@ -50,7 +50,6 @@
             } 
             return getDisplayStringFromLayout(this.layoutsByNodeId[assoNodeID],assoItem);
         } catch(e) {
-            //console.log(e);
             return;
         }
         
@@ -85,6 +84,8 @@
                         });
                     } else if(this.hiddenNodes.indexOf(associationNode) !== -1) { // jumpAndMerge when hidden
                         childrenArray = childrenArray.concat(this.simplify(nextChild,father,true));
+                    } else if(nextChild.objectTypeScriptName === "capinetwork" && nextChild.properties.configuration) {
+                        this.addNetwork(nextChild,child);
                     } else { // adding regular node
                         element = {}; 
                         element.name = this.multiLine(nextChild.name,this.multiLineCount);
@@ -97,6 +98,7 @@
                             element.icon.color = nextChild.properties.color;
                         }
                         else element.icon = null;
+
                         // on check si l'element appartient deja a un group
                         if(!this.objects.hasOwnProperty(element.object_id + "#" + element.objectTypeScriptName)) {
                             if(this.specificGroup.hasOwnProperty(associationNode)) { // mise en place du groupe
@@ -130,6 +132,8 @@
                                 element.edge.unique = true;
                                 element.edge.label = this.multiLine(this.getAssociationDisplayString(nextChild),this.multiLineCount);
                                 element.edge.id = child.object_id;
+
+
                             } 
                         }
 
@@ -178,6 +182,10 @@
    // obligatoire appeler par le system
     cwLayoutNetwork.prototype.drawAssociations = function (output, associationTitleText, object) {
         try {
+            if(!cwAPI.isIndexPage() && object.objectTypeScriptName === "capinetwork" && object.properties.configuration) {
+                this.networkDisposition = JSON.parse(object.properties.configuration.replaceAll("\\",""));
+            }
+
             this.originalObject  = $.extend({}, object);
             var simplifyObject, i, assoNode = {} , isData = false;
             // keep the node of the layout

@@ -36,7 +36,7 @@
         if(!this.objectTypeNodes.hasOwnProperty(object.group)) {
             this.objectTypeNodes[object.group] = new cwApi.customLibs.cwLayoutNetwork.objectTypeNode(object.group,object.objectTypeScriptName); 
         }
-        this.objectTypeNodes[object.group].addNode(object.object_id,object.name,object.customDisplayString,object.icon,object.filterArray,nodeOptions);
+        this.objectTypeNodes[object.group].addNode(object.object_id,object.name,object.customDisplayString,object.icon,object.filterArray,nodeOptions,object.networkInfo);
 
     };
 
@@ -82,6 +82,51 @@
         }    
         return visData;    
     };
+
+    network.prototype.getEnabledVisNodes = function () {
+        var objectType ;
+        var visDatas = [];
+        var visData;
+
+        for (objectType in this.objectTypeNodes) {
+            if (this.objectTypeNodes.hasOwnProperty(objectType)) {
+                visData = this.objectTypeNodes[objectType].getEnabledVisData();
+                visDatas = visDatas.concat(visData);
+            }
+        }    
+        return visDatas;    
+    };
+
+    network.prototype.getAllNodeForSaving = function () {
+        var objectType ;
+        var Datas = [];
+        var Data;
+
+        for (objectType in this.objectTypeNodes) {
+            if (this.objectTypeNodes.hasOwnProperty(objectType)) {
+                Data = this.objectTypeNodes[objectType].getAllNodeForSaving();
+                Datas = Datas.concat(Data);
+            }
+        }    
+        return Datas;    
+    };
+
+    network.prototype.updateDisposition = function (disposition) {
+        var objectType,nodeUpdate,nodeId ;
+        try {
+            for(nodeId in disposition.nodes){
+                if(disposition.nodes.hasOwnProperty(nodeId)) {
+                    nodeUpdate = disposition.nodes[nodeId];
+                    if(this.objectTypeNodes[nodeUpdate.group] && this.objectTypeNodes[nodeUpdate.group].nodes[nodeUpdate.id]) {
+                        this.objectTypeNodes[nodeUpdate.group].nodes[nodeUpdate.id].updatePostionAndState(nodeUpdate);
+                    }
+                    
+                }
+            }
+        } catch(e) {console.log(e);}   
+    };
+
+
 
     network.prototype.SetAllAndGetNodesObject = function (state,scriptname) {
         var objectType;
