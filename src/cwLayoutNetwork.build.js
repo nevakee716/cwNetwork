@@ -118,8 +118,7 @@
         $('.selectNetworkExternal_' + this.nodeID).selectpicker();
         $('.selectNetworkSearch_' + this.nodeID).selectpicker();
         $('.selectNetworkConfiguration_' + this.nodeID).selectpicker();
-
-
+        $('.selectNetworkConfiguration_' + this.nodeID)[0].children[1].children[0].append(this.createAddButton());
 
         $('.selectNetworkClusterByGroup_' + this.nodeID + '_child').selectpicker();
         $('.selectNetworkClusterByGroup_' + this.nodeID + '_head').selectpicker();
@@ -236,7 +235,7 @@
         });
 
         // Event for filter
-        // Move On a Node
+        // Load a new network
         $('select.selectNetworkConfiguration_' + this.nodeID).on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
             var changeSet, id, nodeId, i;
             var groupArray = {};
@@ -252,7 +251,7 @@
                     self.updatePhysics(false);
                     self.networkOptions.physics.enabled = true;
                     self.networkConfiguration.selected = self.networkConfiguration.nodes[id];
-                }
+                } 
             }
         });
 

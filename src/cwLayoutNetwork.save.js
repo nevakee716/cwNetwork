@@ -26,6 +26,15 @@
 
 
 
+    cwLayoutNetwork.prototype.createAddButton = function() {
+        var buttonAdd = document.createElement('button');
+        buttonAdd.addEventListener("click", this.createChangesetWithCreation.bind(this), false);
+        buttonAdd.innerHTML = '<i class="fa fa-plus" aria-hidden="true"></i>';
+        return buttonAdd;
+    };
+
+
+
     cwLayoutNetwork.prototype.saveIndexPage = function() {
         this.directSave(this.networkConfiguration.selected.obj);
     };
@@ -53,36 +62,28 @@
     };
 
     cwLayoutNetwork.prototype.createChangeset = function() {
+
         this.indirectSave();
     };
 
 
-     /*   if(this.networkConfiguration.nodes[node.object_id] === undefined) {
-            this.networkConfiguration.nodes[node.object_id] = {};
-            this.networkConfiguration.nodes[node.object_id].label = node.name;
-            this.networkConfiguration.nodes[node.object_id].configuration = JSON.parse(node.properties.configuration.replaceAll("\\",""));
-            this.networkConfiguration.nodes[node.object_id].obj = node;
-            node.associations = {};
-            node.associations[this.nodeID] = {};
-            node.associations[this.nodeID].associationScriptName = "CAPINETWORKTOASSONETWORKANYOBJECTTOANYOBJECT";
-            node.associations[this.nodeID].displayName = "Present on Network";           
-            node.associations[this.nodeID].items = []; 
-            node.associations[this.nodeID].nodeId = this.nodeID;
-        } 
-        var newItem = {};
-        newItem.name = father.name;
-        newItem.intersectionObjectUID = node.iProperties.uniqueidentifier;
-        newItem.targetObjectID = father.object_id;
-        newItem.isNew = "false";
-        newItem.targetObjectTypeScriptName = father.objectTypeScriptName;
-        node.associations[this.nodeID].items.push(newItem);
-*/
+    cwLayoutNetwork.prototype.createChangesetWithCreation = function(event) {
+        var networkName;
+        if (event.currentTarget.parentElement && event.currentTarget.parentElement.firstElementChild && event.currentTarget.parentElement.firstElementChild.value !== "") {
+            this.directSaveNewNetwork(event.currentTarget.parentElement.firstElementChild.value);
+        }
+
+    };
+
+
+
     cwLayoutNetwork.prototype.getConfigurationAndAssociationObjectToNetwork = function(newObj) {
 
-        var nodes, config, positions,newAssoItems = [],newAssoItemsObj = {};
+        var nodes, config, positions, newAssoItems = [],
+            newAssoItemsObj = {};
         newObj.displayNames = {};
         newObj.displayNames.configuration = "Configuration";
-     
+
 
 
         nodes = this.network.getAllNodeForSaving();
@@ -90,12 +91,19 @@
         config.nodes = {};
         positions = this.networkUI.getPositions();
 
-        newObj.associations[this.nodeID].items.forEach(function(item) {
-            newAssoItemsObj[item.targetObjectID] = item;
-        });
+        if (newObj.associations) {
+            newObj.associations[this.nodeID].items.forEach(function(item) {
+                newAssoItemsObj[item.targetObjectID] = item;
+            });
+        } else {
+            newAssoItems = [];
+            newObj.associations = {};
+            newObj.associations[this.nodeID] = {};
+
+        }
+
 
         nodes.forEach(function(node) {
-            
             if (positions.hasOwnProperty(node.id)) {
                 config.nodes[node.id] = {};
                 config.nodes[node.id].x = positions[node.id].x;
@@ -104,8 +112,7 @@
                 config.nodes[node.id].id = node.idShort;
                 config.nodes[node.id].status = node.status;
 
-
-                if(newAssoItemsObj[node.idShort]) {
+                if (newAssoItemsObj[node.idShort]) {
                     newAssoItems.push(newAssoItemsObj[node.idShort]);
                 } else {
                     var assoItem = {};
@@ -117,7 +124,7 @@
                     newAssoItems.push(assoItem);
                 }
             }
-            
+
 
         });
         newObj.properties.configuration = JSON.stringify(config);
@@ -128,7 +135,6 @@
 
 
     };
-   
 
 
 
@@ -145,15 +151,53 @@
         cwApi.customLibs.edits[id].display = "Network";
     };
 
+
+    cwLayoutNetwork.prototype.directSaveNewNetwork = function(networkName) {
+        var newObj = {};
+        var newNewObj = {};
+        var self = this;
+        newObj.properties = {};
+        newObj.properties.name = networkName;
+        this.getConfigurationAndAssociationObjectToNetwork(newObj);
+        var asso = $.extend(true, {}, newObj.associations);
+        newObj.associations = {};
+        newNewObj = $.extend(true, {}, newObj);
+        newNewObj.associations = asso;
+        //changeset.compareAndAddChanges(oldObj, newObj);
+
+        cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Create, null, newObj, 0, "capinetwork", function(elem) {
+            if (elem && elem.status == "Ok") {
+                newObj.associations[self.nodeID] = {};
+                newObj.associations[self.nodeID].items = [];
+                newObj.associations[self.nodeID].associationScriptName = "CAPINETWORKTOASSONETWORKANYOBJECTTOANYOBJECT";
+
+                newObj.object_id = elem.id;
+                newNewObj.object_id = elem.id;
+                cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, newObj, newNewObj, newObj.object_id, "capinetwork", function() {
+
+                });
+            }
+
+
+        });
+
+    };
+
+
+
     cwLayoutNetwork.prototype.directSave = function(oldObj) {
         var changeset, newObj;
         changeset = new cwApi.CwPendingChangeset(oldObj.objectTypeScriptName, oldObj.object_id, oldObj.name, true, 1);
         newObj = $.extend(true, {}, oldObj);
 
- 
         this.getConfigurationAndAssociationObjectToNetwork(newObj);
-        changeset.compareAndAddChanges(oldObj, newObj);
+        //changeset.compareAndAddChanges(oldObj, newObj);
 
+        cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, oldObj, newObj, oldObj.object_id, oldObj.objectTypeScriptName, function() {
+
+        });
+
+        /*
         cwApi.pendingChanges.clear();
         cwApi.pendingChanges.addChangeset(changeset);
         cwApi.pendingChanges.sendAsChangeRequest(undefined, function(response) {
@@ -164,7 +208,7 @@
             }
         }, function(error) {
             cwApi.notificationManager.addNotification(error.status + ' - ' + error.responseText, 'error');
-        });
+        });*/
     };
 
 

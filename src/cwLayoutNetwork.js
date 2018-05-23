@@ -61,7 +61,8 @@
         this.CDSFilterOption = false;
         this.physics = true;
         this.nodeOptions = {"CDSFilterOption" : this.CDSFilterOption,"CDSNodesOption" : this.CDSNodesOption};
-        
+        this.networkConfiguration = {};
+        this.networkConfiguration.nodes = [];
     };
 
 
