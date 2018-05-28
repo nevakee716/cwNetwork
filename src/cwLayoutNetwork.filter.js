@@ -114,10 +114,13 @@
             configurationFilterObject.appendChild(configurationFilterObjectTitle);
             configurationFilterObject.appendChild(this.getNetworkConfigurationFilterObject("selectNetworkConfiguration_" + this.nodeID));
             filterContainer.appendChild(configurationFilterObject);
-            var configurationFilterObjectButton = document.createElement("button");
-            configurationFilterObjectButton.innerHTML = '<i class="fa fa-floppy-o" aria-hidden="true"></i>';
-            configurationFilterObjectButton.id = "nodeConfigurationSaveButton_" + this.nodeID ;
-            configurationFilterObject.appendChild(configurationFilterObjectButton);
+            if(cwAPI.cwUser.isCurrentUserSocial() === false) {
+                var configurationFilterObjectButton = document.createElement("button");
+                configurationFilterObjectButton.innerHTML = '<i class="fa fa-floppy-o" aria-hidden="true"></i>';
+                configurationFilterObjectButton.id = "nodeConfigurationSaveButton_" + this.nodeID ;
+                configurationFilterObject.appendChild(configurationFilterObjectButton);                
+            }
+
             
             filterContainer.appendChild(configurationFilterObject);
         }

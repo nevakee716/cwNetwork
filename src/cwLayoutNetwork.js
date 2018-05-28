@@ -62,6 +62,10 @@
         this.physics = true;
         this.nodeOptions = {"CDSFilterOption" : this.CDSFilterOption,"CDSNodesOption" : this.CDSNodesOption};
         this.networkConfiguration = {};
+        this.networkConfiguration.enableEdit = this.options.CustomOptions['enableEdit'];
+        this.networkConfiguration.personnalEdit = this.options.CustomOptions['personnalEdit'];
+        this.networkConfiguration.rolesEdit = this.options.CustomOptions['rolesEdit'];
+        this.networkConfiguration.rolesEditForAll = this.options.CustomOptions['rolesEditForAll'];
         this.networkConfiguration.nodes = [];
     };
 

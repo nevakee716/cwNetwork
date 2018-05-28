@@ -54,8 +54,14 @@
             obj.label = this.label;
         }
         obj.font = {'size': 9};
-        if(this.x) obj.x = this.x;
-        if(this.y) obj.y = this.y;
+        if(this.x) {
+            obj.x = this.x;
+            this.x = undefined;
+        }
+        if(this.y) {
+            obj.y = this.y;
+            this.y = undefined;
+        }
         if(this.icon) {
             obj.shape = 'icon';
             obj.icon = {};
