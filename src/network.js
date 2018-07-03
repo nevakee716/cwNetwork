@@ -120,7 +120,6 @@
                     if(this.objectTypeNodes[nodeUpdate.group] && this.objectTypeNodes[nodeUpdate.group].nodes[nodeUpdate.id]) {
                         this.objectTypeNodes[nodeUpdate.group].nodes[nodeUpdate.id].updatePostionAndState(nodeUpdate);
                     }
-                    
                 }
             }
         } catch(e) {console.log(e);}   
