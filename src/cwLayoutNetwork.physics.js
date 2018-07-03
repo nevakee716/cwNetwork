@@ -28,20 +28,21 @@
         this.updatePhysics();
     };
 
-    cwLayoutNetwork.prototype.updatePhysicsButton = function () {
+    cwLayoutNetwork.prototype.updatePhysicsButtonTitle = function (button) {
+        if(button === undefined) button = document.getElementById("cwLayoutNetworkButtonsPhysics" + this.nodeID);
         if(this.physics == false) {
-            event.target.innerHTML = "Enable Physics";
+            button.innerHTML = "Enable Physics";
         }
         else {
-            event.target.innerHTML = "Disable Physics";
+            button.innerHTML = "Disable Physics";
         }
     };
 
     cwLayoutNetwork.prototype.updatePhysics = function (state) {
-        var self = this,changeset = [];
+        var changeset = [];
         if(state !== undefined) {
             this.physics = state;
-            this.updatePhysicsButton();
+            this.updatePhysicsButtonTitle();
         }
         if(this.physics == true) {
             this.nodes.forEach(function(node) {
@@ -56,7 +57,7 @@
                 
             });
         }
-        self.nodes.update(changeset);
+        this.nodes.update(changeset);
     };
 
 
