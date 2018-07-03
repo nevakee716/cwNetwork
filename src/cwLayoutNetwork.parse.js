@@ -207,7 +207,7 @@
             this.network = new cwApi.customLibs.cwLayoutNetwork.network();
             this.network.searchForNodesAndEdges(simplifyObject,this.nodeOptions);
     
-            if(isData) output.push('<div class="cw-visible" id="cwLayoutNetwork' + this.nodeID + '">'); 
+            if(isData) output.push('<div class="cw-visible cwLayoutNetwork" id="cwLayoutNetwork' + this.nodeID + '">'); 
             else output.push('<div id="cwLayoutNetwork' + this.nodeID + '">');
     
             output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');

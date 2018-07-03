@@ -2,8 +2,9 @@
 .bootstrap-select.btn-group[class*="span"] {
   margin: 0 !important;
 }
-#cwLayoutNetwork {
+.cwLayoutNetwork {
   display: block;
+  width: 100%;
 }
 
 div.cwLayoutNetworkLegend {
