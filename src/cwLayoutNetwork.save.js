@@ -83,14 +83,17 @@
             newAssoItemsObj = {};
         newObj.displayNames = {};
         newObj.displayNames.configuration = "Configuration";
-
-
+        newObj.displayNames.createoncwview = "Create on view";
+        
 
         nodes = this.network.getAllNodeForSaving();
         config = {};
         config.nodes = {};
-        positions = this.networkUI.getPositions();
+        config.external = this.getExternalFilterInformation();
 
+
+        positions = this.networkUI.getPositions();
+        
         if (newObj.associations) {
             newObj.associations[this.nodeID].items.forEach(function(item) {
                 newAssoItemsObj[item.targetObjectID] = item;
@@ -111,6 +114,7 @@
                 config.nodes[node.id].group = node.group;
                 config.nodes[node.id].id = node.idShort;
                 config.nodes[node.id].status = node.status;
+                
 
                 if (newAssoItemsObj[node.idShort]) {
                     newAssoItems.push(newAssoItemsObj[node.idShort]);
@@ -124,12 +128,16 @@
                     newAssoItems.push(assoItem);
                 }
             }
-
-
         });
         newObj.properties.configuration = JSON.stringify(config);
         newObj.associations[this.nodeID].items = newAssoItems;
 
+        var view = cwAPI.getCurrentView();
+        if(view && view.cwView) {
+            view = view.cwView;
+        }
+
+        newObj.properties.createoncwview = view;
 
         return null;
 
@@ -222,8 +230,6 @@
 
     cwApi.cwEditProperties.cwEditProperty.prototype.getValueFromCustomLayout = function(data, isInitialValueLoad) {
         var id = this.objectTypeScriptName + "_" + this.objectID + "_" + this.scriptName;
-
-
         if (cwApi.customLibs.edits && cwApi.customLibs.edits[id]) {
             if (isInitialValueLoad) {
                 data.v = cwApi.customLibs.edits[id].initValue;

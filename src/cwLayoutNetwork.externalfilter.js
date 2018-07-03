@@ -53,7 +53,6 @@
                                 edgesToHighlight.forEach(function(edge) {
                                     present = false;
                                     e.forEach(function(ee) {
-                                        debugger;
                                         if(ee.object_id == edge.object_id) present = true;
                                     });
                                     if(present === true) etd.push(edge);
@@ -106,27 +105,80 @@
         }
     };
 
+    cwLayoutNetwork.prototype.setExternalFilterToValue = function (filtername,ids) {
+        var self = this,values = [];
+        if(self.externalFilters && self.externalFilters[filtername]) {
+            ids.forEach(function(id) {
+                if(self.externalFilters[filtername].filterField[id]) {
+                    values.push(self.externalFilters[filtername].filterField[id].name); 
+                }
+            });  
+            $('select.selectNetworkExternal_' + self.nodeID + "." + filtername).selectpicker('val',values);            
+        }
+
+        
+    };
 
     cwLayoutNetwork.prototype.externalfilterModifyBehaviour = function (elem) {
         if(this.externalFilterBehaviour.absolute == true) {
-            elem.target.innerText = "Behaviour : Highlight";
             this.externalFilterBehaviour.add = false ;
             this.externalFilterBehaviour.absolute = false;
             this.externalFilterBehaviour.highlight = true;
         } else if(this.externalFilterBehaviour.add == true) {
-            elem.target.innerText = "Behaviour : Absolute";
             this.externalFilterBehaviour.absolute = true;
             this.externalFilterBehaviour.add = true;
             this.externalFilterBehaviour.highlight = false;
         } else {
-            elem.target.innerText = "Behaviour : Addition";
             this.externalFilterBehaviour.add = true;
             this.externalFilterBehaviour.absolute = false;
             this.externalFilterBehaviour.highlight = false;
         }
+        this.externalfilterUpdateBehaviourTitle(elem.target);
+    };
+    cwLayoutNetwork.prototype.externalfilterUpdateBehaviourTitle = function (elem) {
+        if(elem === undefined) elem = document.getElementById("cwLayoutNetworkButtonsBehaviour" + this.nodeID);
+        if(this.externalFilterBehaviour.absolute == true) {
+            elem.innerText = "Behaviour : Highlight";
+        } else if(this.externalFilterBehaviour.add == true) {
+            elem.innerText = "Behaviour : Absolute";
+        } else {
+            elem.innerText = "Behaviour : Addition";
+        }
     };
 
 
+    cwLayoutNetwork.prototype.updateExternalFilterInformation = function (external) {
+        var output = {};
+        if(external && external.behaviour && external.externalFilters) {
+            this.externalFilterBehaviour = external.behaviour;
+            this.externalfilterUpdateBehaviourTitle();
+            for(var extF in external.externalFilters) {
+                if(this.externalFilters.hasOwnProperty(extF)) {
+                    this.externalFilters[extF].selectedId = external.externalFilters[extF].selectedId; 
+                }
+                this.setExternalFilterToValue(extF,external.externalFilters[extF].selectedId);
+            }
+            this.setAllExternalFilter();
+
+        } 
+
+
+
+    };        
+      
+
+    cwLayoutNetwork.prototype.getExternalFilterInformation = function (disposition) {
+        var output = {};
+        output.behaviour = this.externalFilterBehaviour;
+        output.externalFilters = {};
+        for(var extF in this.externalFilters) {
+            if(this.externalFilters.hasOwnProperty(extF)) {
+                output.externalFilters[extF] = {};
+                output.externalFilters[extF].selectedId = this.externalFilters[extF].selectedId; 
+            }
+        } 
+        return output;
+    };
 
     cwLayoutNetwork.prototype.addExternalFilterValue = function (filterName,id) {
         if(this.externalFilters[filterName].selectedId.indexOf(id) === -1) {
@@ -196,10 +248,9 @@
 
         filterObject = document.createElement("select");
         filterObject.setAttribute('data-live-search','true');
-        filterObject.setAttribute('data-actions-box','true');
         filterObject.setAttribute('data-size','5');
-       //filterObject.setAttribute('data-width','fit');
-        
+
+
         filterObject.className = classname + " Network";
         filterObject.setAttribute('filterName',"Network");
 

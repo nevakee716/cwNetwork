@@ -72,6 +72,7 @@
         // Update Network from configuration
         if (this.networkDisposition) {
             this.network.updateDisposition(this.networkDisposition);
+            this.network.updateExternalFilterInformation(this.networkDisposition.external);
         }
 
 
@@ -243,6 +244,7 @@
             if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
                 id = $(this).context[clickedIndex]['id'];
                 if(id != 0) {
+                    self.setExternalFilterToNone();
                     self.deActivateAllGroup();
                     self.networkOptions.physics.enabled = false;
                     self.network.updateDisposition(self.networkConfiguration.nodes[id].configuration);
@@ -251,9 +253,22 @@
                     self.fillFilter(changeSet);
                     self.updatePhysics(false);
                     self.networkOptions.physics.enabled = true;
+                    changeSet = [];
+                    self.nodes.forEach(function(node) {
+                        node.x = undefined;
+                        node.y = undefined;
+                        changeSet.push(node);
+                    });
+                    self.nodes.update(changeSet);
+                    self.colorAllNodes();
+                    self.colorAllEdges();  
+
                     self.networkConfiguration.selected = self.networkConfiguration.nodes[id];
+                    self.updateExternalFilterInformation(self.networkConfiguration.nodes[id].configuration.external);
+
                 } 
             }
+            console.log("network set");
         });
 
         // Event for filter
@@ -388,26 +403,30 @@
             if (params.hasOwnProperty('nodes') && params.nodes.length === 1) {
                 var split = params.nodes[0].split("#");
                 self.openObjectPage(split[0], split[1]);
-            }
+            } else if (params.hasOwnProperty('edges') && params.edges.length === 1) {
+                var edge = self.edges.get(params.edges[0]);
+                if(edge.scriptname && edge.object_id) {
+                    self.openObjectPage(edge.object_id,edge.scriptname);
+                }
+                
+            };
         });
 
 
         var stop = false;
         this.networkUI.on("stabilizationIterationsDone", function() {
             window.setTimeout(function(params) {
-                self.networkUI.fit();
+                self.networkUI.fit({nodes:self.nodes.getIds(),animation:true});
                 self.networkUI.removeEventListener("startStabilizing");
                 //networkContainer.style["visibility"] = "visible";
                 //$('.cwloading').hide(); 
             }, 1000);
         });
-
-
-
-        this.networkUI.on("startStabilizing", function(params) {
-            //$('.cwloading').show(); 
-            //networkContainer.style["visibility"] = "hidden";
-        });
+        if(this.viewSchema.ViewName.indexOf("popout") !== -1) {
+            this.networkUI.on("resize",  function(params) {
+                self.networkUI.fit({nodes:self.nodes.getIds(),animation:true});
+            });
+        }
 
         this.fillFilter(nodes);
 
