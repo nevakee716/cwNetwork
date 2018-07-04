@@ -268,7 +268,8 @@
                     self.clusters = self.networkConfiguration.nodes[id].configuration.clusters;
                     self.fillValueInClusterFilter(self.networkConfiguration.nodes[id].configuration.clusterByGroupOption.head,self.networkConfiguration.nodes[id].configuration.clusterByGroupOption.child);
   
-                      self.updateExternalFilterInformation(self.networkConfiguration.nodes[id].configuration.external);                  
+                    self.updateExternalFilterInformation(self.networkConfiguration.nodes[id].configuration.external);      
+                    self.networkUI.fit({nodes:self.nodes.getIds(),animation:true});            
                 } 
             }
             console.log("network set");
