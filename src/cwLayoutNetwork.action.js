@@ -25,17 +25,15 @@
 
 
 
-    // Adding group at start
+    // Activate cluster from option
     cwLayoutNetwork.prototype.activateStartingCluster = function (event) {
         var self = this;
-        $('select.selectNetworkClusterByGroup_' + self.nodeID + "_head").selectpicker('val',this.clusterByGroupOption.head); 
-        $('select.selectNetworkClusterByGroup_' + self.nodeID + "_child").selectpicker('val',this.clusterByGroupOption.child); 
+        self.fillValueInClusterFilter(this.clusterByGroupOption.head,this.clusterByGroupOption.child);
         self.clusterByGroup();
     };
 
 
-
-
+       
 
 
 

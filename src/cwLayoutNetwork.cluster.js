@@ -108,7 +108,12 @@
     };
 
 
+    // Fill value in the filter
+    cwLayoutNetwork.prototype.fillValueInClusterFilter = function (head,child) {
+        $('select.selectNetworkClusterByGroup_' + this.nodeID + "_head").selectpicker('val',head); 
+        $('select.selectNetworkClusterByGroup_' + this.nodeID + "_child").selectpicker('val',child); 
 
+    };
 
 
     cwLayoutNetwork.prototype.clusterByGroup = function() {

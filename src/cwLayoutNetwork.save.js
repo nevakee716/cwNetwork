@@ -90,7 +90,10 @@
         config = {};
         config.nodes = {};
         config.external = this.getExternalFilterInformation();
-
+        config.clusters = this.clusters;
+        config.clusterByGroupOption = {};
+        config.clusterByGroupOption.head = $('select.selectNetworkClusterByGroup_' + this.nodeID + "_head").val();
+        config.clusterByGroupOption.child = $('select.selectNetworkClusterByGroup_' + this.nodeID + "_child").val();
 
         positions = this.networkUI.getPositions();
         

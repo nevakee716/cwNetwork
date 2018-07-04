@@ -264,8 +264,11 @@
                     self.colorAllEdges();  
 
                     self.networkConfiguration.selected = self.networkConfiguration.nodes[id];
-                    self.updateExternalFilterInformation(self.networkConfiguration.nodes[id].configuration.external);
 
+                    self.clusters = self.networkConfiguration.nodes[id].configuration.clusters;
+                    self.fillValueInClusterFilter(self.networkConfiguration.nodes[id].configuration.clusterByGroupOption.head,self.networkConfiguration.nodes[id].configuration.clusterByGroupOption.child);
+  
+                      self.updateExternalFilterInformation(self.networkConfiguration.nodes[id].configuration.external);                  
                 } 
             }
             console.log("network set");
