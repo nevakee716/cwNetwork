@@ -30,13 +30,22 @@
       this.toId = toId;   
       if(direction == 'to') this.direction.to = true;
     }
-    if(edgeInfo && edgeInfo.unique) {
+    if(edgeInfo && edgeInfo.unique && this.checkIfAlreadyExist(edgeInfo.id)) {
       this.label = edgeInfo.label;
     } else {
       this.zipped = true;
       this.labels.push({"label" : edgeInfo.label,"id":edgeInfo.id,"scriptname":edgeInfo.objectTypeScriptName,"direction" : direction,"uuid":this.labels.length});     
     }
   };
+
+  edge.prototype.checkIfAlreadyExist = function(uuid) {
+    var notExist = false;
+    this.labels.forEach(function(l) {
+      if(l.id === uuid) return true;
+    });
+    return notExist;
+  };
+
 
   //permet de lire les propriétés de l'asso et de choisir quoi afficher en fonction du champs custom
   edge.prototype.addEdgeElement = function(direction,edgeInfo,reverse) {

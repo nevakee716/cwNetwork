@@ -129,9 +129,17 @@
                         } else { // association properties
                             if(nextChild.iProperties) {
                                 element.edge = {};
-                                element.edge.unique = true;
+                                
                                 element.edge.label = this.multiLine(this.getAssociationDisplayString(nextChild),this.multiLineCount);
-                                element.edge.id = child.object_id;
+                                if(nextChild.iProperties && nextChild.iProperties.uniqueidentifier) {
+                                    element.edge.unique = false;
+                                    element.edge.id = nextChild.iProperties.uniqueidentifier;
+                                    element.edge.objectTypeScriptName = nextChild.iObjectTypeScriptName;
+                                } else {
+                                    element.edge.unique = true;
+                                    element.edge.id = child.object_id;  
+                                }
+                                
 
 
                             } 
