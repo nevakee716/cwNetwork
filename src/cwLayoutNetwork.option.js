@@ -83,6 +83,12 @@
                         groups[optionSplit[0]].icon.size = '40'; 
                         groups[optionSplit[0]].font = {background: '#FFFFFF'}  ; 
                         groups[optionSplit[0]].background = {background: '#FFFFFF'}  ; 
+                    } else if(optionSplit[1] === "image" || optionSplit[1] === "circularImage" ) {
+                        groups[optionSplit[0]].shape = optionSplit[1];
+                        groups[optionSplit[0]].image = optionSplit[2];
+                        if(optionSplit[3]) {
+                            groups[optionSplit[0]].color = optionSplit[3];
+                        }
                     } else { //shape
                         groups[optionSplit[0]].shape = optionSplit[1];
                         if(optionSplit[2]) {
