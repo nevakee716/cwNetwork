@@ -176,16 +176,18 @@
                 }
             }
         }
-
-        optionList = filterBehaviour.split("#");
-        for (i = 0; i < optionList.length; i += 1) {
-            if(optionList[i] !== "") {
-                var optionSplit = optionList[i].split(":");
-                if(this.externalFilters.hasOwnProperty(optionSplit[0])) {
-                    this.externalFilters[optionSplit[0]].behaviour = optionSplit[1]; 
-                } 
-            }
+        if(filterBehaviour) {
+            optionList = filterBehaviour.split("#");
+            for (i = 0; i < optionList.length; i += 1) {
+                if(optionList[i] !== "") {
+                    var optionSplit = optionList[i].split(":");
+                    if(this.externalFilters.hasOwnProperty(optionSplit[0])) {
+                        this.externalFilters[optionSplit[0]].behaviour = optionSplit[1]; 
+                    } 
+                }
+            }           
         }
+        
 
     };
   
