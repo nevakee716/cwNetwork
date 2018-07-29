@@ -303,14 +303,17 @@
             clusterButton.addEventListener('click', this.clusterByHubsize.bind(this));              
         }*/
 
-        if (this.physicsOption) {
+        if (this.physicsOption && this.hidePhysicsButton === false) {
             var physicsButton = document.getElementById("cwLayoutNetworkButtonsPhysics" + this.nodeID);
             physicsButton.addEventListener('click', this.stopPhysics.bind(this));
         }
 
         if (this.edgeOption) {
-            var zipEdgeButton = document.getElementById("cwLayoutNetworkButtonsZipEdge" + this.nodeID);
-            zipEdgeButton.addEventListener('click', this.edgeZipButtonAction.bind(this));
+            if(this.hideEdgeButton === false) {
+                var zipEdgeButton = document.getElementById("cwLayoutNetworkButtonsZipEdge" + this.nodeID);
+                zipEdgeButton.addEventListener('click', this.edgeZipButtonAction.bind(this));               
+            }
+
             this.createUnzipEdge();
 
             var event = {};

@@ -77,6 +77,12 @@
         "Type": 1
     },
     {
+        "Id": "hideClusterMenu",
+        "DisplayName": "Hide Cluster Menu",
+        "Description": "Hide Cluster Menu",
+        "Type": 1
+    },
+    {
         "Id": "clusterToSelectOnStart",
         "DisplayName": "Cluster To Select On Start",
         "Description": "List the Cluster you want to apply when the network is started. Head#Child,Child2",
@@ -87,7 +93,13 @@
         "DisplayName": "Activate UnzipEdge Option",
         "Description": "Activate the button to unzip edge",
         "Type": 1
-    },  
+    }, 
+    {
+        "Id": "hideEdgeButton",
+        "DisplayName": "Hide Zip Edge Button",
+        "Description": "Hide Zip Edge Button",
+        "Type": 1
+    }, 
     {
         "Id": "zipEdgeInitState",
         "DisplayName": "Edge Zip at Start",
@@ -100,6 +112,12 @@
         "Description": "Activate button to disable the physics",
         "Type": 1
     },
+    {
+        "Id": "hidePhysicsButton",
+        "DisplayName": "Hide Physics Button",
+        "Description": "Hide Physics Button",
+        "Type": 1
+    }, 
     {
         "Id": "physicsInitialState",
         "DisplayName": "Physics Initially Activated",
@@ -119,5 +137,10 @@
         "Type": 1
     },
     {
+        "Id": "edgeColor",
+        "DisplayName": "Edge Color",
+        "Description": "Chose the color of the edge based on the associationType",
+        "Type": 0
+    }    
     ]
 }

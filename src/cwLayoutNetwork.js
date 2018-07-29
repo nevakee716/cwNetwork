@@ -46,17 +46,26 @@
         this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);
         this.getdirectionList(this.options.CustomOptions['arrowDirection']);
         this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
+        
         this.getExternalFilterNodes(this.options.CustomOptions['filterNode'],this.options.CustomOptions['filterNodeBehaviour']);
         this.getExternalFilterToSelectOnStart(this.options.CustomOptions['externalFilterToSelectOnStart']);  
-        this.getStartingCluster(this.options.CustomOptions['clusterToSelectOnStart']);
-
-        this.wiggle = true;
+        
         this.edgeOption = this.options.CustomOptions['zipEdgeOption'];
         this.edgeZipped = this.options.CustomOptions['zipEdgeInitState'];
+        this.hideEdgeButton = this.options.CustomOptions['hideEdgeButton'];
+
         this.clusterOption = this.options.CustomOptions['clusterOn'];
+        this.hideClusterMenu = this.options.CustomOptions['hideClusterMenu'];
+        this.getStartingCluster(this.options.CustomOptions['clusterToSelectOnStart']);
+
         this.physicsOption = this.options.CustomOptions['physicsOn'];   
-        this.physicsOptionInitialState = this.options.CustomOptions['physicsInitialState'];   
+        this.hidePhysicsButton = this.options.CustomOptions['hidePhysicsButton']; 
+        this.physicsOptionInitialState = this.options.CustomOptions['physicsInitialState'];  
+
         this.removeLonely = this.options.CustomOptions['removeLonelyOn'];
+
+
+        this.wiggle = true;
         this.CDSNodesOption = true;
         this.CDSFilterOption = false;
         this.physics = true;
@@ -67,6 +76,7 @@
         this.networkConfiguration.rolesEdit = this.options.CustomOptions['rolesEdit'];
         this.networkConfiguration.rolesEditForAll = this.options.CustomOptions['rolesEditForAll'];
         this.networkConfiguration.nodes = [];
+
     };
 
 
