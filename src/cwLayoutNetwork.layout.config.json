@@ -111,6 +111,13 @@
         "DisplayName": "Remove Lonely Objects",
         "Description": "Activate the option to remove lonely object",
         "Type": 1
-    }
+    },
+    {
+        "Id": "enableEdit",
+        "DisplayName": "Enable Edit",
+        "Description": "Enable the edit",
+        "Type": 1
+    },
+    {
     ]
 }

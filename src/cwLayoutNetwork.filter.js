@@ -104,7 +104,7 @@
             clusterFilterObject.appendChild(clusterFilterObjectFilterChilds);
             filterContainer.appendChild(clusterFilterObject);
         }
-        if(this.networkConfiguration || true) {
+        if(this.networkConfiguration && this.networkConfiguration.enableEdit) {
              var configurationFilterObject = document.createElement("div");
             configurationFilterObject.className = "LayoutNetork_filterGroup";
 

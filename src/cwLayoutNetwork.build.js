@@ -62,13 +62,6 @@
         var mutex = true;
         var i = 0;
 
-
-        // legend
-        var x = -networkContainer.clientWidth / 2 + 70;
-        var y = -networkContainer.clientHeight / 2 + 150;
-        var step = 70;
-
-
         // Update Network from configuration
         if (this.networkDisposition) {
             this.network.updateDisposition(this.networkDisposition);
@@ -119,7 +112,7 @@
         $('.selectNetworkExternal_' + this.nodeID).selectpicker();
         $('.selectNetworkSearch_' + this.nodeID).selectpicker();
         $('.selectNetworkConfiguration_' + this.nodeID).selectpicker();
-        if(cwAPI.cwUser.isCurrentUserSocial() === false) {
+        if(cwAPI.cwUser.isCurrentUserSocial() === false && this.networkConfiguration.enableEdit) {
             $('.selectNetworkConfiguration_' + this.nodeID)[0].children[1].children[0].append(this.createAddButton());
         }
         $('.selectNetworkClusterByGroup_' + this.nodeID + '_child').selectpicker();
@@ -327,8 +320,6 @@
                 this.edgeZipButtonAction(event);
             }
         }
-
-
 
         var saveButton = document.getElementById("nodeConfigurationSaveButton_" + this.nodeID);
         if(saveButton) {
