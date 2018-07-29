@@ -185,7 +185,7 @@
                 newObj.object_id = elem.id;
                 newNewObj.object_id = elem.id;
                 cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, newObj, newNewObj, newObj.object_id, "capinetwork", function() {
-
+                    windows.location.reload();
                 });
             }
 
@@ -205,7 +205,7 @@
         //changeset.compareAndAddChanges(oldObj, newObj);
 
         cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, oldObj, newObj, oldObj.object_id, oldObj.objectTypeScriptName, function() {
-
+            windows.location.reload();
         });
 
         /*
