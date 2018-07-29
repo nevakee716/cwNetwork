@@ -41,7 +41,7 @@
   edge.prototype.checkIfAlreadyExist = function(uuid) {
     var notExist = false;
     this.labels.forEach(function(l) {
-      if(l.id === uuid) return true;
+      if(l.id === uuid) notExist = true;
     });
     return notExist;
   };
@@ -50,19 +50,22 @@
   //permet de lire les propriétés de l'asso et de choisir quoi afficher en fonction du champs custom
   edge.prototype.addEdgeElement = function(direction,edgeInfo,reverse) {
     var newDirection = direction;
-    if(edgeInfo && !edgeInfo.unique) {
-      this.zipped = true;
-      if(reverse) {
-        if(direction == "from") newDirection = "to";
-        else newDirection = "from";     
-      } 
-      //else if(newDirection === undefined ) newDirection = "to";
-      this.labels.push({"label" : edgeInfo.label,"direction" : newDirection,"id":edgeInfo.id,"scriptname":edgeInfo.objectTypeScriptName,"uuid":this.labels.length}); 
-      this.size = this.size + 3;
-    }
+    if(edgeInfo && !this.checkIfAlreadyExist(edgeInfo.id)) {
+      if(!edgeInfo.unique) {
+        this.zipped = true;
+        if(reverse && direction) {
+          if(direction == "from") newDirection = "to";
+          else newDirection = "from";     
+        } 
+        //else if(newDirection === undefined ) newDirection = "to";
 
-    if(direction === 'to' && reverse || direction === 'from' && !reverse) this.direction.from = true;
-    else if(direction === 'from' && reverse || direction === 'to' && !reverse) this.direction.to = true;
+        this.labels.push({"label" : edgeInfo.label,"direction" : newDirection,"id":edgeInfo.id,"scriptname":edgeInfo.objectTypeScriptName,"uuid":this.labels.length}); 
+        this.size = this.size + 3;
+      }
+
+      if(direction === 'to' && reverse || direction === 'from' && !reverse) this.direction.from = true;
+      else if(direction === 'from' && reverse || direction === 'to' && !reverse) this.direction.to = true;
+    }
     
   };
 

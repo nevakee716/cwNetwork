@@ -21,7 +21,8 @@
         var self = this;
         var changeSetEdges = [];
         if(this.edgeZipped == true) {
-            event.target.innerHTML = "Zip Edges";
+            if(event.target) event.target.innerHTML = "Zip Edges";
+            
             this.edgeZipped = false;
             this.edges.forEach(function(edge) {
                 if(edge.zipped === true && edge.labels.length > 0) {
@@ -36,7 +37,7 @@
                 changeSetEdges.push(edge);     
             }); 
         } else {
-            event.target.innerHTML = "unZip Edges";
+            if(event.target) event.target.innerHTML = "unZip Edges";
             this.edgeZipped = true;
             this.edges.forEach(function(edge) {
                 if(edge.zipped === true && edge.labels.length > 0) {
@@ -62,6 +63,7 @@
             if(edge.zipped) {
                 edge.labels.forEach(function(zipEdge) {
                     var newEdge = $.extend(true, {}, edge);
+
                     newEdge.zipped = false;
                     newEdge.hidden = true;
                     newEdge.hideByZipping = true;
@@ -71,7 +73,12 @@
                     newEdge.scriptname = zipEdge.scriptname;  
                     newEdge.id = edge.id + "#" + zipEdge.uuid;  
                     newEdge.object_id = zipEdge.id;
-                    newEdge.width = 1;           
+                    newEdge.width = 1;      
+
+                    if(newEdge.scriptname && self.edgeColor.hasOwnProperty(newEdge.scriptname)) {
+                        self.getEdgeColorFromEdgeGroup(newEdge);
+                    }
+
                     self.edges.add(newEdge);
                 });                 
             }    
