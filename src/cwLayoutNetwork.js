@@ -64,6 +64,7 @@
 
         this.removeLonely = this.options.CustomOptions['removeLonelyOn'];
 
+        this.edgeColor  = JSON.parse(this.options.CustomOptions['edgeColor']);
 
         this.wiggle = true;
         this.CDSNodesOption = true;

@@ -28,4 +28,9 @@ div.cwLayoutNetworkLegend i{
 	font-size: 1rem;
 }
 
-
+.cwLayoutNetwork img.networkLegendImage {
+	    height: 25px;
+    top: 3px;
+    position: absolute;
+    right: 25px;
+}

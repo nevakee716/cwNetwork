@@ -146,14 +146,18 @@
     };
 
     objectTypeNode.prototype.getLegendElement = function (group) {
+        var htmltxt = "";
         if(group && group.shape == "icon") {
-            var htmltxt = "";
             htmltxt += '<i class="fa"';
             if(group.icon.color === undefined) htmltxt += 'style="color : black">';  
             else htmltxt += 'style="color : ' + group.icon.color + '">';        
             htmltxt += group.icon.code;
             htmltxt += '</i>';  
             return htmltxt;         
+        } else if(group && (group.shape === "image" || group.shape === "circularImage")) {
+            var htmltxt = "";
+            htmltxt += '<img class="networkLegendImage" src="' + group.image+ '"></img>';
+            return htmltxt; 
         }
         return "";
     };

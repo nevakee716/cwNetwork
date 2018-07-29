@@ -50,6 +50,19 @@
     };
 
     cwLayoutNetwork.prototype.getFontAwesomeList = function(options) {
+        
+        var self = this;
+        function getColorForNode(color) {
+            var colorObj = {};
+            colorObj.border = color;
+            colorObj.background = color;
+            colorObj.highlight = {};
+            colorObj.highlight.border = self.LightenDarkenColor(color,-50);
+            colorObj.highlight.background = self.LightenDarkenColor(color,-50);
+            return colorObj;
+        }
+
+
         function string_as_unicode_escape(str){
             return str.split("").map(function(s){
                 return "\\u"+("0000" + s.charCodeAt(0).toString(16)).slice(-4);
@@ -72,13 +85,8 @@
                         groups[optionSplit[0]].icon.code = unescape('%u' + optionSplit[2]);
                         groups[optionSplit[0]].unicode = optionSplit[2];
                         if(optionSplit[3]) {
-                            groups[optionSplit[0]].color = {};
-                            groups[optionSplit[0]].color.border = optionSplit[3];
-                            groups[optionSplit[0]].color.background = optionSplit[3];
-                            groups[optionSplit[0]].color.highlight = {};
-                            groups[optionSplit[0]].color.highlight.border = this.LightenDarkenColor(optionSplit[3],-50);
-                            groups[optionSplit[0]].color.highlight.background = this.LightenDarkenColor(optionSplit[3],-50);
                             groups[optionSplit[0]].icon.color = optionSplit[3];   
+                            groups[optionSplit[0]].color = getColorForNode(optionSplit[3]);
                         }
                         groups[optionSplit[0]].icon.size = '40'; 
                         groups[optionSplit[0]].font = {background: '#FFFFFF'}  ; 
@@ -87,18 +95,25 @@
                         groups[optionSplit[0]].shape = optionSplit[1];
                         groups[optionSplit[0]].image = optionSplit[2];
                         if(optionSplit[3]) {
-                            groups[optionSplit[0]].color = optionSplit[3];
+                            groups[optionSplit[0]].color = getColorForNode(optionSplit[3]);
                         }
                     } else { //shape
                         groups[optionSplit[0]].shape = optionSplit[1];
                         if(optionSplit[2]) {
                             groups[optionSplit[0]].color = {};
-                            if(optionSplit[3]) groups[optionSplit[0]].color.border = optionSplit[3];
-                            else groups[optionSplit[0]].color.border = this.LightenDarkenColor(optionSplit[2],50);
+                            if(optionSplit[3]) {
+                                groups[optionSplit[0]].color.border = optionSplit[3];
+                                groups[optionSplit[0]].color.highlight = {};
+                                groups[optionSplit[0]].color.highlight.border = optionSplit[3];
+                                groups[optionSplit[0]].color.highlight.background = optionSplit[3];
+                            } else {
+                                groups[optionSplit[0]].color.border = this.LightenDarkenColor(optionSplit[2],50);
+                                groups[optionSplit[0]].color.highlight = {};
+                                groups[optionSplit[0]].color.highlight.border = this.LightenDarkenColor(optionSplit[2],-50);
+                                groups[optionSplit[0]].color.highlight.background = this.LightenDarkenColor(optionSplit[2],-50);
+                            }
                             groups[optionSplit[0]].color.background = optionSplit[2];
-                            groups[optionSplit[0]].color.highlight = {};
-                            groups[optionSplit[0]].color.highlight.border = this.LightenDarkenColor(optionSplit[2],-50);
-                            groups[optionSplit[0]].color.highlight.background = this.LightenDarkenColor(optionSplit[2],-50);
+
                         }                
                     }
                                  

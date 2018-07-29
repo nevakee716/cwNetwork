@@ -200,8 +200,13 @@
             var node = this.nodes.get(cluster.head);
             node.physics = this.physics;
             node.cluster = false;
-            node.size = undefined;
-            node.shape = undefined;
+            var group = self.networkUI.groups.get(node.group);
+            if(group.shape !== "image" && group.shape !== "circularImage") {
+                node.size = undefined;
+                node.shape = undefined;
+            }
+
+            
             changeSetNode.push(node);
         }
         this.edges.update(changeSetEdge); 
@@ -239,10 +244,13 @@
                 head = self.nodes.get(cluster.head);
                 head.physics = false;
                 var group = self.networkUI.groups.get(head.group);
-                if(!group || group.shape != "icon") {
+                if(!group || (group.shape != "icon" && group.shape != "image" && group.shape != "circularImage")) {
                     head.shape = "square";
                 }
-                head.size = 0;
+                if(group.shape !== "image" && group.shape !== "circularImage") {
+                    head.size = 0;
+                }
+                
                 head.cluster = true;
                 changeSetNode.push(head);
                 connectedEdge = self.networkUI.getConnectedEdges(head.id);
