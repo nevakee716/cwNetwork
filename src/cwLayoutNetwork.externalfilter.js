@@ -28,7 +28,7 @@
                     noID = false;
                     n = this.externalFilters[extF].getNodesToBeFiltered();
                     e = this.externalFilters[extF].getEdgesToBeFiltered();
-                    if(this.externalFilterBehaviour.or === true) {
+                    if(this.behaviour.or === true) {
                         if(n) nodesToHighlight = nodesToHighlight.concat(n);
                         if(e) edgesToHighlight = edgesToHighlight.concat(e);
                     } else {
@@ -70,7 +70,7 @@
             this.colorAllEdges();  
             return;
         }
-        if(this.externalFilterBehaviour.add === true) {
+        if(this.behaviour.add === true) {
             changeSet = this.network.ActionAndGetChangeset(nodesToHighlight,true); // Generate the changeSet  
             this.fillFilter(changeSet); // add the filter value
             this.nodes.add(changeSet); // adding nodes into network
@@ -113,36 +113,36 @@
                     values.push(self.externalFilters[filtername].filterField[id].name); 
                 }
             });  
-            $('select.selectNetworkExternal_' + self.nodeID + "." + filtername).selectpicker('val',values);            
+            $('select.selectNetworkExternal_' + self.nodeID + "." + filtername.replaceAll(" ","_")).selectpicker('val',values);            
         }
 
         
     };
 
     cwLayoutNetwork.prototype.externalfilterModifyBehaviour = function (elem) {
-        if(this.externalFilterBehaviour.absolute == true) {
-            this.externalFilterBehaviour.add = false ;
-            this.externalFilterBehaviour.absolute = false;
-            this.externalFilterBehaviour.highlight = true;
-        } else if(this.externalFilterBehaviour.add == true) {
-            this.externalFilterBehaviour.absolute = true;
-            this.externalFilterBehaviour.add = true;
-            this.externalFilterBehaviour.highlight = false;
+        if(this.behaviour.absolute == true) {
+            this.behaviour.add = false ;
+            this.behaviour.absolute = false;
+            this.behaviour.highlight = true;
+        } else if(this.behaviour.add == true) {
+            this.behaviour.absolute = true;
+            this.behaviour.add = true;
+            this.behaviour.highlight = false;
         } else {
-            this.externalFilterBehaviour.add = true;
-            this.externalFilterBehaviour.absolute = false;
-            this.externalFilterBehaviour.highlight = false;
+            this.behaviour.add = true;
+            this.behaviour.absolute = false;
+            this.behaviour.highlight = false;
         }
         this.externalfilterUpdateBehaviourTitle(elem.target);
     };
     cwLayoutNetwork.prototype.externalfilterUpdateBehaviourTitle = function (elem) {
         if(elem === undefined) elem = document.getElementById("cwLayoutNetworkButtonsBehaviour" + this.nodeID);
-        if(this.externalFilterBehaviour.absolute == true) {
-            elem.innerText = "Behaviour : Highlight";
-        } else if(this.externalFilterBehaviour.add == true) {
+        if(this.behaviour.absolute == true) {
             elem.innerText = "Behaviour : Absolute";
-        } else {
+        } else if(this.behaviour.add == true) {
             elem.innerText = "Behaviour : Addition";
+        } else {
+            elem.innerText = "Behaviour : Highlight";
         }
     };
 
@@ -150,7 +150,7 @@
     cwLayoutNetwork.prototype.updateExternalFilterInformation = function (external) {
         var output = {};
         if(external && external.behaviour && external.externalFilters) {
-            this.externalFilterBehaviour = external.behaviour;
+            this.behaviour = external.behaviour;
             this.externalfilterUpdateBehaviourTitle();
             for(var extF in external.externalFilters) {
                 if(this.externalFilters.hasOwnProperty(extF)) {
@@ -169,7 +169,7 @@
 
     cwLayoutNetwork.prototype.getExternalFilterInformation = function (disposition) {
         var output = {};
-        output.behaviour = this.externalFilterBehaviour;
+        output.behaviour = this.behaviour;
         output.externalFilters = {};
         for(var extF in this.externalFilters) {
             if(this.externalFilters.hasOwnProperty(extF)) {
@@ -212,65 +212,7 @@
 
 
 
-    cwLayoutNetwork.prototype.addNetwork = function (node,father) {
-        if(this.networkConfiguration === undefined) {
-            this.networkConfiguration = {};
-            this.networkConfiguration.selected = {};
-            this.networkConfiguration.nodes = {};
-        }
-        if(this.networkConfiguration.nodes[node.object_id] === undefined) {
-            this.networkConfiguration.nodes[node.object_id] = {};
-            this.networkConfiguration.nodes[node.object_id].label = node.name;
-            this.networkConfiguration.nodes[node.object_id].configuration = JSON.parse(node.properties.configuration.replaceAll("\\",""));
-            this.networkConfiguration.nodes[node.object_id].obj = node;
-            node.associations = {};
-            node.associations[this.nodeID] = {};
-            node.associations[this.nodeID].associationScriptName = "CAPINETWORKTOASSONETWORKANYOBJECTTOANYOBJECT";
-            node.associations[this.nodeID].displayName = "Present on Network";           
-            node.associations[this.nodeID].items = []; 
-            node.associations[this.nodeID].nodeId = this.nodeID;
-        } 
-        var newItem = {};
-        newItem.name = father.name;
-        newItem.intersectionObjectUID = node.iProperties.uniqueidentifier;
-        newItem.targetObjectID = father.object_id;
-        newItem.isNew = "false";
-        newItem.targetObjectTypeScriptName = father.objectTypeScriptName;
-        this.networkConfiguration.nodes[node.object_id].obj.associations[this.nodeID].items.push(newItem);
-
-    };
-
-
-    cwLayoutNetwork.prototype.getNetworkConfigurationFilterObject = function (classname) {
-        var filterObject;
-        var object;
-        var id;
-
-        filterObject = document.createElement("select");
-        filterObject.setAttribute('data-live-search','true');
-        filterObject.setAttribute('data-size','5');
-
-
-        filterObject.className = classname + " Network";
-        filterObject.setAttribute('filterName',"Network");
-
-
-        object = document.createElement("option");
-        object.setAttribute('id',0);
-        object.textContent = "None";
-        filterObject.appendChild(object);
-
-        for (id in this.networkConfiguration.nodes) {
-            if (this.networkConfiguration.nodes.hasOwnProperty(id)) {
-                object = document.createElement("option");
-                object.setAttribute('id',id);
-                object.textContent = this.networkConfiguration.nodes[id].label;
-                filterObject.appendChild(object);
-            }                                                                                                                                                                                                                                                                                                                                                                                                            
-        }
-
-        return filterObject;
-    };
+   
 
 
 

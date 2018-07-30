@@ -205,7 +205,7 @@
 
             var allNodes;
 
-            if (self.externalFilterBehaviour.absolute === true) {
+            if (self.behaviour.absolute === true) {
                 self.deActivateAllGroup();
             }
 
@@ -346,7 +346,7 @@
 
         var behaviourButton = document.getElementById("cwLayoutNetworkButtonsBehaviour" + this.nodeID);
         behaviourButton.addEventListener("click", this.externalfilterModifyBehaviour.bind(this));
-
+        this.externalfilterUpdateBehaviourTitle(behaviourButton);
 
 
         // fill the search filter

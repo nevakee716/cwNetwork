@@ -205,8 +205,6 @@
                 node.size = undefined;
                 node.shape = undefined;
             }
-
-            
             changeSetNode.push(node);
         }
         this.edges.update(changeSetEdge); 

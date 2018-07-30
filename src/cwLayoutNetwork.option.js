@@ -197,19 +197,16 @@
                 }
             }
         }
-        if(filterBehaviour) {
-            optionList = filterBehaviour.split("#");
-            for (i = 0; i < optionList.length; i += 1) {
-                if(optionList[i] !== "") {
-                    var optionSplit = optionList[i].split(":");
-                    if(this.externalFilters.hasOwnProperty(optionSplit[0])) {
-                        this.externalFilters[optionSplit[0]].behaviour = optionSplit[1]; 
-                    } 
-                }
-            }           
-        }
-        
 
+        if(filterBehaviour) {
+            this.behaviour.highlight = false;
+            this.behaviour.add = false;
+            this.behaviour.absolute = false;
+
+            if(filterBehaviour === "highlight") this.behaviour.highlight = true;
+            if(filterBehaviour === "add") this.behaviour.add = true;
+            if(filterBehaviour === "absolute") this.behaviour.absolute = true;
+        }
     };
   
 

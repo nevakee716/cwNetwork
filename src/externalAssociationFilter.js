@@ -202,7 +202,7 @@
         filterObject.setAttribute('data-size','5');
        //filterObject.setAttribute('data-width','fit');
         
-        filterObject.className = classname + " " + this.label;
+        filterObject.className = classname + " " + this.label.replaceAll(" ","_");
         filterObject.setAttribute('filterName',this.label);
 
         for (id in this.filterField) {

@@ -59,17 +59,17 @@
         nodeID = nodeIDFull.split("#")[0];
         
 
-        if(this.externalFilterBehaviour.absolute === true) {
+        if(this.behaviour.absolute === true) {
             this.deActivateAllGroup();
         }
-        if(this.externalFilterBehaviour.highlight === true) {
+        if(this.behaviour.highlight === true) {
             option.highlight  = true;
         } 
 
 
         changeSet = this.network.getVisNode(nodeID,group,option); // get all the node self should be put on
 
-        if(this.externalFilterBehaviour.absolute === true) {
+        if(this.behaviour.absolute === true) {
             var originObj = this.network.objectTypeNodes[group].getVisDataIfDeactivated(nodeID);
             if(originObj.alreadyInNetwork !== true) {
                 changeSet.push(originObj);
@@ -86,7 +86,7 @@
 
         
 
-        if(this.externalFilterBehaviour.highlight === false) {
+        if(this.behaviour.highlight === false) {
             this.fillFilter(changeSet); // add the filter value
             this.nodes.add(changeSet); // adding nodes into network
         } else {

@@ -75,7 +75,7 @@
                     newEdge.object_id = zipEdge.id;
                     newEdge.width = 1;      
 
-                    if(newEdge.scriptname && self.edgeColor.hasOwnProperty(newEdge.scriptname)) {
+                    if(newEdge.scriptname && self.edgeColor && self.edgeColor.hasOwnProperty(newEdge.scriptname)) {
                         self.getEdgeColorFromEdgeGroup(newEdge);
                     }
 
