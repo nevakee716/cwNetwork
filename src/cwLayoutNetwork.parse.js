@@ -117,6 +117,7 @@
                             element.edge.id = child.object_id;
                             element.edge.unique = false;
                             element.edge.objectTypeScriptName = child.objectTypeScriptName;
+                            
                             element.filterArray = filterArray; 
                             filtersGroup.forEach(function(filterGroup) {
                                 Object.keys(filterGroup).map(function(filterKey, index) {
@@ -135,6 +136,7 @@
                                     element.edge.unique = false;
                                     element.edge.id = nextChild.iProperties.uniqueidentifier;
                                     element.edge.objectTypeScriptName = nextChild.iObjectTypeScriptName;
+                                  
                                 } else {
                                     element.edge.unique = true;
                                     element.edge.id = child.object_id;  

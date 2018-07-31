@@ -100,6 +100,7 @@ Select Evolve Nodes that will be use to filter your nodes.
 nodeID:Label of the filter
 For exemple : entite_20022_1066555881:Entity Filter
 (Can be use for application flux See exemples below)
+spliter is #
 
 PS : the filter node should always be in first,
 

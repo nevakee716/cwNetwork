@@ -117,6 +117,8 @@
         }
         $('.selectNetworkClusterByGroup_' + this.nodeID + '_child').selectpicker();
         $('.selectNetworkClusterByGroup_' + this.nodeID + '_head').selectpicker();
+        $('.selectEdge_' + this.nodeID).selectpicker();
+
 
         // set height
         var titleReact = document.querySelector(".page-title").getBoundingClientRect();

@@ -26,8 +26,14 @@
             var label;
             if(self.CDSFilterOption) label = node.label;
             else label = node.name;
-            if(self.groupsArt && self.groupsArt[node.group] && self.groupsArt[node.group].unicode) {
-                html += '<option class="fa" id=' + node.id + '>&#x' + self.groupsArt[node.group].unicode + " " + label + '</option>'; 
+
+            if(self.groupsArt && self.groupsArt[node.group]) {
+                if(self.groupsArt[node.group].unicode){ // icon
+                    html += '<option class="fa" id=' + node.id + '>&#x' + self.groupsArt[node.group].unicode + " " + label + '</option>'; 
+                } else if(self.groupsArt[node.group].image){ //image
+                    html += '<option id=' + node.id + ' data-content="' + label + '<img class=\'networkLegendImage\' src=\'' +  self.groupsArt[node.group].image + '\'</>">'+ label + '</option>'; 
+
+                }
             } else {
                html += '<option class="fa" id=' + node.id + '>' + label + '</option>'; 
             }

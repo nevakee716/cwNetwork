@@ -63,11 +63,23 @@
             filterContainer.appendChild(filterGroupObject);
         }
 
+        if(this.edgeConfiguration) {
+            var edgeFilterObject = document.createElement("div");
+            edgeFilterObject.className = "LayoutNetork_filterGroup";
+            var edgeFilterObjectTitle = document.createElement("div");
+            edgeFilterObjectTitle.innerHTML = "Link Type : ";
+
+            edgeFilterObject.appendChild(edgeFilterObjectTitle);
+            edgeFilterObject.appendChild(this.getEdgeFilterObject("selectEdge_" + this.nodeID));
+        
+            filterContainer.appendChild(edgeFilterObject);
+        }
+
+
         i = 0;
         
         var associationFilterObject = document.createElement("div");
         associationFilterObject.className = "LayoutNetork_filterGroup";
-
         var associationFilterObjectTitle = document.createElement("div");
         associationFilterObjectTitle.innerHTML = "External Association : ";
 
@@ -113,7 +125,6 @@
 
             configurationFilterObject.appendChild(configurationFilterObjectTitle);
             configurationFilterObject.appendChild(this.getNetworkConfigurationFilterObject("selectNetworkConfiguration_" + this.nodeID));
-            filterContainer.appendChild(configurationFilterObject);
             if(cwAPI.cwUser.isCurrentUserSocial() === false) {
                 var configurationFilterObjectButton = document.createElement("button");
                 configurationFilterObjectButton.innerHTML = '<i class="fa fa-floppy-o" aria-hidden="true"></i>';

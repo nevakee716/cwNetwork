@@ -67,9 +67,9 @@
         this.removeLonely = this.options.CustomOptions['removeLonelyOn'];
 
         try {
-            this.edgeColor = JSON.parse(this.options.CustomOptions['edgeColor']);
+            this.edgeConfiguration = JSON.parse(this.options.CustomOptions['edgeColor']);
         } catch (e) {
-            this.edgeColor = {};
+            this.edgeConfiguration = {};
         }
 
 

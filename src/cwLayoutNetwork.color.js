@@ -129,7 +129,7 @@
             }
             if (allNodes.hasOwnProperty(nodeID)) {
                 edge.color = {};
-                if (edge.scriptname && self.edgeColor.hasOwnProperty(edge.scriptname)) {
+                if (edge.scriptname && self.edgeConfiguration.hasOwnProperty(edge.scriptname)) {
                     edge.color = self.getEdgeColorFromEdgeGroup(edge);
                 } else {
                     edge.color = self.getEdgeColorFromGroup(allNodes[nodeID].group);
@@ -165,7 +165,7 @@
         });
         this.edges.forEach(function(edge) {
             nodeID = edge.from;
-            if (edge.scriptname && self.edgeColor.hasOwnProperty(edge.scriptname)) {
+            if (edge.scriptname && self.edgeConfiguration.hasOwnProperty(edge.scriptname)) {
                 edge.color = self.getEdgeColorFromEdgeGroup(edge);
             } else if (allNodes.hasOwnProperty(nodeID)) {
                 edge.color = self.getEdgeColorFromGroup(allNodes[nodeID].group);
@@ -181,9 +181,9 @@
 
     cwLayoutNetwork.prototype.getEdgeColorFromEdgeGroup = function(edge) {
         var color = {};
-        color.color = this.edgeColor[edge.scriptname];
-        color.hover = this.edgeColor[edge.scriptname];
-        color.highlight = this.edgeColor[edge.scriptname];
+        color.color = this.edgeConfiguration[edge.scriptname].color;
+        color.hover = this.edgeConfiguration[edge.scriptname].color;
+        color.highlight = this.edgeConfiguration[edge.scriptname].color;
         return color;
     };
 

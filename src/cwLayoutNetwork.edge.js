@@ -75,7 +75,7 @@
                     newEdge.object_id = zipEdge.id;
                     newEdge.width = 1;      
 
-                    if(newEdge.scriptname && self.edgeColor && self.edgeColor.hasOwnProperty(newEdge.scriptname)) {
+                    if(newEdge.scriptname && self.edgeConfiguration && self.edgeConfiguration.hasOwnProperty(newEdge.scriptname)) {
                         self.getEdgeColorFromEdgeGroup(newEdge);
                     }
 
@@ -85,6 +85,38 @@
         }); 
     };
 
+    cwLayoutNetwork.prototype.getEdgeFilterObject = function (className) {
+
+     var filterObject;
+        var object;
+        var id;
+
+        filterObject = document.createElement("select");
+        filterObject.setAttribute('data-live-search','true');
+        filterObject.setAttribute('data-size','5');
+        filterObject.setAttribute('multiple','');
+
+        filterObject.className = className + " Edge";
+        filterObject.setAttribute('filterName',"Edge");
+
+        object = document.createElement("option");
+
+        filterObject.appendChild(object);
+
+        var c,s;
+        for (s in this.edgeConfiguration) {
+            if (this.edgeConfiguration.hasOwnProperty(s)) {
+                c = this.edgeConfiguration[s];
+                object = document.createElement("option");
+                object.setAttribute('id',c.scriptname);
+                object.setAttribute('style',"color: #"+ c.color + ";");
+                object.textContent = c.label;
+                filterObject.appendChild(object);
+            }                                                                                                                                                                                                                                                                                                                                                                                                            
+        }
+
+        return filterObject;
+    };
 
 
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;

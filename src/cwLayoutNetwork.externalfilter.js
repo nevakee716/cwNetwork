@@ -115,8 +115,6 @@
             });  
             $('select.selectNetworkExternal_' + self.nodeID + "." + filtername.replaceAll(" ","_")).selectpicker('val',values);            
         }
-
-        
     };
 
     cwLayoutNetwork.prototype.externalfilterModifyBehaviour = function (elem) {
