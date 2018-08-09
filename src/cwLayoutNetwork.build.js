@@ -178,8 +178,10 @@
             if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
                 id = $(this).context[clickedIndex]['id'];
                 if (newValue === false) { // hide a node
+                    self.edgeConfiguration[id].show = false;
                     self.hideEdgeByScriptname(id,true);
                 } else { // add one node
+                    self.edgeConfiguration[id].show = true;
                     self.showEdgeByScriptname(id,true);
                 }
             } else { // select or deselect all node
@@ -260,15 +262,20 @@
         // Event for filter
         // Load a new network
         $('select.selectNetworkConfiguration_' + this.nodeID).on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
-            var changeSet, id, nodeId, i;
+            var changeSet, id, nodeId, i,config;
             var groupArray = {};
             if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
                 id = $(this).context[clickedIndex]['id'];
                 if (id != 0) {
+                    config = self.networkConfiguration.nodes[id].configuration;
                     self.setExternalFilterToNone();
                     self.deActivateAllGroup();
                     self.networkOptions.physics.enabled = false;
-                    self.network.updateDisposition(self.networkConfiguration.nodes[id].configuration);
+
+                    self.hideAllEdgesByScriptname();
+                    self.activateStartingEdgeType(config.linkType);
+
+                    self.network.updateDisposition(config);
                     var changeSet = self.network.getEnabledVisNodes();
                     self.nodes.add(changeSet);
                     self.fillFilter(changeSet);
@@ -287,11 +294,12 @@
                     self.networkConfiguration.selected = self.networkConfiguration.nodes[id];
 
                     self.clusters = self.networkConfiguration.nodes[id].configuration.clusters;
-                    self.fillValueInClusterFilter(self.networkConfiguration.nodes[id].configuration.clusterByGroupOption.head, self.networkConfiguration.nodes[id].configuration.clusterByGroupOption.child);
+                    self.fillValueInClusterFilter(config.clusterByGroupOption.head, config.clusterByGroupOption.child);
 
-                    self.updateExternalFilterInformation(self.networkConfiguration.nodes[id].configuration.external);
-                    self.networkUI.fit({
-                        nodes: self.nodes.getIds(),
+                    self.updateExternalFilterInformation(config.external);
+                    self.networkUI.moveTo({
+                        position: config.camera.position,
+                        scale: config.camera.scale,
                         animation: true
                     });
                 }

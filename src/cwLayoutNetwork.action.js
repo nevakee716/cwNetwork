@@ -24,10 +24,11 @@
     };
 
     // Adding group at start
-    cwLayoutNetwork.prototype.activateStartingEdgeType = function (event) {
+    cwLayoutNetwork.prototype.activateStartingEdgeType = function (edgeTypeToSelect) {
         var self = this;
         var values = [],changeSet = [];
-        this.edgeTypeToSelect.forEach(function(edgeTypeScriptname) {
+        if(edgeTypeToSelect === undefined) edgeTypeToSelect = this.edgeTypeToSelect;
+        edgeTypeToSelect.forEach(function(edgeTypeScriptname) {
             if(self.edgeConfiguration.hasOwnProperty(edgeTypeScriptname)) {
                 changeSet = changeSet.concat(self.showEdgeByScriptname(edgeTypeScriptname));
                 values.push(self.edgeConfiguration[edgeTypeScriptname].label);

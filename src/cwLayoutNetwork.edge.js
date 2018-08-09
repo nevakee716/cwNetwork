@@ -142,6 +142,7 @@
         var changeSetEdges = [];
         for (var s in this.edgeConfiguration) {
             if (this.edgeConfiguration.hasOwnProperty(s)) {
+                this.edgeConfiguration[s].show = false;
                 changeSetEdges = changeSetEdges.concat(this.hideEdgeByScriptname(s));
             }
         }
@@ -152,6 +153,7 @@
         var changeSetEdges = [];
         for (var s in this.edgeConfiguration) {
             if (this.edgeConfiguration.hasOwnProperty(s)) {
+                this.edgeConfiguration[s].show = true;
                 changeSetEdges = changeSetEdges.concat(this.showEdgeByScriptname(s));
             }
         }

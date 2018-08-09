@@ -139,11 +139,11 @@
 
     cwLayoutNetwork.prototype.getConfigurationAndAssociationObjectToNetwork = function(newObj) {
 
-        var nodes, config, positions, newAssoItems = [],
-            newAssoItemsObj = {};
+        var linkTypeLabels, nodes, config, positions, newAssoItems = [],
+            newAssoItemsObj = {}, self = this;
         newObj.displayNames = {};
         newObj.displayNames.configuration = "Configuration";
-        newObj.displayNames.createoncwview = "Create on view";
+        newObj.displayNames.createonview = "Create on view";
         
 
         nodes = this.network.getAllNodeForSaving();
@@ -154,6 +154,17 @@
         config.clusterByGroupOption = {};
         config.clusterByGroupOption.head = $('select.selectNetworkClusterByGroup_' + this.nodeID + "_head").val();
         config.clusterByGroupOption.child = $('select.selectNetworkClusterByGroup_' + this.nodeID + "_child").val();
+
+        config.linkType = [];
+        for (var s in this.edgeConfiguration) {
+            if (this.edgeConfiguration.hasOwnProperty(s) && this.edgeConfiguration[s].show === true) {
+                config.linkType.push(s);
+            }
+        }
+        
+        config.camera = {};
+        config.camera.position = this.networkUI.getViewPosition();
+        config.camera.scale = this.networkUI.getScale();
 
         positions = this.networkUI.getPositions();
         
@@ -200,7 +211,7 @@
             view = view.cwView;
         }
 
-        newObj.properties.createoncwview = view;
+        newObj.properties.createonview = view;
 
         return null;
 
