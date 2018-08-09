@@ -16,25 +16,7 @@
         };
     }
 
-    cwLayoutNetwork.prototype.getPopOutList = function(options) {
-        if(options) {
-            var optionList = options.split("#");
-            var optionSplit;
 
-            for (var i = 0; i < optionList.length; i += 1) {
-                if(optionList[i] !== "") {
-                    var optionSplit = optionList[i].split(",");
-                    this.popOut[optionSplit[0]] = optionSplit[1];
-                }
-            }
-        }
-    };
-
-    cwLayoutNetwork.prototype.getGroupToSelectOnStart = function(options) {
-        if(options) {
-            this.groupToSelectOnStart = options.split(",");
-        }
-    };
 
     cwLayoutNetwork.prototype.getdirectionList = function(options) {
         if(options) {
@@ -120,51 +102,32 @@
                 }
             }
         }
-
         this.groupsArt = groups;
     };
 
-    cwLayoutNetwork.prototype.getspecificGroupList = function(options) {
-        if(options) {
-            var optionList = options.split("#");
-            var optionSplit;
 
+    cwLayoutNetwork.prototype.getOption = function(options, name, splitter1,splitter2) {
+        options = this.options.CustomOptions[options];
+
+        if(splitter2) this[name] = {};
+        else this[name] = [];
+
+        if (options) {
+            var optionList = options.split(splitter1);
+            var optionSplit;
             for (var i = 0; i < optionList.length; i += 1) {
-                if(optionList[i] !== "") {
-                    var optionSplit = optionList[i].split(",");
-                    this.specificGroup[optionSplit[0]] = optionSplit[1];
+                if (optionList[i] !== "") {
+                    if(splitter2) {
+                        optionSplit = optionList[i].split(splitter2);
+                        this[name][optionSplit[0]] = optionSplit[1];
+                    } else {
+                        this[name].push(optionList[i]);                    
+                    }
                 }
             }
         }
     };
 
-
-
-    cwLayoutNetwork.prototype.getComplementaryNodeList = function(options) {
-        if(options) {
-
-            var optionList = options.split(",");
-            var optionSplit;
-            for (var i = 0; i < optionList.length; i += 1) {
-                if(optionList[i] !== "") {
-                    this.complementaryNode.push(optionList[i]);
-                }
-            }
-        }
-    };
-
-    cwLayoutNetwork.prototype.getHiddenNodeList = function(options) {
-        if(options) {
-
-            var optionList = options.split(",");
-            var optionSplit;
-            for (var i = 0; i < optionList.length; i += 1) {
-                if(optionList[i] !== "") {
-                    this.hiddenNodes.push(optionList[i]);
-                }
-            }
-        }
-    };
 
     cwLayoutNetwork.prototype.getStartingCluster = function(options) {
         try {

@@ -40,14 +40,22 @@
         this.clusterByGroupOption = {};
         this.clusterByGroupOption.head = "";
         this.clusterByGroupOption.child = [];
+
+
+
         this.multiLineCount = this.options.CustomOptions['multiLineCount'];
-        this.getspecificGroupList(this.options.CustomOptions['specificGroup']);
-        this.getPopOutList(this.options.CustomOptions['popOutList']);
-        this.getHiddenNodeList(this.options.CustomOptions['hidden-nodes']);
-        this.getComplementaryNodeList(this.options.CustomOptions['complementaryNode']);
+        this.getOption('complementaryNode','complementaryNode',',');
+        this.getOption('hiddenNodes','hidden-nodes',',');
+        this.getOption('groupToSelectOnStart','groupToSelectOnStart',',');        
+        this.getOption('specificGroup','specificGroup','#',',');
+        this.getOption('complementaryNode','assignEdge','#',',');     
+        this.getOption('popOut','popOutList','#',',');       
+
+
+
+
         this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);
         this.getdirectionList(this.options.CustomOptions['arrowDirection']);
-        this.getGroupToSelectOnStart(this.options.CustomOptions['groupToSelectOnStart']);
 
         this.getExternalFilterNodes(this.options.CustomOptions['filterNode'], this.options.CustomOptions['filterNodeBehaviour']);
         this.getExternalFilterToSelectOnStart(this.options.CustomOptions['externalFilterToSelectOnStart']);
@@ -68,6 +76,8 @@
 
         try {
             this.edgeConfiguration = JSON.parse(this.options.CustomOptions['edgeColor']);
+            this.getOption('edgeTypeToSelect','edgeTypeToSelect',',');     
+            this.getOption('assignEdge','assignEdge','#',','); 
         } catch (e) {
             this.edgeConfiguration = {};
         }

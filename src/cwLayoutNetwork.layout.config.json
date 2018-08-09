@@ -141,6 +141,18 @@
         "DisplayName": "Edge Color",
         "Description": "Chose the color of the edge based on the associationType",
         "Type": 0
-    }    
+    },
+    {
+        "Id": "edgeTypeToSelect",
+        "DisplayName": "Edge Type To Select on Start",
+        "Description": "Choose the Edge Type to select on Start",
+        "Type": 0
+    },
+    {
+        "Id": "assignEdge",
+        "DisplayName": "Assign associationNodeID to Edge Type",
+        "Description": "List the associationNodeID and the Edge Type",
+        "Type": 0
+    }  
     ]
 }
