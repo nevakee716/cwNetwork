@@ -76,7 +76,7 @@
                     newEdge.id = edge.id + "#" + zipEdge.uuid;
                     newEdge.object_id = zipEdge.id;
                     newEdge.width = 1;
-                    
+
                     newEdge.fromGroup = edge.fromGroup;
                     newEdge.toGroup = edge.toGroup;
                     newEdge.fromId = edge.fromId;
@@ -140,7 +140,7 @@
 
     cwLayoutNetwork.prototype.hideAllEdgesByScriptname = function() {
         var changeSetEdges = [];
-        for (s in this.edgeConfiguration) {
+        for (var s in this.edgeConfiguration) {
             if (this.edgeConfiguration.hasOwnProperty(s)) {
                 changeSetEdges = changeSetEdges.concat(this.hideEdgeByScriptname(s));
             }
@@ -150,7 +150,7 @@
 
     cwLayoutNetwork.prototype.showAllEdgesByScriptname = function() {
         var changeSetEdges = [];
-        for (s in this.edgeConfiguration) {
+        for (var s in this.edgeConfiguration) {
             if (this.edgeConfiguration.hasOwnProperty(s)) {
                 changeSetEdges = changeSetEdges.concat(this.showEdgeByScriptname(s));
             }
@@ -167,13 +167,11 @@
 
         filterObject = document.createElement("select");
         filterObject.setAttribute('data-live-search', 'true');
+        filterObject.setAttribute('data-actions-box', 'true');
         filterObject.setAttribute('data-size', '5');
         filterObject.setAttribute('multiple', '');
         filterObject.className = className + " Edge";
         filterObject.setAttribute('filterName', "Edge");
-        object = document.createElement("option");
-
-        filterObject.appendChild(object);
 
         var c, s;
         for (s in this.edgeConfiguration) {

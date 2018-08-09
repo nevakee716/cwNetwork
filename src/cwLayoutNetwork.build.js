@@ -185,9 +185,13 @@
             } else { // select or deselect all node
                 if ($(this).context[0]) {
                     if ($(this).context[0].selected === true) {
-                        self.hideAllEdgesByScriptname();
-                    } else {
                         self.showAllEdgesByScriptname();
+                    } else {
+                        self.hideAllEdgesByScriptname();
+                    }
+                    if (self.networkUI) {
+                        self.colorAllNodes();
+                        self.colorAllEdges();
                     }
                 }
             }
@@ -238,6 +242,7 @@
                     self.removeExternalFilterValue(filterName, id);
                 } else {
                     self.addExternalFilterValue(filterName, id);
+                    self.setAllExternalFilter();
                 }
             } else { // select or deselect all node
                 if ($(this).context[0]) {
