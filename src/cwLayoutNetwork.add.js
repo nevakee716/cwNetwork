@@ -49,6 +49,17 @@
         this.AddNodesToNetwork(event,option);
     };
 
+
+    cwLayoutNetwork.prototype.AddAllConnectedNodes = function (event) {
+        var option = {};
+        option.ImpactTo = true;
+        option.ImpactFrom = true;
+        option.rangeMin = false;
+        option.rangeMax = true;
+        option.NoOrigin = true;
+        this.AddNodesToNetwork(event,option);
+    };
+
     cwLayoutNetwork.prototype.AddNodesToNetwork = function (event,option) {
         var nodeID,group,changeSet,nodeIDFull = event.data.d.nodes[0];
         this.nodes.forEach(function(node) { 
@@ -67,7 +78,7 @@
         } 
 
 
-        changeSet = this.network.getVisNode(nodeID,group,option); // get all the node self should be put on
+        changeSet = this.network.getVisNode(nodeID,group,option,this.edges); // get all the node self should be put on
 
         if(this.behaviour.absolute === true) {
             var originObj = this.network.objectTypeNodes[group].getVisDataIfDeactivated(nodeID);
@@ -76,15 +87,11 @@
             }
         }
 
-
-
         if(this.networkUI) {
             this.colorAllNodes();
             this.colorAllEdges();                        
         }
         this.setExternalFilterToNone(); 
-
-        
 
         if(this.behaviour.highlight === false) {
             this.fillFilter(changeSet); // add the filter value
@@ -100,7 +107,6 @@
                 this.colorEdges(nodesIdToHighlight);
             }
         }
-
 
     };
 

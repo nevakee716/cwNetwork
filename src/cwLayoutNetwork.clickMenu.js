@@ -38,6 +38,10 @@
         menuAction3.title = "Add All Nodes To";
         menuAction3.eventName = "AddAllNodesTo";
         menuActions.push(menuAction3);
+        var menuAction6 = {};
+        menuAction6.title = "Add All Connected Nodes";
+        menuAction6.eventName = "AddAllConnectedNodes";
+        menuActions.push(menuAction6);
 
         var self = this;
         this.menu = [];

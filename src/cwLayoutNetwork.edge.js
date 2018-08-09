@@ -3,64 +3,66 @@
 
 
 /*global cwAPI, jQuery */
-(function (cwApi, $) {
+(function(cwApi, $) {
     "use strict";
-    if(cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
-      var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
+    if (cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
+        var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
     } else {
-    // constructor
-        var cwLayoutNetwork = function (options, viewSchema) {
+        // constructor
+        var cwLayoutNetwork = function(options, viewSchema) {
             cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
             cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
             this.construct(options);
         };
     }
 
-    
-    cwLayoutNetwork.prototype.edgeZipButtonAction  = function (event) {
+
+    cwLayoutNetwork.prototype.edgeZipButtonAction = function(event) {
         var self = this;
         var changeSetEdges = [];
-        if(this.edgeZipped == true) {
-            if(event.target) event.target.innerHTML = "Zip Edges";
-            
+        if (this.edgeZipped == true) { // on dezip les edge
+            if (event.target) event.target.innerHTML = "Zip Edges";
+
             this.edgeZipped = false;
             this.edges.forEach(function(edge) {
-                if(edge.zipped === true && edge.labels.length > 0) {
+                if (edge.zipped === true && edge.labels.length > 0) {
                     edge.hidden = true;
-                    edge.physics = false;  
-                    edge.hideByZipping = true;  
+                    edge.physics = false;
+                    edge.hideByZipping = true;
                 } else if (edge.zipped === false) {
-                    edge.hidden = false;
-                    edge.physics = true;
+                    if (edge.hideBySelection !== true) {
+                        edge.hidden = false;
+                        edge.physics = true;
+                    }
                     edge.hideByZipping = false;
-                }  
-                changeSetEdges.push(edge);     
-            }); 
-        } else {
-            if(event.target) event.target.innerHTML = "unZip Edges";
+                }
+                changeSetEdges.push(edge);
+            });
+        } else { // on zip les edge
+            if (event.target) event.target.innerHTML = "unZip Edges";
             this.edgeZipped = true;
             this.edges.forEach(function(edge) {
-                if(edge.zipped === true && edge.labels.length > 0) {
+                if (edge.zipped === true && edge.labels.length > 0) {
                     edge.hidden = false;
-                    edge.physics = true;    
+                    edge.physics = true;
                     edge.hideByZipping = false;
                 } else if (edge.zipped === false) {
                     edge.hidden = true;
                     edge.physics = false;
                     edge.hideByZipping = true;
-                }  
-                changeSetEdges.push(edge);          
-            });            
+                }
+                changeSetEdges.push(edge);
+            });
         }
-        this.edges.update(changeSetEdges); 
+        this.edges.update(changeSetEdges);
         // this.networkUI.redraw();
 
     };
 
-    cwLayoutNetwork.prototype.createUnzipEdge  = function (event) {
+    cwLayoutNetwork.prototype.createUnzipEdge = function(event) {
         var self = this;
         this.edges.forEach(function(edge) {
-            if(edge.zipped) {
+            if (edge.zipped) {
                 edge.labels.forEach(function(zipEdge) {
                     var newEdge = $.extend(true, {}, edge);
 
@@ -69,50 +71,120 @@
                     newEdge.hideByZipping = true;
                     newEdge.physics = false;
                     newEdge.arrows = zipEdge.direction;
-                    newEdge.label = zipEdge.label;   
-                    newEdge.scriptname = zipEdge.scriptname;  
-                    newEdge.id = edge.id + "#" + zipEdge.uuid;  
+                    newEdge.label = zipEdge.label;
+                    newEdge.scriptname = zipEdge.scriptname;
+                    newEdge.id = edge.id + "#" + zipEdge.uuid;
                     newEdge.object_id = zipEdge.id;
-                    newEdge.width = 1;      
+                    newEdge.width = 1;
+                    
+                    newEdge.fromGroup = edge.fromGroup;
+                    newEdge.toGroup = edge.toGroup;
+                    newEdge.fromId = edge.fromId;
+                    newEdge.toId = edge.toId;
 
-                    if(newEdge.scriptname && self.edgeConfiguration && self.edgeConfiguration.hasOwnProperty(newEdge.scriptname)) {
+                    if (newEdge.scriptname && self.edgeConfiguration && self.edgeConfiguration.hasOwnProperty(newEdge.scriptname)) {
                         self.getEdgeColorFromEdgeGroup(newEdge);
+                        newEdge.hideBySelection = true;
                     }
 
                     self.edges.add(newEdge);
-                });                 
-            }    
-        }); 
+                });
+            }
+        });
     };
 
-    cwLayoutNetwork.prototype.getEdgeFilterObject = function (className) {
+    cwLayoutNetwork.prototype.hideEdgeByScriptname = function(associationTypeScriptname) {
+        var self = this;
+        this.edges.forEach(function(edge) {
+            if (edge.zipped === false && edge.scriptname === associationTypeScriptname) {
+                edge.physics = false;
+                edge.hideBySelection = true;
+                edge.hidden = true;
+            }
+        });
+    };
 
-     var filterObject;
+
+
+    cwLayoutNetwork.prototype.hideEdgeByScriptname = function(associationTypeScriptname, update) {
+        var self = this;
+        var changeSetEdges = [];
+        this.edges.forEach(function(edge) {
+            if (edge.zipped === false && edge.scriptname === associationTypeScriptname) {
+                edge.physics = false;
+                edge.hideBySelection = true;
+                edge.hidden = true;
+                changeSetEdges.push(edge);
+            }
+        });
+        if (update === true) this.edges.update(changeSetEdges);
+        return changeSetEdges;
+    };
+
+    cwLayoutNetwork.prototype.showEdgeByScriptname = function(associationTypeScriptname, update) {
+        var self = this;
+        var changeSetEdges = [];
+        this.edges.forEach(function(edge) {
+            if (edge.zipped === false && edge.scriptname === associationTypeScriptname) {
+                if (edge.hideByZipping !== true) {
+                    edge.physics = true;
+                    edge.hidden = false;
+                }
+                edge.hideBySelection = false;
+                changeSetEdges.push(edge);
+            }
+        });
+        if (update === true) this.edges.update(changeSetEdges);
+        return changeSetEdges;
+    };
+
+    cwLayoutNetwork.prototype.hideAllEdgesByScriptname = function() {
+        var changeSetEdges = [];
+        for (s in this.edgeConfiguration) {
+            if (this.edgeConfiguration.hasOwnProperty(s)) {
+                changeSetEdges = changeSetEdges.concat(this.hideEdgeByScriptname(s));
+            }
+        }
+        this.edges.update(changeSetEdges);
+    };
+
+    cwLayoutNetwork.prototype.showAllEdgesByScriptname = function() {
+        var changeSetEdges = [];
+        for (s in this.edgeConfiguration) {
+            if (this.edgeConfiguration.hasOwnProperty(s)) {
+                changeSetEdges = changeSetEdges.concat(this.showEdgeByScriptname(s));
+            }
+        }
+        this.edges.update(changeSetEdges);
+    };
+
+
+    cwLayoutNetwork.prototype.getEdgeFilterObject = function(className) {
+
+        var filterObject;
         var object;
         var id;
 
         filterObject = document.createElement("select");
-        filterObject.setAttribute('data-live-search','true');
-        filterObject.setAttribute('data-size','5');
-        filterObject.setAttribute('multiple','');
-
+        filterObject.setAttribute('data-live-search', 'true');
+        filterObject.setAttribute('data-size', '5');
+        filterObject.setAttribute('multiple', '');
         filterObject.className = className + " Edge";
-        filterObject.setAttribute('filterName',"Edge");
-
+        filterObject.setAttribute('filterName', "Edge");
         object = document.createElement("option");
 
         filterObject.appendChild(object);
 
-        var c,s;
+        var c, s;
         for (s in this.edgeConfiguration) {
             if (this.edgeConfiguration.hasOwnProperty(s)) {
                 c = this.edgeConfiguration[s];
                 object = document.createElement("option");
-                object.setAttribute('id',c.scriptname);
-                object.setAttribute('style',"color: #"+ c.color + ";");
+                object.setAttribute('id', s);
+                object.setAttribute('style', "color: #" + c.color + ";");
                 object.textContent = c.label;
                 filterObject.appendChild(object);
-            }                                                                                                                                                                                                                                                                                                                                                                                                            
+            }
         }
 
         return filterObject;

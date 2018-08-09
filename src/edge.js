@@ -76,6 +76,11 @@
     edgeVis.id = this.fromUuid + "#" + this.toUuid;
     edgeVis.from = this.fromUuid;
     edgeVis.to = this.toUuid; 
+    edgeVis.fromGroup = this.fromGroup;
+    edgeVis.toGroup = this.toGroup;
+    edgeVis.fromId = this.fromId;
+    edgeVis.toId = this.toId;
+
     edgeVis.arrows = this.getDirection();     
     edgeVis.color = {inherit:'from'};  
     edgeVis.width = this.size;
