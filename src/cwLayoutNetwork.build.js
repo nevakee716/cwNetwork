@@ -384,18 +384,20 @@
         this.nodes.on("remove", this.removeSearchFilterElement.bind(this));
 
         if (!this.wiggle) {
-            // Activate Starting groups
+            // Activate Starting element
             this.activateStartingGroup();
         }
-
+        
+        this.activateStartingEdgeType();
         // initialize your network 
         this.networkUI = new vis.Network(networkContainer, data, this.networkOptions);
 
 
         if (this.wiggle) {
-            // Activate Starting groups
+            // Activate Starting element
             this.activateStartingGroup();
         }
+
 
         // before drawing event
         this.networkUI.on("beforeDrawing", this.beforeDrawing.bind(this));

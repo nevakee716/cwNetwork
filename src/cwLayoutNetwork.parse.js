@@ -136,6 +136,11 @@
                                     element.edge.unique = false;
                                     element.edge.id = nextChild.iProperties.uniqueidentifier;
                                     element.edge.objectTypeScriptName = nextChild.iObjectTypeScriptName;
+                                    if(this.assignEdge.hasOwnProperty(nextChild.nodeID)) {
+                                        element.edge.objectTypeScriptName = this.assignEdge[nextChild.nodeID];
+                                    } else {
+                                        element.edge.objectTypeScriptName = nextChild.iObjectTypeScriptName;
+                                    }
                                   
                                 } else {
                                     element.edge.unique = true;

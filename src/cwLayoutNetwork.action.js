@@ -23,6 +23,19 @@
         });
     };
 
+    // Adding group at start
+    cwLayoutNetwork.prototype.activateStartingEdgeType = function (event) {
+        var self = this;
+        var values = [],changeSet = [];
+        this.edgeTypeToSelect.forEach(function(edgeTypeScriptname) {
+            if(self.edgeConfiguration.hasOwnProperty(edgeTypeScriptname)) {
+                changeSet = changeSet.concat(self.showEdgeByScriptname(edgeTypeScriptname));
+                values.push(self.edgeConfiguration[edgeTypeScriptname].label);
+            }
+        });
+        this.edges.update(changeSet);
+        $('.selectNetworkEdge_' + this.nodeID).selectpicker('val',values);
+    };
 
 
     // Activate cluster from option
