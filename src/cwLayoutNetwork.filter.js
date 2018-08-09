@@ -70,7 +70,7 @@
             edgeFilterObjectTitle.innerHTML = "Link Type : ";
 
             edgeFilterObject.appendChild(edgeFilterObjectTitle);
-            edgeFilterObject.appendChild(this.getEdgeFilterObject("selectEdge_" + this.nodeID));
+            edgeFilterObject.appendChild(this.getEdgeFilterObject("selectNetworkEdge_" + this.nodeID));
         
             filterContainer.appendChild(edgeFilterObject);
         }

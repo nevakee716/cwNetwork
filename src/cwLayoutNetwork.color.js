@@ -116,11 +116,15 @@
     cwLayoutNetwork.prototype.colorEdges = function(nodesIdToHighlight) {
         var updateArray = [];
         var self = this;
+        var isEdgeToDecolor;
         var allNodes = self.nodes.get({
             returnType: "Object"
         });
         self.edges.forEach(function(edge) {
             var nodeID;
+            isEdgeToDecolor = false;
+            if (nodesIdToHighlight.indexOf(edge.to) === -1 || nodesIdToHighlight.indexOf(edge.from) === -1 ) isEdgeToDecolor = true;
+            
             // select the node that the edge will inherit
             if (nodesIdToHighlight.indexOf(edge.to) === -1) {
                 nodeID = edge.to;
@@ -129,7 +133,7 @@
             }
             if (allNodes.hasOwnProperty(nodeID)) {
                 edge.color = {};
-                if (edge.scriptname && self.edgeConfiguration.hasOwnProperty(edge.scriptname)) {
+                if (edge.scriptname && self.edgeConfiguration.hasOwnProperty(edge.scriptname) && isEdgeToDecolor === false) {
                     edge.color = self.getEdgeColorFromEdgeGroup(edge);
                 } else {
                     edge.color = self.getEdgeColorFromGroup(allNodes[nodeID].group);
