@@ -30,6 +30,7 @@
         if(edgeTypeToSelect === undefined) edgeTypeToSelect = this.edgeTypeToSelect;
         edgeTypeToSelect.forEach(function(edgeTypeScriptname) {
             if(self.edgeConfiguration.hasOwnProperty(edgeTypeScriptname)) {
+                self.edgeConfiguration[edgeTypeScriptname].show = true;
                 changeSet = changeSet.concat(self.showEdgeByScriptname(edgeTypeScriptname));
                 values.push(self.edgeConfiguration[edgeTypeScriptname].label);
             }
