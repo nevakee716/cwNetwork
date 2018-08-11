@@ -69,7 +69,6 @@
         this.getdirectionList(this.options.CustomOptions['arrowDirection']);
 
         this.getExternalFilterNodes(this.options.CustomOptions['filterNode'], this.options.CustomOptions['filterNodeBehaviour']);
-        this.getExternalFilterToSelectOnStart(this.options.CustomOptions['externalFilterToSelectOnStart']);
 
         this.edgeOption = this.options.CustomOptions['zipEdgeOption'];
         this.edgeZipped = this.options.CustomOptions['zipEdgeInitState'];

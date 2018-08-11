@@ -59,12 +59,6 @@
         "Type": 0
     },
     {
-        "Id": "externalFilterToSelectOnStart",
-        "DisplayName": "External Filter To Select On Start",
-        "Description": "filterName:IdOfItem",
-        "Type": 0
-    },
-    {
         "Id": "complementaryNode",
         "DisplayName": "Complementary Node",
         "Description": "Select Nodes you want to add that are not under your layout network (see documentation for exemple)",
