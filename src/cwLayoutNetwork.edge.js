@@ -81,7 +81,7 @@
                     newEdge.toGroup = edge.toGroup;
                     newEdge.fromId = edge.fromId;
                     newEdge.toId = edge.toId;
-
+                    newEdge.hideBySelection = false;
                     if (newEdge.scriptname && self.edgeConfiguration && self.edgeConfiguration.hasOwnProperty(newEdge.scriptname)) {
                         self.getEdgeColorFromEdgeGroup(newEdge);
                         newEdge.hideBySelection = true;
@@ -126,7 +126,7 @@
         var changeSetEdges = [];
         this.edges.forEach(function(edge) {
             if (edge.zipped === false && edge.scriptname === associationTypeScriptname) {
-                if (edge.hideByZipping !== true) {
+                if (edge.hideByZipping !== true && edge.cluster !== true) {
                     edge.physics = true;
                     edge.hidden = false;
                 }

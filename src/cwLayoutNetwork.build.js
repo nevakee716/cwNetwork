@@ -295,6 +295,7 @@
 
                     self.clusters = self.networkConfiguration.nodes[id].configuration.clusters;
                     self.fillValueInClusterFilter(config.clusterByGroupOption.head, config.clusterByGroupOption.child);
+                    self.activateClusterEvent();
 
                     self.updateExternalFilterInformation(config.external);
                     self.networkUI.moveTo({

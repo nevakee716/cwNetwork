@@ -190,7 +190,8 @@
                 var edge = self.edges.get(edgeID);
                 if(edge.cluster == true) {
                     edge.cluster = false;
-                    edge.hidden = edge.hideByZipping;
+
+                    edge.hidden = edge.hideByZipping || edge.hideBySelection;
                     changeSetEdge.push(edge);                   
                 }
             });
