@@ -30,8 +30,8 @@
             this.networkConfiguration.nodes[node.object_id].obj = node;
             node.associations = {};
             node.associations[this.nodeID] = {};
-            node.associations[this.nodeID].associationScriptName = "CAPINETWORKTOASSONETWORKANYOBJECTTOANYOBJECT";
-            node.associations[this.nodeID].displayName = "Present on Network";           
+            node.associations[this.nodeID].associationScriptName = this.definition.capinetworkToAnyAssociationScriptname;
+            node.associations[this.nodeID].displayName = this.definition.capinetworkToAnyAssociationDisplayName;           
             node.associations[this.nodeID].items = []; 
             node.associations[this.nodeID].nodeId = this.nodeID;
         } 
@@ -142,8 +142,8 @@
         var linkTypeLabels, nodes, config, positions, newAssoItems = [],
             newAssoItemsObj = {}, self = this;
         newObj.displayNames = {};
-        newObj.displayNames.configuration = "Configuration";
-        newObj.displayNames.createonview = "Create on view";
+        newObj.displayNames[this.definition.capinetworkConfigurationScriptname] = this.definition.capinetworkConfigurationDisplayname;
+        newObj.displayNames[this.definition.capinetworkCreateOnViewScriptname] = this.definition.capinetworkCreateOnViewDisplayName;
         
 
         nodes = this.network.getAllNodeForSaving();
@@ -203,7 +203,7 @@
                 }
             }
         });
-        newObj.properties.configuration = JSON.stringify(config);
+        newObj.properties[this.definition.capinetworkConfigurationScriptname] = JSON.stringify(config);
         newObj.associations[this.nodeID].items = newAssoItems;
 
         var view = cwAPI.getCurrentView();
@@ -211,7 +211,7 @@
             view = view.cwView;
         }
 
-        newObj.properties.createonview = view;
+        newObj.properties[this.definition.capinetworkCreateOnViewScriptname] = view;
 
         return config;
 
@@ -246,17 +246,16 @@
         newObj.associations = {};
         newNewObj = $.extend(true, {}, newObj);
         newNewObj.associations = asso;
-        //changeset.compareAndAddChanges(oldObj, newObj);
 
-        cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Create, null, newObj, 0, "capinetwork", function(elem) {
+        cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Create, null, newObj, 0, this.definition.capinetworkScriptname, function(elem) {
             if (elem && elem.status == "Ok") {
                 newObj.associations[self.nodeID] = {};
                 newObj.associations[self.nodeID].items = [];
-                newObj.associations[self.nodeID].associationScriptName = "CAPINETWORKTOASSONETWORKANYOBJECTTOANYOBJECT";
+                newObj.associations[self.nodeID].associationScriptName = self.definition.capinetworkToAnyAssociationScriptname;
 
                 newObj.object_id = elem.id;
                 newNewObj.object_id = elem.id;
-                cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, newObj, newNewObj, newObj.object_id, "capinetwork", function(response) {
+                cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, newObj, newNewObj, newObj.object_id, self.definition.capinetworkScriptname, function(response) {
                     if (!cwApi.statusIsKo(response)) {
                         self.createdSaveObjFromReponse(newNewObj,response,networkName,config);
 
@@ -281,7 +280,7 @@
 
         this.networkConfiguration.nodes[response.id] = {};
         this.networkConfiguration.nodes[response.id].configuration = config;
-        obj.objectTypeScriptName = "capinetwork";
+        obj.objectTypeScriptName = this.definition.capinetworkScriptname;
         obj.name = networkName;
 
         var targetId,targetIds = {};
@@ -303,8 +302,8 @@
             }
         } 
 
-        obj.associations[this.nodeID].associationScriptName = "CAPINETWORKTOASSONETWORKANYOBJECTTOANYOBJECT";
-        obj.associations[this.nodeID].displayName = "Present on Network";
+        obj.associations[this.nodeID].associationScriptName = this.definition.capinetworkToAnyAssociationScriptname;
+        obj.associations[this.nodeID].displayName = this.definition.capinetworkToAnyAssociationDisplayName;
         obj.associations[this.nodeID].nodeID = self.nodeID;
 
         this.networkConfiguration.nodes[response.id].obj = obj;
@@ -328,19 +327,6 @@
                 self.createdSaveObjFromReponse(newObj,response,newObj.properties["name"],config);
             } 
         });
-
-        /*
-        cwApi.pendingChanges.clear();
-        cwApi.pendingChanges.addChangeset(changeset);
-        cwApi.pendingChanges.sendAsChangeRequest(undefined, function(response) {
-            if (cwApi.statusIsKo(response)) {
-                cwApi.notificationManager.addNotification($.i18n.prop('editmode_someOfTheChangesWereNotUpdated'), 'error');
-            } else {
-                cwApi.notificationManager.addNotification($.i18n.prop('editmode_yourChangeHaveBeenSaved'));
-            }
-        }, function(error) {
-            cwApi.notificationManager.addNotification(error.status + ' - ' + error.responseText, 'error');
-        });*/
     };
 
 

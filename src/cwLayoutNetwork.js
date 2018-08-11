@@ -17,6 +17,17 @@
     }
 
     cwLayoutNetwork.prototype.construct = function(options) {
+        this.definition = {};
+        this.definition.capinetworkScriptname = "capinetwork";
+        this.definition.capinetworkDisplayname = "Network";
+        this.definition.capinetworkToAnyAssociationScriptname = "CAPINETWORKTOASSONETWORKANYOBJECTTOANYOBJECT";
+        this.definition.capinetworkToAnyAssociationDisplayName = "Present On Network";
+        this.definition.capinetworkCreateOnViewScriptname = "createoncwview";
+        this.definition.capinetworkConfigurationScriptname = "configuration";
+
+        this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkCreateOnViewScriptname).name;
+        this.definition.capinetworkConfigurationDisplayname = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkConfigurationScriptname).name;
+
         this.hiddenNodes = [];
         this.complementaryNode = [];
         this.externalFilters = [];
@@ -45,7 +56,7 @@
 
         this.multiLineCount = this.options.CustomOptions['multiLineCount'];
         this.getOption('complementaryNode','complementaryNode',',');
-        this.getOption('hiddenNodes','hidden-nodes',',');
+        this.getOption('hidden-nodes','hiddenNodes',',');
         this.getOption('groupToSelectOnStart','groupToSelectOnStart',',');        
         this.getOption('specificGroup','specificGroup','#',',');
         this.getOption('complementaryNode','assignEdge','#',',');     

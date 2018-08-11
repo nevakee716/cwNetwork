@@ -27,7 +27,8 @@
     cwLayoutNetwork.prototype.activateStartingEdgeType = function (edgeTypeToSelect) {
         var self = this;
         var values = [],changeSet = [];
-        if(edgeTypeToSelect === undefined) edgeTypeToSelect = this.edgeTypeToSelect;
+        if(edgeTypeToSelect === undefined && this.edgeTypeToSelect) edgeTypeToSelect = this.edgeTypeToSelect;
+        else edgeTypeToSelect = [];
         edgeTypeToSelect.forEach(function(edgeTypeScriptname) {
             if(self.edgeConfiguration.hasOwnProperty(edgeTypeScriptname)) {
                 self.edgeConfiguration[edgeTypeScriptname].show = true;

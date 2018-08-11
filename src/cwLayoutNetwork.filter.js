@@ -63,7 +63,7 @@
             filterContainer.appendChild(filterGroupObject);
         }
 
-        if(this.edgeConfiguration) {
+        if(this.edgeConfiguration && !(Object.keys(this.edgeConfiguration).length === 0 && this.edgeConfiguration.constructor === Object)) {
             var edgeFilterObject = document.createElement("div");
             edgeFilterObject.className = "LayoutNetork_filterGroup";
             var edgeFilterObjectTitle = document.createElement("div");

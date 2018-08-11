@@ -92,6 +92,7 @@
     edgeVis.font = {};
     edgeVis.font.size = 6;
     edgeVis.label = this.label;
+    edgeVis.direction = this.getDirection(); 
     return edgeVis;
   };
 

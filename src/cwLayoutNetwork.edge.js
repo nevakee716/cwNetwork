@@ -76,7 +76,7 @@
                     newEdge.id = edge.id + "#" + zipEdge.uuid;
                     newEdge.object_id = zipEdge.id;
                     newEdge.width = 1;
-
+                    newEdge.direction = edge.direction;
                     newEdge.fromGroup = edge.fromGroup;
                     newEdge.toGroup = edge.toGroup;
                     newEdge.fromId = edge.fromId;
@@ -175,9 +175,10 @@
         filterObject.className = className + " Edge";
         filterObject.setAttribute('filterName', "Edge");
 
-        var c, s;
+        var c, s,hasData = false;
         for (s in this.edgeConfiguration) {
             if (this.edgeConfiguration.hasOwnProperty(s)) {
+                hasData = true;
                 c = this.edgeConfiguration[s];
                 object = document.createElement("option");
                 object.setAttribute('id', s);
@@ -186,8 +187,9 @@
                 filterObject.appendChild(object);
             }
         }
-
-        return filterObject;
+        if(hasData) return filterObject;
+        else return null;
+        
     };
 
 
