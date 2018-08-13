@@ -1,10 +1,11 @@
 | **Name** | **cwLayoutNetwork** | **Version** | 
 | --- | --- | --- |
-| **Updated by** | Mathias PFAUWADEL | 4.1 |
+| **Updated by** | Mathias PFAUWADEL | 5.0 |
 
 
 ## Patch Notes
 
+* 5.0 : Adding Image, Save, Link Type
 * 4.1 : Can now select multiple element in externalFilter
 * 4.0 : Cluster, Download Image, display association custom display string
 * 3.9 : External Association Filter work with zippedEdges
@@ -49,6 +50,11 @@ You can use filter to choose which item to display
 
 ## Options in the evolve Designer
 
+
+### MultiLines Count : 
+
+Enter the limit number of caracter where you will return line for the label of the node of the network
+
 ### Hidden Nodes : 
 
 Set the ID of the nodes you don't want to appear in the tree, the children will be display instead. (Can be use for application flux See exemples below)
@@ -63,7 +69,7 @@ List the popOut that you want to be used. (ex:scriptname1,popOutName1#scriptname
 Group are the different filter box of the network, by default object are sort in to different group by ObjectType(name of the group is the name of the objectype).
 If you want objects of a node to be in a different group use this option : NodeID,GroupName#NodeID2,GroupName2#(ex:processus_niveau_3_20004_410243396,Processus Electronique#processus_niveau_3_20004_2025026472,Processus Informatique)
 
-PS : If an object is present twice in the JSON object, one time in a group and one time in another group, it will only appear in the first group
+PS : If an object is present twice in the JSON object, one time in a group and one time in another group, it will only appear in the first group. So if you need to have different icon according to category or other, define all your node for them with filter and add a 3rd node after with all the objet without filter.
 
 ### Group To Select On Start
 
@@ -75,7 +81,10 @@ You can assign a shape (ellipse, circle, database, box, diamond, dot, star, tria
 ) to a group.
 Use NameGroup,shape,color,borderColor(optionnal)||NameGroup2,shape2,color2,borderColor2(optionnal)
 
-You can also assign a FontAwesome Icon to a group.(go to this website to find the code https://fontawesome.com/v4.7.0/) Use NameGroup,icon,FontAwesomeUnicode,color||NameGroup2,icon,FontAwesomeUnicode2,color2. 
+You can also assign a FontAwesome Icon to a group.(go to this website to find the code https://fontawesome.com/v4.7.0/) Use NameGroup,icon,FontAwesomeUnicode,color||NameGroup2,icon,FontAwesomeUnicode2,color2.
+
+You can also assign image. (the color is used for the edge color)
+Use NameGroup,image,imageURL,color
 
 You can mix Icon and shape like that : 
 Flux,icon,f0ec,#FF8C00||Application,icon,f10a,#4F90C1||Entité,box,#FF8C00,#4F90C1
@@ -94,7 +103,7 @@ Use from, if you want the arrow to leave from this node.
 If you don't a direction to a node, it will be display without arrow.
 <img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/5.png" alt="Drawing" style="width: 95%;"/>
 
-### Filter Node :
+### Filter Association:
 
 Select Evolve Nodes that will be use to filter your nodes. 
 nodeID:Label of the filter
@@ -106,9 +115,10 @@ PS : the filter node should always be in first,
 
 ### Filter Association Behaviour
 
-An association filter can have the give absolute, it mean it will delete all the other, then display the node which have the association. If you put nothing, the filter will add the node that have the association then add hidden to the element which do not have the association.
-For exemple : Entity Filter:absolute
-(Can be use for application flux See exemples below)
+This option will define the way your action(add close node, add connected node..., and also association filter) will work 
+add : this will add the selected node to your network
+highlight : this will highlight the selected node
+absolute : this will only display the selected node
 
 ### Complementary Node :
 
@@ -118,10 +128,15 @@ If you want to add a side Node, use this option
 For exemple, if you are on the objectPage of an application, you want to display sent and received flux.
 Put the network under the associationNode of the sent flux, then add the node id of the received flux in this option. Use comma as a splitter
 
-### Cluster On
-C:\dev_layout\debug_layout\libs\Network\src\cwLayoutNetwork.parse.js
+### Activate Cluster
+
 Activate the cluster option, that allow you to cluster element according to the group.
-PS : the cluster doesn't duplicate the object, and it try to put the element in the bigger cluster. To move a cluster click on the first element
+PS : the cluster doesn't duplicate the object, and it try to put the element in the bigger cluster. 
+To move a cluster click on the first element
+
+### Hide Cluster Menu
+
+Hide the cluster menu, you can still init the cluster
 
 ### Cluster To Select On Start
 
@@ -132,6 +147,10 @@ List the cluster you want to apply when the network started. The syntax is Head#
 
 Activate the button to unzip edge
 
+### Hide Zip Edge At Start
+
+Hide the button to zip or unzip edge
+
 ### Edge Zip at Start
 
 Zip the edge on start
@@ -139,6 +158,64 @@ Zip the edge on start
 ### Remove Lonely Objects
 
 Activate the option to remove lonely object. When you click on the button, it will delete from the network the node that have no connection.
+
+### Enable Edit
+
+You can load network disposition (node position, link selected, cluster, external filter ...)
+Contributor only can save or create a network disposition. 
+
+<img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/networkEditionButton.jpg" alt="Drawing" style="width: 95%;"/>
+
+When you create a new network, it will create a new object and associate it with all the node present on the network layout.
+
+To use this option you need to have your metamodel ready : 
+Create a new objectType : CW API NETWORK with 2 properties : Configuration (memoText), and Create On View (string)
+Create also an association between CW API NETWORK and Any Objects
+Inside C:\Casewise\Evolve\Site\bin\webDesigner\custom\Marketplace\libs\Network\src\cwLayoutNetwork.js
+Fill theses variable with the scriptname of your model 
+
+<img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/networkScriptname.jpg" alt="Drawing" style="width: 95%;"/>
+
+Inside your evolve configuration 
+You need to add to each object this node.
+
+<img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/networkEvolveConfig.jpg" alt="Drawing" style="width: 95%;"/>
+
+### Edge Color
+
+You can assign a color to an Edge Type following this structure
+
+````
+{
+	"flux": {
+		"label": "Flux Applicatif",
+		"color": "#CCCC00"
+	},
+	"locationhasblackcoreconnectivity": {
+		"color": "#000000",
+		"label": "Black Connectivity"
+	}
+}
+````
+
+Edge Type is by default the associationTypeScriptname or the objectTypeScriptName(in case of hiddenNode)
+To use association in the EdgeType, you need to add the intersection node, and select the uuid.
+
+<img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/edgeIntersectionNode.jpg" alt="Drawing" style="width: 95%;"/>
+
+
+
+### Edge Type To Select on Start
+
+List the link Type you want to select On Start. Splitter is a comma
+
+### Assign associationNodeId to EdgeType
+
+In the same way, you assign group with Node, you can do that with the EdgeType
+For exemple : 
+emplacement_20196_1480647536,toto#emplacement_20196_148043224,tata
+
+
 
 ## Focus On
 
@@ -172,7 +249,11 @@ This will remove the node
 ### Remove Close Nodes
 This will remove all the node that are directly connected to the object
 
-## External Filter Association Button
+### Add All Connected Nodes
+
+this will add all node that are connected directly and indirectly to the selected node
+
+## Behaviour Button
 By clicking, on the button you can change the behaviour of the external association filter : 
 * Absolute : disable all node, then add the node of the external filter
 * Addition : Add the node of the external filter
