@@ -84,7 +84,7 @@
                         });
                     } else if(this.hiddenNodes.indexOf(associationNode) !== -1) { // jumpAndMerge when hidden
                         childrenArray = childrenArray.concat(this.simplify(nextChild,father,true));
-                    } else if(nextChild.objectTypeScriptName === "capinetwork" && nextChild.properties.configuration) {
+                    } else if(nextChild.objectTypeScriptName === this.definition.capinetworkScriptname && nextChild.properties.configuration) {
                         this.addNetwork(nextChild,child);
                     } else { // adding regular node
                         element = {}; 
@@ -197,7 +197,7 @@
    // obligatoire appeler par le system
     cwLayoutNetwork.prototype.drawAssociations = function (output, associationTitleText, object) {
         try {
-            if(!cwAPI.isIndexPage() && object.objectTypeScriptName === "capinetwork" && object.properties.configuration) {
+            if(!cwAPI.isIndexPage() && object.objectTypeScriptName === this.definition.capinetworkScriptname && object.properties.configuration) {
                 this.networkDisposition = JSON.parse(object.properties.configuration.replaceAll("\\",""));
             }
 
