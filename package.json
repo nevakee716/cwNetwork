@@ -1,6 +1,6 @@
 {
   "name": "Network",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Allow you to display association in a network",
   "main": "src/cwNetwork.js",
   "scripts": {
