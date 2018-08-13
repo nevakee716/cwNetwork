@@ -22,11 +22,15 @@
         this.definition.capinetworkDisplayname = "Network";
         this.definition.capinetworkToAnyAssociationScriptname = "CAPINETWORKTOASSONETWORKANYOBJECTTOANYOBJECT";
         this.definition.capinetworkToAnyAssociationDisplayName = "Present On Network";
-        this.definition.capinetworkCreateOnViewScriptname = "createoncwview";
+        this.definition.capinetworkCreateOnViewScriptname = "createonview";
         this.definition.capinetworkConfigurationScriptname = "configuration";
-
-        this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkCreateOnViewScriptname).name;
-        this.definition.capinetworkConfigurationDisplayname = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkConfigurationScriptname).name;
+        try {
+            this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkCreateOnViewScriptname).name;
+            this.definition.capinetworkConfigurationDisplayname = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkConfigurationScriptname).name;
+        } catch (e) {
+            console.log(e);
+        }
+        
 
         this.hiddenNodes = [];
         this.complementaryNode = [];
