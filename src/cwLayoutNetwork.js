@@ -24,9 +24,22 @@
         this.definition.capinetworkToAnyAssociationDisplayName = "Present On Network";
         this.definition.capinetworkCreateOnViewScriptname = "createonview";
         this.definition.capinetworkConfigurationScriptname = "configuration";
+        this.canCreateNetwork = false;
+        this.canUpdateNetwork = false;
+        this.networkConfiguration = {};
+        this.networkConfiguration.enableEdit = this.options.CustomOptions['enableEdit'];
+        this.networkConfiguration.nodes = {}; 
+
         try {
             this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkCreateOnViewScriptname).name;
             this.definition.capinetworkConfigurationDisplayname = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkConfigurationScriptname).name;
+
+            if(cwAPI.cwUser.isCurrentUserSocial() === false && cwAPI.mm.getLookupsOnAccessRights(this.definition.capinetworkScriptname,"CanCreate").length > 0) {
+                this.canCreateNetwork = true;
+            }
+            if(cwAPI.cwUser.isCurrentUserSocial() === false && cwAPI.mm.getLookupsOnAccessRights(this.definition.capinetworkScriptname,"CanUpdate").length > 0) {
+                this.canUpdateNetwork = true;
+            }
         } catch (e) {
             console.log(e);
         }
@@ -105,18 +118,6 @@
             "CDSFilterOption": this.CDSFilterOption,
             "CDSNodesOption": this.CDSNodesOption
         };
-
-        this.networkConfiguration = {};
-        if (cwAPI.mm.getMetaModel().objectTypes.hasOwnProperty("capinetwork")) {
-
-            this.networkConfiguration.enableEdit = this.options.CustomOptions['enableEdit'];
-            this.networkConfiguration.personnalEdit = this.options.CustomOptions['personnalEdit'];
-            this.networkConfiguration.rolesEdit = this.options.CustomOptions['rolesEdit'];
-            this.networkConfiguration.rolesEditForAll = this.options.CustomOptions['rolesEditForAll'];
-            this.networkConfiguration.nodes = [];
-        }
-
-
 
     };
 

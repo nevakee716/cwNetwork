@@ -116,7 +116,7 @@
             filterContainer.appendChild(clusterFilterObject);
         }
         if(this.networkConfiguration && this.networkConfiguration.enableEdit) {
-             var configurationFilterObject = document.createElement("div");
+            var configurationFilterObject = document.createElement("div");
             configurationFilterObject.className = "LayoutNetork_filterGroup";
 
             var configurationFilterObjectTitle = document.createElement("div");
@@ -124,7 +124,7 @@
 
             configurationFilterObject.appendChild(configurationFilterObjectTitle);
             configurationFilterObject.appendChild(this.getNetworkConfigurationFilterObject("selectNetworkConfiguration_" + this.nodeID));
-            if(cwAPI.cwUser.isCurrentUserSocial() === false) {
+            if(this.canUpdateNetwork) {
                 var configurationFilterObjectButton = document.createElement("button");
                 configurationFilterObjectButton.innerHTML = '<i class="fa fa-floppy-o" aria-hidden="true"></i>';
                 configurationFilterObjectButton.id = "nodeConfigurationSaveButton_" + this.nodeID ;

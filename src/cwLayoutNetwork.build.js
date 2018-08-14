@@ -111,7 +111,7 @@
         $('.selectNetworkExternal_' + this.nodeID).selectpicker();
         $('.selectNetworkSearch_' + this.nodeID).selectpicker();
         $('.selectNetworkConfiguration_' + this.nodeID).selectpicker();
-        if (cwAPI.cwUser.isCurrentUserSocial() === false && this.networkConfiguration.enableEdit) {
+        if (this.networkConfiguration.enableEdit && this.canCreateNetwork) {
             $('.selectNetworkConfiguration_' + this.nodeID)[0].children[1].children[0].append(this.createAddButton());
         }
         $('.selectNetworkClusterByGroup_' + this.nodeID + '_child').selectpicker();
