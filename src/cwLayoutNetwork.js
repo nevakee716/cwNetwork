@@ -77,7 +77,7 @@
         this.getOption('groupToSelectOnStart','groupToSelectOnStart',',');        
         this.getOption('specificGroup','specificGroup','#',',');
         this.getOption('complementaryNode','assignEdge','#',',');     
-        this.getOption('popOut','popOutList','#',',');       
+        this.getOption('popOutList','popOut','#',',');       
 
 
 
