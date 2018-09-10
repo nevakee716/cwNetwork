@@ -19,10 +19,10 @@
     cwLayoutNetwork.prototype.stopPhysics = function(event) {
         if (this.physics == true) {
             this.physics = false;
-            event.target.innerHTML = "Enable Physics";
+            event.target.innerHTML = $.i18n.prop('enablephysics');
         } else {
             this.physics = true;
-            event.target.innerHTML = "Disable Physics";
+            event.target.innerHTML = $.i18n.prop('disablephysics');
         }
         this.updatePhysics();
     };
@@ -31,9 +31,9 @@
         if (button === undefined) button = document.getElementById("cwLayoutNetworkButtonsPhysics" + this.nodeID);
         if (button) {
             if (this.physics == false) {
-                button.innerHTML = "Enable Physics";
+                button.innerHTML = $.i18n.prop('enablephysics');
             } else {
-                button.innerHTML = "Disable Physics";
+                button.innerHTML = $.i18n.prop('disablephysics');
             }
         }
 

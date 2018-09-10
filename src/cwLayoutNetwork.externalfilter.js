@@ -136,11 +136,11 @@
     cwLayoutNetwork.prototype.externalfilterUpdateBehaviourTitle = function (elem) {
         if(elem === undefined) elem = document.getElementById("cwLayoutNetworkButtonsBehaviour" + this.nodeID);
         if(this.behaviour.absolute == true) {
-            elem.innerText = "Behaviour : Absolute";
+            elem.innerText = $.i18n.prop('behaviour_absolute');
         } else if(this.behaviour.add == true) {
-            elem.innerText = "Behaviour : Addition";
+            elem.innerText = $.i18n.prop('behaviour_add');
         } else {
-            elem.innerText = "Behaviour : Highlight";
+            elem.innerText = $.i18n.prop('behaviour_highlight');
         }
     };
 

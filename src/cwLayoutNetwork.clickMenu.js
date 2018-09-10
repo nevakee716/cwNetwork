@@ -19,27 +19,28 @@
      cwLayoutNetwork.prototype.createMenu = function (container) {
         var menuActions = [];
         var menuAction5 = {};
-        menuAction5.title = "Remove Node";
+
+        menuAction5.title = $.i18n.prop('remove_node');
         menuAction5.eventName = "RemoveNode";
         menuActions.push(menuAction5);
         var menuAction = {};
-        menuAction.title = "Add Closes Nodes";
+        menuAction.title = $.i18n.prop('add_closes_nodes');
         menuAction.eventName = "AddClosesNodes";
         menuActions.push(menuAction);
         var menuAction4 = {};
-        menuAction4.title = "Remove Closes Nodes";
+        menuAction4.title = $.i18n.prop('remove_closes_nodes');
         menuAction4.eventName = "RemoveClosesNodes";
         menuActions.push(menuAction4);
         var menuAction2 = {};
-        menuAction2.title = "Add All Nodes From";
+        menuAction2.title = $.i18n.prop('add_all_nodes_from');
         menuAction2.eventName = "AddAllNodesFrom";
         menuActions.push(menuAction2);
         var menuAction3 = {};
-        menuAction3.title = "Add All Nodes To";
+        menuAction3.title = $.i18n.prop('add_all_nodes_to');
         menuAction3.eventName = "AddAllNodesTo";
         menuActions.push(menuAction3);
         var menuAction6 = {};
-        menuAction6.title = "Add All Connected Nodes";
+        menuAction6.title = $.i18n.prop('add_all_connected_nodes');
         menuAction6.eventName = "AddAllConnectedNodes";
         menuActions.push(menuAction6);
 

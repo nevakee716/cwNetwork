@@ -303,7 +303,7 @@
         var option, optgroup;
 
         filterObject = document.createElement("select");
-        filterObject.setAttribute('title', '<i style="color : black" class="fa fa-search" aria-hidden="true"></i> Focus On');
+        filterObject.setAttribute('title', '<i style="color : black" class="fa fa-search" aria-hidden="true"></i> ' + $.i18n.prop('focus_on'));
         filterObject.setAttribute('data-selected-text-format', 'static');
         filterObject.setAttribute('data-size', '10');
         filterObject.setAttribute('data-live-search', 'true');
@@ -321,7 +321,7 @@
 
         filterObject = document.createElement("select");
         filterObject.className = className + "_head";
-        filterObject.setAttribute('title', "Head Group");
+        filterObject.setAttribute('title', $.i18n.prop('head_group'));
 
         //Creation du None
         object = document.createElement("option");
@@ -346,7 +346,7 @@
 
         filterObject = document.createElement("select");
         filterObject.className = className + "_child";
-        filterObject.setAttribute('title', "Child Group");
+        filterObject.setAttribute('title', $.i18n.prop('child_group'));
         filterObject.setAttribute('multiple', '');
 
 

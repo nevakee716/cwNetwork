@@ -45,7 +45,7 @@
         filterGroupObject.className = "LayoutNetork_filterGroup";
 
         var filterGroupObjectTitle = document.createElement("div");
-        filterGroupObjectTitle.innerHTML  = "Objects Filters";
+        filterGroupObjectTitle.innerHTML  = $.i18n.prop('objects_filters') + " : ";
         var filterGroupObjectFilters = document.createElement("div");
         
 
@@ -67,7 +67,7 @@
             var edgeFilterObject = document.createElement("div");
             edgeFilterObject.className = "LayoutNetork_filterGroup";
             var edgeFilterObjectTitle = document.createElement("div");
-            edgeFilterObjectTitle.innerHTML = "Link Type : ";
+            edgeFilterObjectTitle.innerHTML= $.i18n.prop('link_type')  + " : ";
 
             edgeFilterObject.appendChild(edgeFilterObjectTitle);
             edgeFilterObject.appendChild(this.getEdgeFilterObject("selectNetworkEdge_" + this.nodeID));
@@ -81,7 +81,7 @@
         var associationFilterObject = document.createElement("div");
         associationFilterObject.className = "LayoutNetork_filterGroup";
         var associationFilterObjectTitle = document.createElement("div");
-        associationFilterObjectTitle.innerHTML = "External Association : ";
+        associationFilterObjectTitle.innerHTML = $.i18n.prop('external_association')  + " :";
 
 
         var associationFilterObjectFilters = document.createElement("div");
@@ -103,7 +103,7 @@
             clusterFilterObject.className = "LayoutNetork_filterGroup";
 
             var clusterFilterObjectTitle = document.createElement("div");
-            clusterFilterObjectTitle.innerHTML = "Cluster by Groups";
+            clusterFilterObjectTitle.innerHTML = $.i18n.prop('cluster_by_groups');
 
             var clusterFilterObjectFilterHead = document.createElement("div");
             clusterFilterObjectFilterHead = this.network.getFilterClusterByGroupHead("selectNetworkClusterByGroup_" + this.nodeID);
@@ -120,7 +120,7 @@
             configurationFilterObject.className = "LayoutNetork_filterGroup";
 
             var configurationFilterObjectTitle = document.createElement("div");
-            configurationFilterObjectTitle.innerHTML = "Network : ";
+            configurationFilterObjectTitle.innerHTML = "   " + $.i18n.prop('network');
 
             configurationFilterObject.appendChild(configurationFilterObjectTitle);
             configurationFilterObject.appendChild(this.getNetworkConfigurationFilterObject("selectNetworkConfiguration_" + this.nodeID));

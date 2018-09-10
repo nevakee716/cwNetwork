@@ -227,12 +227,12 @@
     
             output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');
             output.push('<div class="bootstrap-iso" id="cwLayoutNetworkAction' + this.nodeID + '">');
-            if(this.physicsOption && this.hidePhysicsButton === false) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '"> Disable Physics</button>');
-            output.push('<button class="bootstrap-iso" id="cwLayoutNetworkDeselectAll' + this.nodeID + '"> Deselect All</button>');
-            output.push('<button class="bootstrap-iso" id="cwLayoutNetworkSelectAll' + this.nodeID + '"> Select All</button>');
-            if(this.edgeOption && this.hideEdgeButton === false) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '"> Unzip Edges</button>');
-            if(this.removeLonely) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '"> Remove Lonely Nodes</button>');
-            output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsBehaviour' + this.nodeID + '">Behviour Highlight</button>');
+            if(this.physicsOption && this.hidePhysicsButton === false) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '">' + $.i18n.prop('disablephysics') + '</button>');
+            output.push('<button class="bootstrap-iso" id="cwLayoutNetworkDeselectAll' + this.nodeID + '">' + $.i18n.prop('deselectall') + '</button>');
+            output.push('<button class="bootstrap-iso" id="cwLayoutNetworkSelectAll' + this.nodeID + '">' + $.i18n.prop('selectall') + '</button>');
+            if(this.edgeOption && this.hideEdgeButton === false) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '">' + $.i18n.prop('unzip_edge') + '</button>');
+            if(this.removeLonely) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '">' + $.i18n.prop('remove_lonely_node') + '</button>');
+            output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsBehaviour' + this.nodeID + '">' + $.i18n.prop('behaviour_highlight') + '</button>');
 
 
 

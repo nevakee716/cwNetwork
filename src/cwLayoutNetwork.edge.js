@@ -21,7 +21,7 @@
         var self = this;
         var changeSetEdges = [];
         if (this.edgeZipped == true) { // on dezip les edge
-            if (event.target) event.target.innerHTML = "Zip Edges";
+            if (event.target) event.target.innerHTML = $.i18n.prop('zip_edge');
 
             this.edgeZipped = false;
             this.edges.forEach(function(edge) {
@@ -39,7 +39,7 @@
                 changeSetEdges.push(edge);
             });
         } else { // on zip les edge
-            if (event.target) event.target.innerHTML = "unZip Edges";
+            if (event.target) event.target.innerHTML = $.i18n.prop('unzip_edge');
             this.edgeZipped = true;
             this.edges.forEach(function(edge) {
                 if (edge.zipped === true && edge.labels.length > 0) {
