@@ -111,16 +111,17 @@
     };
 
 
-    node.prototype.getVisDataIfDeactivated = function () {
+    node.prototype.getVisDataIfDeactivated = function (option) {
         var node;
+        if(option === true) return this.getVisData();
         if(this.status === false) {
             this.status = true;
            return this.getVisData();
-        } else {
-            node = this.getVisData();
-            node.alreadyInNetwork = true;
-            return node;
         }
+
+        node = this.getVisData();
+        node.alreadyInNetwork = true;
+        return node;
     };
 
     if (!cwApi.customLibs) {
