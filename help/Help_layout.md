@@ -5,6 +5,7 @@
 
 ## Patch Notes
 
+* 5.1 : Traduction Menu
 * 5.0 : Adding Image, Save, Link Type
 * 4.1 : Can now select multiple element in externalFilter
 * 4.0 : Cluster, Download Image, display association custom display string
@@ -90,6 +91,8 @@ You can mix Icon and shape like that :
 Flux,icon,f0ec,#FF8C00||Application,icon,f10a,#4F90C1||Entité,box,#FF8C00,#4F90C1
 
 <img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/4.png" alt="Drawing" style="width: 95%;"/>
+
+You can assign specific icon and color to item if you don't have group shape, just need to use a property with scriptname icon and color and check it in evolve designer
 
 ### Arrow Direction :
 

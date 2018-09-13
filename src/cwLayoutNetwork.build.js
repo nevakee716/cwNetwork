@@ -112,7 +112,7 @@
         $('.selectNetworkSearch_' + this.nodeID).selectpicker();
         $('.selectNetworkConfiguration_' + this.nodeID).selectpicker();
         if (this.networkConfiguration.enableEdit && this.canCreateNetwork) {
-            $('.selectNetworkConfiguration_' + this.nodeID)[0].children[1].children[0].append(this.createAddButton());
+            $('.selectNetworkConfiguration_' + this.nodeID)[0].children[1].children[0].appendChild(this.createAddButton());
         }
         $('.selectNetworkClusterByGroup_' + this.nodeID + '_child').selectpicker();
         $('.selectNetworkClusterByGroup_' + this.nodeID + '_head').selectpicker();
