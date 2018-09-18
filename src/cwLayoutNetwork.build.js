@@ -120,7 +120,7 @@
 
 
         // set height
-        var titleReact = document.querySelector(".page-title").getBoundingClientRect();
+        var titleReact = document.querySelector("#cw-top-bar").getBoundingClientRect();
         var topBarReact = document.querySelector(".page-top").getBoundingClientRect();
         var actionReact = actionContainer.getBoundingClientRect();
         var filterReact = filterContainer.getBoundingClientRect();
