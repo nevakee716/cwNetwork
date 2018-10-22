@@ -70,7 +70,9 @@ List the popOut that you want to be used. (ex:scriptname1,popOutName1#scriptname
 Group are the different filter box of the network, by default object are sort in to different group by ObjectType(name of the group is the name of the objectype).
 If you want objects of a node to be in a different group use this option : NodeID,GroupName#NodeID2,GroupName2#(ex:processus_niveau_3_20004_410243396,Processus Electronique#processus_niveau_3_20004_2025026472,Processus Informatique)
 
-PS : If an object is present twice in the JSON object, one time in a group and one time in another group, it will only appear in the first group. So if you need to have different icon according to category or other, define all your node for them with filter and add a 3rd node after with all the objet without filter.
+PS : If an object is present twice in the JSON object, one time in a group and one time in another group, it will only appear in the first group. So if you need to have different icon according to category or other, define all your node for them with filter and add a 3rd node after with all the objet without filter. 
+
+Be carefull when using the complementary node, the node will be place in the order of the complementary node and always after the regular node.
 
 ### Group To Select On Start
 
