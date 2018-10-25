@@ -17,24 +17,24 @@
     }
 
 
- cwLayoutNetwork.prototype.addNetwork = function (node,father) {
-        if(this.networkConfiguration === undefined) {
+    cwLayoutNetwork.prototype.addNetwork = function(node, father) {
+        if (this.networkConfiguration === undefined) {
             this.networkConfiguration = {};
             this.networkConfiguration.selected = {};
             this.networkConfiguration.nodes = {};
         }
-        if(this.networkConfiguration.nodes[node.object_id] === undefined) {
+        if (this.networkConfiguration.nodes[node.object_id] === undefined) {
             this.networkConfiguration.nodes[node.object_id] = {};
             this.networkConfiguration.nodes[node.object_id].label = node.name;
-            this.networkConfiguration.nodes[node.object_id].configuration = JSON.parse(node.properties.configuration.replaceAll("\\",""));
+            this.networkConfiguration.nodes[node.object_id].configuration = JSON.parse(node.properties.configuration.replaceAll("\\", ""));
             this.networkConfiguration.nodes[node.object_id].obj = node;
             node.associations = {};
             node.associations[this.nodeID] = {};
             node.associations[this.nodeID].associationScriptName = this.definition.capinetworkToAnyAssociationScriptname;
-            node.associations[this.nodeID].displayName = this.definition.capinetworkToAnyAssociationDisplayName;           
-            node.associations[this.nodeID].items = []; 
+            node.associations[this.nodeID].displayName = this.definition.capinetworkToAnyAssociationDisplayName;
+            node.associations[this.nodeID].items = [];
             node.associations[this.nodeID].nodeId = this.nodeID;
-        } 
+        }
         var newItem = {};
         newItem.name = father.name;
         newItem.intersectionObjectUID = node.iProperties.uniqueidentifier;
@@ -46,37 +46,37 @@
     };
 
 
-    cwLayoutNetwork.prototype.getNetworkConfigurationFilterObject = function (classname) {
+    cwLayoutNetwork.prototype.getNetworkConfigurationFilterObject = function(classname) {
         var filterObject;
         var object;
         var id;
 
         filterObject = document.createElement("select");
-        filterObject.setAttribute('data-live-search','true');
-        filterObject.setAttribute('data-size','5');
+        filterObject.setAttribute('data-live-search', 'true');
+        filterObject.setAttribute('data-size', '5');
 
 
         filterObject.className = classname + " Network";
-        filterObject.setAttribute('filterName',"Network");
+        filterObject.setAttribute('filterName', "Network");
 
 
         object = document.createElement("option");
-        object.setAttribute('id',0);
+        object.setAttribute('id', 0);
         object.textContent = "None";
         filterObject.appendChild(object);
 
         for (id in this.networkConfiguration.nodes) {
             if (this.networkConfiguration.nodes.hasOwnProperty(id)) {
                 object = document.createElement("option");
-                object.setAttribute('id',id);
+                object.setAttribute('id', id);
                 object.textContent = this.networkConfiguration.nodes[id].label;
                 filterObject.appendChild(object);
-            }                                                                                                                                                                                                                                                                                                                                                                                                            
+            }
         }
 
         return filterObject;
     };
-    
+
     cwLayoutNetwork.prototype.addEventOnSave = function() {
         var buttonSave = document.getElementsByClassName("cw-edit-mode-button-edit")[0];
         if (buttonSave) {
@@ -140,11 +140,12 @@
     cwLayoutNetwork.prototype.getConfigurationAndAssociationObjectToNetwork = function(newObj) {
 
         var linkTypeLabels, nodes, config, positions, newAssoItems = [],
-            newAssoItemsObj = {}, self = this;
+            newAssoItemsObj = {},
+            self = this;
         newObj.displayNames = {};
         newObj.displayNames[this.definition.capinetworkConfigurationScriptname] = this.definition.capinetworkConfigurationDisplayname;
         newObj.displayNames[this.definition.capinetworkCreateOnViewScriptname] = this.definition.capinetworkCreateOnViewDisplayName;
-        
+
 
         nodes = this.network.getAllNodeForSaving();
         config = {};
@@ -161,13 +162,13 @@
                 config.linkType.push(s);
             }
         }
-        
+
         config.camera = {};
         config.camera.position = this.networkUI.getViewPosition();
         config.camera.scale = this.networkUI.getScale();
 
         positions = this.networkUI.getPositions();
-        
+
         if (newObj.associations) {
             newObj.associations[this.nodeID].items.forEach(function(item) {
                 newAssoItemsObj[item.targetObjectID + item.targetObjectTypeScriptName] = item;
@@ -207,7 +208,7 @@
         newObj.associations[this.nodeID].items = newAssoItems;
 
         var view = cwAPI.getCurrentView();
-        if(view && view.cwView) {
+        if (view && view.cwView) {
             view = view.cwView;
         }
 
@@ -257,16 +258,16 @@
                 newNewObj.object_id = elem.id;
                 cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, newObj, newNewObj, newObj.object_id, self.definition.capinetworkScriptname, function(response) {
                     if (!cwApi.statusIsKo(response)) {
-                        self.createdSaveObjFromReponse(newNewObj,response,networkName,config);
+                        self.createdSaveObjFromReponse(newNewObj, response, networkName, config);
 
                         var html = '<option id="' + response.id + '">' + networkName + '</>';
                         $('.selectNetworkConfiguration_' + self.nodeID).append(html)
-                                                       .selectpicker("refresh");
+                            .selectpicker("refresh");
 
                         $("div.selectNetworkConfiguration_" + self.nodeID + " > option").remove();
                         $('.selectNetworkConfiguration_' + self.nodeID).val(networkName).selectpicker("refresh");
 
-                    } 
+                    }
                 });
             }
 
@@ -275,32 +276,32 @@
 
     };
 
-    cwLayoutNetwork.prototype.createdSaveObjFromReponse = function(obj,response,networkName,config) {
-        var r,self = this;
+    cwLayoutNetwork.prototype.createdSaveObjFromReponse = function(obj, response, networkName, config) {
+        var r, self = this;
 
         this.networkConfiguration.nodes[response.id] = {};
         this.networkConfiguration.nodes[response.id].configuration = config;
         obj.objectTypeScriptName = this.definition.capinetworkScriptname;
         obj.name = networkName;
 
-        var targetId,targetIds = {};
-        for(var i in response.intersectionObjectProperties) {
-            if(response.intersectionObjectProperties.hasOwnProperty(i)) {
+        var targetId, targetIds = {};
+        for (var i in response.intersectionObjectProperties) {
+            if (response.intersectionObjectProperties.hasOwnProperty(i)) {
                 r = response.intersectionObjectProperties[i];
-                if(targetIds[r.targetObjectID]) {
+                if (targetIds[r.targetObjectID]) {
                     window.location.reload();
                 } else {
                     targetIds[r.targetObjectID] = true;
                 }
                 var isPresent = false;
                 obj.associations[self.nodeID].items.forEach(function(n) {
-                    if(r.targetObjectID === n.targetObjectID) {
+                    if (r.targetObjectID === n.targetObjectID) {
                         isPresent = true;
                         n.intersectionObjectUID = r.uid;
                     }
                 });
             }
-        } 
+        }
 
         obj.associations[this.nodeID].associationScriptName = this.definition.capinetworkToAnyAssociationScriptname;
         obj.associations[this.nodeID].displayName = this.definition.capinetworkToAnyAssociationDisplayName;
@@ -309,12 +310,12 @@
         this.networkConfiguration.nodes[response.id].obj = obj;
         this.networkConfiguration.nodes[response.id].label = networkName;
         this.networkConfiguration.selected = this.networkConfiguration.nodes[response.id];
-        
+
 
     };
 
     cwLayoutNetwork.prototype.directSave = function(oldObj) {
-        var config,changeset, newObj;
+        var config, changeset, newObj;
         var self = this;
         changeset = new cwApi.CwPendingChangeset(oldObj.objectTypeScriptName, oldObj.object_id, oldObj.name, true, 1);
         newObj = $.extend(true, {}, oldObj);
@@ -324,8 +325,8 @@
 
         cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, oldObj, newObj, oldObj.object_id, oldObj.objectTypeScriptName, function(response) {
             if (!cwApi.statusIsKo(response)) {
-                self.createdSaveObjFromReponse(newObj,response,newObj.properties["name"],config);
-            } 
+                self.createdSaveObjFromReponse(newObj, response, newObj.properties["name"], config);
+            }
         });
     };
 
@@ -349,6 +350,9 @@
             data.displayValue = cwApi.customLibs.edits[id].display;
         };
     };
+
+
+
 
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;
 }(cwAPI, jQuery));
