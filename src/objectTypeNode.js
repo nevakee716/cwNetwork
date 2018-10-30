@@ -158,6 +158,14 @@
             var htmltxt = "";
             htmltxt += '<img class="networkLegendImage" src="' + group.image+ '"></img>';
             return htmltxt; 
+        } else if(group && group.shape) {
+
+            htmltxt += '<i class="fa"';
+            if(group.shape.color === undefined) htmltxt += 'style="color : black">';  
+            else htmltxt += 'style="color : ' + group.icon.color.border + '">';        
+            htmltxt += self.shapeToFontAwesome(group.shape);
+            htmltxt += '</i>';  
+            return htmltxt; 
         }
         return "";
     };

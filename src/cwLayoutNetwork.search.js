@@ -32,7 +32,8 @@
                     html += '<option class="fa" id=' + node.id + '>&#x' + self.groupsArt[node.group].unicode + " " + label + '</option>'; 
                 } else if(self.groupsArt[node.group].image){ //image
                     html += '<option id=' + node.id + ' data-content="' + label + '<img class=\'networkLegendImage\' src=\'' +  self.groupsArt[node.group].image + '\'</>">'+ label + '</option>'; 
-
+                } if(self.groupsArt[node.group].shape) {
+                    html += '<option class="fa" id=' + node.id + '>&#x' + self.shapeToFontAwesome(self.groupsArt[node.group].shape) + " " + label + '</option>'; 
                 }
             } else {
                html += '<option class="fa" id=' + node.id + '>' + label + '</option>'; 

@@ -215,7 +215,7 @@
             this.originalObject.associations = assoNode;     
             var simplifyObject = this.simplify(this.originalObject);
             if(simplifyObject.length > 0) isData = true;
-            if(!cwAPI.isIndexPage()) {
+            if(!cwAPI.isIndexPage() || object.hasOwnProperty("object_id")) {
                 simplifyObject = this.addObjectOfObjectPage(simplifyObject,object);
             }      
            
