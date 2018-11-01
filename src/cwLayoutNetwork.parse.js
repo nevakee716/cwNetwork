@@ -91,6 +91,7 @@
                         element.name = this.multiLine(nextChild.name,this.multiLineCount);
                         element.customDisplayString = this.multiLine(this.getItemDisplayString(nextChild),this.multiLineCount);
                         element.object_id = nextChild.object_id;
+
                         element.objectTypeScriptName = nextChild.objectTypeScriptName;
                         if(nextChild.properties.icon && nextChild.properties.color) {
                             element.icon = {};
@@ -100,17 +101,29 @@
                         else element.icon = null;
 
                         // on check si l'element appartient deja a un group
-                        if(!this.objects.hasOwnProperty(element.object_id + "#" + element.objectTypeScriptName)) {
+                        let fatherID = "";
+                        if(this.duplicateNode.indexOf(associationNode) !== -1) {
+                            fatherID = "#" + child.object_id;
+                            element.label +=  ' (' + father.label + ')';
+                            element.label  = this.multiLine(element.label,this.multiLineCount);
+                            element.customDisplayString += ' (' + father.customDisplayString + ')';
+                            element.customDisplayString  = this.multiLine(element.customDisplayString,this.multiLineCount); 
+                        }
+                        
+
+                        if(!this.objects.hasOwnProperty(element.object_id + "#" + element.objectTypeScriptName + fatherID)) {
                             if(this.specificGroup.hasOwnProperty(associationNode)) { // mise en place du groupe
                                 element.group = this.specificGroup[associationNode];
                             } else {
                                 element.group = cwAPI.mm.getObjectType(nextChild.objectTypeScriptName).name;                           
                             }
-                            this.objects[element.object_id + "#" + element.objectTypeScriptName] = element.group;                           
+                            this.objects[element.object_id + "#" + element.objectTypeScriptName + fatherID] = element.group;                           
                         } else {
-                            element.group = this.objects[element.object_id + "#" + element.objectTypeScriptName];
+                            element.group = this.objects[element.object_id + "#" + element.objectTypeScriptName + fatherID];
                         }
                         
+                        element.id = element.object_id + "#" + element.group + fatherID ;
+
                         if(hiddenNode) { //lorsqu'un node est hidden ajouter les elements en edges
                             element.edge = {};
                             element.edge.label = this.multiLine(this.getItemDisplayString(child),this.multiLineCount);
@@ -271,7 +284,7 @@
             element.direction = this.directionList[rootID];
         }
         element.children = simplifyObject;
-
+        element.id = element.object_id + "#" + element.group ;
         return [element];
 
     };

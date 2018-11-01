@@ -5,8 +5,9 @@
 
     "use strict";
     // constructor
-    var node = function (id,label,customDisplayString,icon,status,filterArray,nodeOptions,networkInfo) {
+    var node = function (id,object_id,label,customDisplayString,icon,status,filterArray,nodeOptions,networkInfo) {
         this.id = id;
+        this.object_id = object_id;
         this.label = label;
         this.status = status;
         this.customDisplayString = customDisplayString;
@@ -45,7 +46,7 @@
     node.prototype.getVisData = function () {
         var obj = {};
         obj.id = this.id;
-         
+        obj.object_id = this.object_id;
         if(this.options.CDSNodesOption) {
             obj.label = this.customDisplayString;
             obj.name = this.label;
@@ -113,7 +114,9 @@
 
     node.prototype.getVisDataIfDeactivated = function (option) {
         var node;
-        if(option === true) return this.getVisData();
+        // si highlight on renvoie que si status == true
+        if(option === true && this.status === true) return this.getVisData();
+        if(option === true && this.status === false) return null;
         if(this.status === false) {
             this.status = true;
            return this.getVisData();

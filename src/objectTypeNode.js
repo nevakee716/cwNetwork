@@ -15,9 +15,9 @@
         return this.scriptname;
     };
 
-    objectTypeNode.prototype.addNode = function (object_id,label,customDisplayString,icon,filterArray,nodeOptions,networkInfo) {
-        if(!this.nodes.hasOwnProperty(object_id)) {
-            this.nodes[object_id] = new cwApi.customLibs.cwLayoutNetwork.node(object_id,label,customDisplayString,icon,false,filterArray,nodeOptions,networkInfo);
+    objectTypeNode.prototype.addNode = function (id,object_id,label,customDisplayString,icon,filterArray,nodeOptions,networkInfo) {
+        if(!this.nodes.hasOwnProperty(id)) {
+            this.nodes[id] = new cwApi.customLibs.cwLayoutNetwork.node(id,object_id,label,customDisplayString,icon,false,filterArray,nodeOptions,networkInfo);
         }  
     };
 
@@ -28,10 +28,7 @@
         var node;
         for (node in this.nodes) {
             if (this.nodes.hasOwnProperty(node)) {
-                nodeVisData = this.nodes[node].getVisData();
-                nodeVisData.group = this.label;
-                nodeVisData.id = nodeVisData.id + "#" + this.scriptname;
-                visData.push(nodeVisData); 
+                visData.push(this.getVisData(node)); 
             }
         }
         return visData;
@@ -41,7 +38,7 @@
         var nodeVisData;
         nodeVisData = this.nodes[id].getVisData();
         nodeVisData.group = this.label;
-        nodeVisData.id = nodeVisData.id + "#" + this.scriptname;
+        nodeVisData.objectTypeScriptName = this.scriptname;
         return nodeVisData;
     };
 
@@ -54,7 +51,7 @@
                 nodeVisData = this.nodes[node].getEnabledVisData();
                 if(nodeVisData) {
                     nodeVisData.group = this.label;
-                    nodeVisData.id = nodeVisData.id + "#" + this.scriptname;
+                    nodeVisData.objectTypeScriptName = this.scriptname;
                     visData.push(nodeVisData);
                 }
 
@@ -77,8 +74,8 @@
                     nodeDataOut.group = this.label;
                     nodeDataOut.objectTypeScriptName = this.scriptname;
                     nodeDataOut.status = nodeData.status;                    
-                    nodeDataOut.id = nodeData.id + "#" + this.scriptname;
-                    nodeDataOut.idShort = nodeData.id;
+                    nodeDataOut.id = nodeData.id;
+                    nodeDataOut.idShort = nodeData.object_id;
                     outData.push(nodeDataOut);
                 }
             }
@@ -86,7 +83,20 @@
         return outData;
     };
 
-
+    objectTypeNode.prototype.SetAllAndGetNodesObject = function (state) {
+        var nodeVisData;
+        var changeStateNodeObject = [];
+        var node;
+        for (node in this.nodes) {
+            if (this.nodes.hasOwnProperty(node)) {
+                if(this.nodes[node].getStatus() !== state) {
+                    this.nodes[node].setStatus(state);
+                    changeStateNodeObject.push(this.getVisData(node)); 
+                }
+            }                                                                                                                                                                                                                                                                                                                                                                                                            
+        }
+        return changeStateNodeObject;
+    };
 
 
     objectTypeNode.prototype.getVisDataIfDeactivated = function (id,option) {
@@ -94,7 +104,7 @@
         nodeVisData = this.nodes[id].getVisDataIfDeactivated(option);
         if(nodeVisData) {
             nodeVisData.group = this.label;
-            nodeVisData.id = nodeVisData.id + "#" + this.scriptname;        
+            nodeVisData.objectTypeScriptname = this.scriptname;
         }
         return nodeVisData;    
     };
@@ -200,23 +210,7 @@
 
     };
 
-    objectTypeNode.prototype.SetAllAndGetNodesObject = function (state) {
-        var nodeVisData;
-        var changeStateNodeObject = [];
-        var node;
-        for (node in this.nodes) {
-            if (this.nodes.hasOwnProperty(node)) {
-                if(this.nodes[node].getStatus() !== state) {
-                    this.nodes[node].setStatus(state);
-                    nodeVisData = this.nodes[node].getVisData();
-                    nodeVisData.group = this.label;
-                    nodeVisData.id = nodeVisData.id + "#" + this.scriptname;
-                    changeStateNodeObject.push(nodeVisData); 
-                }
-            }                                                                                                                                                                                                                                                                                                                                                                                                            
-        }
-        return changeStateNodeObject;
-    };
+
 
 
     objectTypeNode.prototype.changeState = function (id,state) {

@@ -71,7 +71,7 @@
                     self.clusters = newClusters;
                 }
                 changeSetNode.push(node.id);
-                self.network.hide(node.id.split("#")[0],node.group.replace("Hidden",""));
+                self.network.hide(node.id,node.group.replace("Hidden",""));
                 $('select.selectNetworkPicker_' + self.nodeID + "." + node.group.replaceAll(" ","_").replace("Hidden","")).each(function( index ) { // put values into filters
                     if($(this).val()) {
                         $(this).selectpicker('val',$(this).val().filter(function(item) { return item !== node.name.replaceAll("\n"," ");}));

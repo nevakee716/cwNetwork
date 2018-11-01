@@ -36,7 +36,7 @@
         if (!this.objectTypeNodes.hasOwnProperty(object.group)) {
             this.objectTypeNodes[object.group] = new cwApi.customLibs.cwLayoutNetwork.objectTypeNode(object.group, object.objectTypeScriptName);
         }
-        this.objectTypeNodes[object.group].addNode(object.object_id, object.name, object.customDisplayString, object.icon, object.filterArray, nodeOptions, object.networkInfo);
+        this.objectTypeNodes[object.group].addNode(object.id,object.object_id, object.name, object.customDisplayString, object.icon, object.filterArray, nodeOptions, object.networkInfo);
 
     };
 
@@ -227,15 +227,15 @@
 
     network.prototype.addEdge = function(child, object) {
         if (object.name && child.name) {
-            var uuid = object.object_id + "#" + object.objectTypeScriptName;
-            var uuidChild = child.object_id + "#" + child.objectTypeScriptName;
+            var uuid = object.id;
+            var uuidChild = child.id;
             var uuidAsso = uuid + "_" + uuidChild;
             var uuidAssoReverse = uuidChild + "_" + uuid;
             if (!this.edges.hasOwnProperty(uuidAsso) && !this.edges.hasOwnProperty(uuidAssoReverse)) { // si aucun edge existe
                 if (child.direction === "from") {
-                    this.edges[uuidAssoReverse] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid, uuidChild, object.object_id, child.object_id, object.group, child.group, child.direction, child.edge);
+                    this.edges[uuidAssoReverse] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid, uuidChild, object.id, child.id, object.group, child.group, child.direction, child.edge);
                 } else {
-                    this.edges[uuidAsso] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid, uuidChild, object.object_id, child.object_id, object.group, child.group, child.direction, child.edge);
+                    this.edges[uuidAsso] = new cwApi.customLibs.cwLayoutNetwork.edge(uuid, uuidChild, object.id, child.id, object.group, child.group, child.direction, child.edge);
                 }
             } else if (this.edges.hasOwnProperty(uuidAsso)) { // si le edge existe déja 
                 this.edges[uuidAsso].addEdgeElement(child.direction, child.edge);

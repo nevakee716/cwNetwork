@@ -61,14 +61,13 @@
     };
 
     cwLayoutNetwork.prototype.AddNodesToNetwork = function (event,option) {
-        var nodeID,group,changeSet,nodeIDFull = event.data.d.nodes[0];
+        var group,changeSet,nodeID = event.data.d.nodes[0];
         this.nodes.forEach(function(node) { 
-            if(node.id === nodeIDFull) {
+            if(node.id === nodeID) {
                 group = node.group.replace("Hidden","");
             }
         });
-        nodeID = nodeIDFull.split("#")[0];
-        
+       
 
         if(this.behaviour.absolute === true) {
             this.deActivateAllGroup();
@@ -101,7 +100,7 @@
             changeSet.forEach(function(c) { 
                 nodesIdToHighlight.push(c.id);
             });
-            nodesIdToHighlight.push(nodeIDFull);
+            nodesIdToHighlight.push(nodeID);
             if(this.networkUI) {
                 this.colorNodes(nodesIdToHighlight);
                 this.colorEdges(nodesIdToHighlight);

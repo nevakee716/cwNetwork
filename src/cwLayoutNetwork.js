@@ -30,6 +30,8 @@
         this.networkConfiguration.enableEdit = this.options.CustomOptions['enableEdit'];
         this.networkConfiguration.nodes = {}; 
 
+        this.duplicateNode = ["acteur_20155_845360685"];
+
         try {
             this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkCreateOnViewScriptname).name;
             this.definition.capinetworkConfigurationDisplayname = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkConfigurationScriptname).name;

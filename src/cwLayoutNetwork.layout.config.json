@@ -147,6 +147,12 @@
         "DisplayName": "Assign associationNodeID to Edge Type",
         "Description": "List the associationNodeID and the Edge Type",
         "Type": 0
-    }  
+    },
+    {
+        "Id": "duplicateNodes",
+        "DisplayName": "Duplicate the nodeIDS",
+        "Description": "list the nodeIDs splitter is a comma",
+        "Type": 0
+    }, 
     ]
 }

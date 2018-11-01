@@ -135,13 +135,12 @@
         $('select.selectNetworkPicker_' + this.nodeID).on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
             var group = $(this).context['id'];
             var scriptname = $(this).context.getAttribute('scriptname');
-            var changeSet, id, nodeId, i;
+            var changeSet, id,  i;
 
             if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
                 id = $(this).context[clickedIndex]['id'];
-                nodeId = id + "#" + scriptname;
                 if (newValue === false) { // hide a node
-                    self.removeNodes([nodeId]);
+                    self.removeNodes([id]);
                 } else { // add one node
                     self.network.show(id, group);
                     changeSet = self.network.getVisNode(id, group); // get all the node self should be put on
@@ -430,8 +429,8 @@
                 if (self.networkUI.isCluster(params.nodes[0]) == true) {
                     self.networkUI.openCluster(params.nodes[0]);
                 } else {
-                    var split = params.nodes[0].split("#");
-                    self.openPopOut(split[0], split[1]);
+                    let node = self.nodes.get(params.nodes[0]);
+                    self.openPopOut(node.object_id, node.objectTypeScriptName);
                 }
             } else if (params.hasOwnProperty('edges') && params.edges.length === 1) {
                 var edge = self.edges.get(params.edges[0]);
@@ -441,8 +440,8 @@
 
         this.networkUI.on("doubleClick", function(params) {
             if (params.hasOwnProperty('nodes') && params.nodes.length === 1) {
-                var split = params.nodes[0].split("#");
-                self.openObjectPage(split[0], split[1]);
+                let node = self.nodes.get(params.nodes[0]);
+                self.openObjectPage(node.object_id, node.objectTypeScriptName);
             } else if (params.hasOwnProperty('edges') && params.edges.length === 1) {
                 var edge = self.edges.get(params.edges[0]);
                 if (edge.scriptname && edge.object_id) {
