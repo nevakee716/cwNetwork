@@ -44,8 +44,15 @@
     // Activate cluster from option
     cwLayoutNetwork.prototype.activateStartingCluster = function (event) {
         var self = this;
-        self.fillValueInClusterFilter(this.clusterByGroupOption.head,this.clusterByGroupOption.child);
-        self.clusterByGroup();
+        if(this.wiggle) {
+            setTimeout(function(){ self.fillValueInClusterFilter(self.clusterByGroupOption.head,self.clusterByGroupOption.child);
+            self.clusterByGroup();}, 5000);
+        } else {
+            this.fillValueInClusterFilter(this.clusterByGroupOption.head,this.clusterByGroupOption.child);
+            this.clusterByGroup();
+        }
+
+
     };
 
 
