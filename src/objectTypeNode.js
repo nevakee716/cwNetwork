@@ -161,15 +161,44 @@
         } else if(group && group.shape) {
 
             htmltxt += '<i class="fa"';
-            if(group.shape.color === undefined) htmltxt += 'style="color : black">';  
-            else htmltxt += 'style="color : ' + group.icon.color.border + '">';        
-            htmltxt += self.shapeToFontAwesome(group.shape);
+            if(group.color.border === undefined) htmltxt += 'style="color : black">';  
+            else htmltxt += 'style="color : ' + group.color.border + '">';        
+            htmltxt += unescape('%u' + this.shapeToFontAwesome(group.shape));
             htmltxt += '</i>';  
             return htmltxt; 
         }
         return "";
     };
+ // convert the vis shape to the fontawesome equivalent shape
+    objectTypeNode.prototype.shapeToFontAwesome = function(shape) {
+        switch (shape) {
+            case 'ellipse':
+                return "f1db";
+            case 'circle':
+                return "f1db"; 
+            case 'database':
+                return "f0c8";
+            case 'box':
+                return "f2d0"; 
+            case 'diamond':
+                return "f0dc";
+            case 'dot':
+                return "f111";
+            case 'triangle':
+                return "f0de"; 
+            case 'triangleDown':
+                return "f0dd"; 
+            case 'star':
+                return "f005"; 
+            case 'hexagon':
+                return "f20e";
+            case 'square':
+                return "f0c8";
+            default:
+                return "f2d0";
+        }
 
+    };
 
     objectTypeNode.prototype.SetAllAndGetNodesObject = function (state) {
         var nodeVisData;

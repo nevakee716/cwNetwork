@@ -20,29 +20,41 @@
     // Adding element to the search filter
     cwLayoutNetwork.prototype.addSearchFilterElement = function (event, properties, senderId) {
         var self = this;
-        var html = "";
+        var htmltxt = "";
         properties.items.forEach(function(elem) {
             var node = self.nodes.get(elem);
-            var label;
+            var label,group;
             if(self.CDSFilterOption) label = node.label;
             else label = node.name;
 
             if(self.groupsArt && self.groupsArt[node.group]) {
-                if(self.groupsArt[node.group].unicode){ // icon
-                    html += '<option class="fa" id=' + node.id + '>&#x' + self.groupsArt[node.group].unicode + " " + label + '</option>'; 
-                } else if(self.groupsArt[node.group].image){ //image
-                    html += '<option id=' + node.id + ' data-content="' + label + '<img class=\'networkLegendImage\' src=\'' +  self.groupsArt[node.group].image + '\'</>">'+ label + '</option>'; 
-                } if(self.groupsArt[node.group].shape) {
-                    html += '<option class="fa" id=' + node.id + '>&#x' + self.shapeToFontAwesome(self.groupsArt[node.group].shape) + " " + label + '</option>'; 
+                htmltxt += cwApi.customLibs.cwLayoutNetwork.objectTypeNode.prototype.getLegendElement(self.groupsArt[node.group]);
+
+                group = self.groupsArt[node.group];
+                if(group && group.shape == "icon") {
+                    htmltxt += '<option style="color : ' + group.icon.color + '" class="fa" id=' + node.id + '>&#x' + group.unicode + " " + label + '</option>';      
+                } else if(group && (group.shape === "image" || group.shape === "circularImage")) {
+                    htmltxt += '<option id=' + node.id + ' data-content="' + label + '<img class=\'networkLegendImage\' src=\'' +  group.image + '\'</>">'+ label + '</option>';
+                } else if(group && group.shape) {
+                    htmltxt += '<option style="color : ' + group.color.border + '" class="fa" id=' + node.id + '>&#x' + cwApi.customLibs.cwLayoutNetwork.objectTypeNode.prototype.shapeToFontAwesome(group.shape) + " " + label + '</option>';      
                 }
+
             } else {
-               html += '<option class="fa" id=' + node.id + '>' + label + '</option>'; 
+               htmltxt += '<option class="fa" id=' + node.id + '>' + label + '</option>'; 
             }
         });
         $('select.selectNetworkSearch_' + this.nodeID)
-            .append(html)
+            .append(htmltxt)
             .selectpicker('refresh');
     };
+
+
+
+
+
+
+
+
 
     // Remove element to the search filter
     cwLayoutNetwork.prototype.removeSearchFilterElement = function (event, properties, senderId) {
