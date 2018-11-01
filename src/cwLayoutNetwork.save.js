@@ -179,7 +179,17 @@
             newObj.associations[this.nodeID] = {};
 
         }
+        newObj.associations[this.nodeID].items = [];
 
+        if(!cwAPI.isIndexPage()) {
+            var assoItem = {};
+                assoItem.name = this.originalObject.name;
+                assoItem.intersectionObjectUID = "";
+                assoItem.isNew = "false";
+                assoItem.targetObjectTypeScriptName = this.originalObject.objectTypeScriptName;
+                assoItem.targetObjectID = this.originalObject.object_id;
+                newObj.associations[this.nodeID].items.push(assoItem);
+        }
 
         nodes.forEach(function(node) {
             if (positions.hasOwnProperty(node.id)) {
@@ -187,25 +197,15 @@
                 config.nodes[node.id].x = positions[node.id].x;
                 config.nodes[node.id].y = positions[node.id].y;
                 config.nodes[node.id].group = node.group;
-                config.nodes[node.id].id = node.idShort;
+                config.nodes[node.id].object_id = node.object_id;
+                config.nodes[node.id].id = node.id;
                 config.nodes[node.id].status = node.status;
-
-                if (newAssoItemsObj[node.idShort + node.objectTypeScriptName]) {
-                    newAssoItems.push(newAssoItemsObj[node.idShort + node.objectTypeScriptName]);
-                } else {
-                    var assoItem = {};
-                    assoItem.name = node.name;
-
-                    assoItem.intersectionObjectUID = "";
-                    assoItem.isNew = "false";
-                    assoItem.targetObjectTypeScriptName = node.objectTypeScriptName;
-                    assoItem.targetObjectID = node.idShort;
-                    newAssoItems.push(assoItem);
-                }
             }
         });
+
+        config.fullGroups = this.network.getFullGroups();
         newObj.properties[this.definition.capinetworkConfigurationScriptname] = JSON.stringify(config);
-        newObj.associations[this.nodeID].items = newAssoItems;
+        
 
         var view = cwAPI.getCurrentView();
         if (view && view.cwView) {

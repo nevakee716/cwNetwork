@@ -9,6 +9,7 @@
         this.scriptname = scriptname;
         this.label = label;
         this.nodes = {};
+        this.full = false;
     };
 
     objectTypeNode.prototype.getScriptName = function () {
@@ -87,6 +88,7 @@
         var nodeVisData;
         var changeStateNodeObject = [];
         var node;
+        this.full = state;
         for (node in this.nodes) {
             if (this.nodes.hasOwnProperty(node)) {
                 if(this.nodes[node].getStatus() !== state) {
@@ -214,6 +216,7 @@
 
 
     objectTypeNode.prototype.changeState = function (id,state) {
+        this.full = state && this.full;
         return this.nodes[id].setStatus(state);     
     };  
 

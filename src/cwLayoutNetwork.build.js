@@ -275,6 +275,7 @@
                     self.activateStartingEdgeType(config.linkType);
 
                     self.network.updateDisposition(config);
+
                     var changeSet = self.network.getEnabledVisNodes();
                     self.nodes.add(changeSet);
                     self.fillFilter(changeSet);
@@ -287,13 +288,15 @@
                         changeSet.push(node);
                     });
                     self.nodes.update(changeSet);
+
                     self.colorAllNodes();
                     self.colorAllEdges();
 
                     self.networkConfiguration.selected = self.networkConfiguration.nodes[id];
 
-                    self.clusters = self.networkConfiguration.nodes[id].configuration.clusters;
+                    
                     self.fillValueInClusterFilter(config.clusterByGroupOption.head, config.clusterByGroupOption.child);
+                    self.clusterByGroup();
                     self.activateClusterEvent();
 
                     self.updateExternalFilterInformation(config.external);
@@ -302,6 +305,7 @@
                         scale: config.camera.scale,
                         animation: true
                     });
+     
                 }
             }
             if (cwAPI.isDebugMode() === true) console.log("network set");

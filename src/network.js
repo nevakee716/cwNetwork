@@ -111,22 +111,48 @@
         return Datas;
     };
 
-    network.prototype.updateDisposition = function(disposition) {
-        var objectType, nodeUpdate, nodeId;
+    network.prototype.updateDisposition = function(config) {
+        var self = this,objectType, nodeUpdate, nodeId;
+
+
+        this.setFullGroups(config.fullGroups);
+
         try {
-            for (nodeId in disposition.nodes) {
-                if (disposition.nodes.hasOwnProperty(nodeId)) {
-                    nodeUpdate = disposition.nodes[nodeId];
+            for (nodeId in config.nodes) {
+                if (config.nodes.hasOwnProperty(nodeId)) {
+                    nodeUpdate = config.nodes[nodeId];
                     if (this.objectTypeNodes[nodeUpdate.group] && this.objectTypeNodes[nodeUpdate.group].nodes[nodeUpdate.id]) {
                         this.objectTypeNodes[nodeUpdate.group].nodes[nodeUpdate.id].updatePostionAndState(nodeUpdate);
                     }
                 }
             }
+            config.fullGroups.forEach(function(g) {
+                self.SetAllAndGetNodesObject(true,g);
+            });
+
         } catch (e) {
             console.log(e);
         }
     };
 
+    network.prototype.getFullGroups = function() {
+        var objectType,r = [];
+        for (objectType in this.objectTypeNodes) {
+            if (this.objectTypeNodes.hasOwnProperty(objectType) && this.objectTypeNodes[objectType].full) {
+                r.push(objectType);
+            }
+        }
+        return r;
+    };
+    
+    network.prototype.setFullGroups = function(groups) {
+        var self = this;
+        groups.forEach(function(g) {
+            if (self.objectTypeNodes.hasOwnProperty(g)) {
+                self.objectTypeNodes[g].full = true;
+            }
+        });
+    };
 
 
     network.prototype.SetAllAndGetNodesObject = function(state, scriptname) {
