@@ -20,6 +20,8 @@
         this.definition = {};
         this.definition.capinetworkScriptname = "capinetwork";
         this.definition.capinetworkDisplayname = "Network";
+        this.definition.capinetworkLabelScriptname = "label";
+        this.definition.capinetworkLabelDisplayname = "Libéllé";
         this.definition.capinetworkToAnyAssociationScriptname = "CAPINETWORKTOCAPINETWORKTOASSOCWAPINETWORKTOANYOBJECTTOANYOBJECTTOANYOBJECT";
         this.definition.capinetworkToAnyAssociationDisplayName = "Present On Network";
         this.definition.capinetworkCreateOnViewScriptname = "createoncwview";
@@ -29,7 +31,8 @@
         this.networkConfiguration = {};
         this.networkConfiguration.enableEdit = this.options.CustomOptions['enableEdit'];
         this.networkConfiguration.nodes = {}; 
-
+        
+        this.startingNetwork = "15";
         this.duplicateNode = ["acteur_20155_845360685"];
 
         try {

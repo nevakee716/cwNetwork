@@ -25,7 +25,7 @@
         }
         if (this.networkConfiguration.nodes[node.object_id] === undefined) {
             this.networkConfiguration.nodes[node.object_id] = {};
-            this.networkConfiguration.nodes[node.object_id].label = node.name;
+            this.networkConfiguration.nodes[node.object_id].label = node.properties[this.definition.capinetworkLabelScriptname];
             this.networkConfiguration.nodes[node.object_id].configuration = JSON.parse(node.properties.configuration.replaceAll("\\", ""));
             this.networkConfiguration.nodes[node.object_id].obj = node;
             node.associations = {};
@@ -137,7 +137,7 @@
 
 
 
-    cwLayoutNetwork.prototype.getConfigurationAndAssociationObjectToNetwork = function(newObj) {
+    cwLayoutNetwork.prototype.getConfigurationAndAssociationObjectToNetwork = function(newObj,networkLabel) {
 
         var linkTypeLabels, nodes, config, positions, newAssoItems = [],
             newAssoItemsObj = {},
@@ -145,6 +145,7 @@
         newObj.displayNames = {};
         newObj.displayNames[this.definition.capinetworkConfigurationScriptname] = this.definition.capinetworkConfigurationDisplayname;
         newObj.displayNames[this.definition.capinetworkCreateOnViewScriptname] = this.definition.capinetworkCreateOnViewDisplayName;
+        newObj.displayNames[this.definition.capinetworkLabelScriptname] = this.definition.capinetworkLabelDisplayName;
 
 
         nodes = this.network.getAllNodeForSaving();
@@ -212,7 +213,12 @@
             view = view.cwView;
         }
 
-        newObj.properties[this.definition.capinetworkCreateOnViewScriptname] = view;
+        newObj.properties[this.definition.capinetworkCreateOnViewScriptname] = view + "." + this.nodeID;
+      
+        newObj.properties[this.definition.capinetworkLabelScriptname] = networkLabel;
+ 
+        newObj.properties["name"] = view + "." + this.nodeID + " => " + networkLabel;   
+
 
         return config;
 
@@ -241,8 +247,7 @@
         var self = this;
         var config;
         newObj.properties = {};
-        newObj.properties.name = networkName;
-        config = this.getConfigurationAndAssociationObjectToNetwork(newObj);
+        config = this.getConfigurationAndAssociationObjectToNetwork(newObj,networkName);
         var asso = $.extend(true, {}, newObj.associations);
         newObj.associations = {};
         newNewObj = $.extend(true, {}, newObj);
@@ -320,7 +325,7 @@
         changeset = new cwApi.CwPendingChangeset(oldObj.objectTypeScriptName, oldObj.object_id, oldObj.name, true, 1);
         newObj = $.extend(true, {}, oldObj);
 
-        config = this.getConfigurationAndAssociationObjectToNetwork(newObj);
+        config = this.getConfigurationAndAssociationObjectToNetwork(newObj,oldObj.properties[this.definition.capinetworkLabelScriptname]);
         //changeset.compareAndAddChanges(oldObj, newObj);
 
         cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, oldObj, newObj, oldObj.object_id, oldObj.objectTypeScriptName, function(response) {

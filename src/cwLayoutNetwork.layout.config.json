@@ -131,6 +131,12 @@
         "Type": 1
     },
     {
+        "Id": "startingNetwork",
+        "DisplayName": "Load the First Cw Api Network of the list",
+        "Description": "Load the First Cw Api Network of the list",
+        "Type": 1
+    },
+    {
         "Id": "edgeColor",
         "DisplayName": "Edge Color",
         "Description": "Chose the color of the edge based on the associationType",
