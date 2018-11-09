@@ -1,0 +1,26 @@
+objects_filters = Filtri sugli Oggetti 				
+link_type = Tipo di legame					
+external_association = Associazioni esterne			  
+cluster_by_groups = Cluster per gruppi				
+head_group = Gruppo padre					
+child_group = Gruppo figlio					
+network = Network						
+focus_on = Focus su						
+enablephysics = Abilita disposizione automatica			
+disablephysics = Disabilita disposizione automatica		
+deselectall = Deseleziona tutto					
+selectall = Seleziona tutto					
+unzip_edge = Visualizzazione estesa				
+zip_edge = Visualizzazione raggruppata				
+remove_lonely_node = Rimuovi i nodi isolati			
+behaviour_highlight = Evidenzia			
+behaviour_add = Aggiungi 				
+behaviour_absolute = Assoluto			
+remove_node = Rimuovi il nodo					
+add_closes_nodes = Aggiungi nodi limitrofi			
+remove_closes_nodes = Rimuovi nodi limitrofi			
+add_all_nodes_from = Inserisci tutti i nodi da...		
+add_all_nodes_to = Inserisci tutti i nodi a...			
+add_all_connected_nodes = Inserisci tutti i nodi collegati	
+
+
