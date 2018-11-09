@@ -22,7 +22,7 @@
         this.definition.capinetworkDisplayname = "Network";
         this.definition.capinetworkLabelScriptname = "label";
         this.definition.capinetworkLabelDisplayname = "Libéllé";
-        this.definition.capinetworkToAnyAssociationScriptname = "CAPINETWORKTOCAPINETWORKTOASSOCWAPINETWORKTOANYOBJECTTOANYOBJECTTOANYOBJECT";
+        this.definition.capinetworkToAnyAssociationScriptname = "CAPINETWORKTOASSOCWAPINETWORKTOANYOBJECTTOANYOBJECT";
         this.definition.capinetworkToAnyAssociationDisplayName = "Present On Network";
         this.definition.capinetworkCreateOnViewScriptname = "createoncwview";
         this.definition.capinetworkConfigurationScriptname = "configuration";

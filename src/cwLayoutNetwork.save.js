@@ -28,12 +28,14 @@
             this.networkConfiguration.nodes[node.object_id].label = node.properties[this.definition.capinetworkLabelScriptname];
             this.networkConfiguration.nodes[node.object_id].configuration = JSON.parse(node.properties.configuration.replaceAll("\\", ""));
             this.networkConfiguration.nodes[node.object_id].obj = node;
-            node.associations = {};
-            node.associations[this.nodeID] = {};
-            node.associations[this.nodeID].associationScriptName = this.definition.capinetworkToAnyAssociationScriptname;
-            node.associations[this.nodeID].displayName = this.definition.capinetworkToAnyAssociationDisplayName;
-            node.associations[this.nodeID].items = [];
-            node.associations[this.nodeID].nodeId = this.nodeID;
+            if(!cwAPI.isIndexPage()) {
+                node.associations = {};
+                node.associations[this.nodeID] = {};
+                node.associations[this.nodeID].associationScriptName = this.definition.capinetworkToAnyAssociationScriptname;
+                node.associations[this.nodeID].displayName = this.definition.capinetworkToAnyAssociationDisplayName;
+                node.associations[this.nodeID].items = [];
+                node.associations[this.nodeID].nodeId = this.nodeID;
+            }
         }
         var newItem = {};
         newItem.name = father.name;
@@ -41,7 +43,8 @@
         newItem.targetObjectID = father.object_id;
         newItem.isNew = "false";
         newItem.targetObjectTypeScriptName = father.objectTypeScriptName;
-        this.networkConfiguration.nodes[node.object_id].obj.associations[this.nodeID].items.push(newItem);
+        if(!cwAPI.isIndexPage()) this.networkConfiguration.nodes[node.object_id].obj.associations[this.nodeID].items.push(newItem);
+        
 
     };
 
@@ -170,26 +173,26 @@
 
         positions = this.networkUI.getPositions();
 
-        if (newObj.associations) {
-            newObj.associations[this.nodeID].items.forEach(function(item) {
-                newAssoItemsObj[item.targetObjectID + item.targetObjectTypeScriptName] = item;
-            });
-        } else {
-            newAssoItems = [];
-            newObj.associations = {};
-            newObj.associations[this.nodeID] = {};
-
-        }
-        newObj.associations[this.nodeID].items = [];
-
         if(!cwAPI.isIndexPage()) {
+            if (newObj.associations) {
+                newObj.associations[this.nodeID].items.forEach(function(item) {
+                    newAssoItemsObj[item.targetObjectID + item.targetObjectTypeScriptName] = item;
+                });
+            } else {
+                newAssoItems = [];
+                newObj.associations = {};
+                newObj.associations[this.nodeID] = {};
+
+            }
+            newObj.associations[this.nodeID].items = [];
+
             var assoItem = {};
-                assoItem.name = this.originalObject.name;
-                assoItem.intersectionObjectUID = "";
-                assoItem.isNew = "false";
-                assoItem.targetObjectTypeScriptName = this.originalObject.objectTypeScriptName;
-                assoItem.targetObjectID = this.originalObject.object_id;
-                newObj.associations[this.nodeID].items.push(assoItem);
+            assoItem.name = this.originalObject.name;
+            assoItem.intersectionObjectUID = "";
+            assoItem.isNew = "false";
+            assoItem.targetObjectTypeScriptName = this.originalObject.objectTypeScriptName;
+            assoItem.targetObjectID = this.originalObject.object_id;
+            newObj.associations[this.nodeID].items.push(assoItem);
         }
 
         nodes.forEach(function(node) {
@@ -307,10 +310,12 @@
                 });
             }
         }
+        if(!cwAPI.isIndexPage()) {
+            obj.associations[this.nodeID].associationScriptName = this.definition.capinetworkToAnyAssociationScriptname;
+            obj.associations[this.nodeID].displayName = this.definition.capinetworkToAnyAssociationDisplayName;
+            obj.associations[this.nodeID].nodeID = self.nodeID;            
+        }
 
-        obj.associations[this.nodeID].associationScriptName = this.definition.capinetworkToAnyAssociationScriptname;
-        obj.associations[this.nodeID].displayName = this.definition.capinetworkToAnyAssociationDisplayName;
-        obj.associations[this.nodeID].nodeID = self.nodeID;
 
         this.networkConfiguration.nodes[response.id].obj = obj;
         this.networkConfiguration.nodes[response.id].label = networkName;
