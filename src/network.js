@@ -61,9 +61,9 @@
             elements.forEach(function(elem) {
                 if (elem) {
                     elem.name.replaceAll("\n", " ");
-                    hasChanged = that.objectTypeNodes[elem.group].changeState(elem.object_id, state);
+                    hasChanged = that.objectTypeNodes[elem.group].changeState(elem.id, state);
                     if (hasChanged) { // on check si le node est pas déja présent dans le réseau
-                        changeSet = changeSet.concat(that.getVisNode(elem.object_id, elem.group));
+                        changeSet = changeSet.concat(that.getVisNode(elem.id, elem.group));
                     }
                 }
             });
