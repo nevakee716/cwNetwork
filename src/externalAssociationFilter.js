@@ -129,8 +129,8 @@
     function ArrNoDupe(a) {
         var r = [],temp = {};
         for (var i = 0; i < a.length; i++) {
-            if(!temp.hasOwnProperty(a[i].object_id + "#" + a[i].objectTypeScriptName)) {
-                temp[a[i].object_id + "#" + a[i].objectTypeScriptName] = true;
+            if(!temp.hasOwnProperty(a[i].id)) {
+                temp[a[i].id] = true;
                 r.push(a[i]);
             }
         }

@@ -32,8 +32,7 @@
         this.networkConfiguration.enableEdit = this.options.CustomOptions['enableEdit'];
         this.networkConfiguration.nodes = {}; 
         
-        this.startingNetwork = "15";
-        this.duplicateNode = ["acteur_20155_845360685"];
+
 
         try {
             this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkCreateOnViewScriptname).name;
@@ -84,7 +83,8 @@
         this.getOption('complementaryNode','assignEdge','#',',');     
         this.getOption('popOutList','popOut','#',',');       
 
-
+        this.startingNetwork = this.options.CustomOptions['startingNetwork'];
+        this.getOption('duplicateNodes','duplicateNode',',');
 
 
         this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);

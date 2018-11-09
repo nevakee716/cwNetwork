@@ -267,45 +267,8 @@
                 id = $(this).context[clickedIndex]['id'];
                 if (id != 0) {
                     config = self.networkConfiguration.nodes[id].configuration;
-                    self.setExternalFilterToNone();
-                    self.deActivateAllGroup();
-                    self.networkOptions.physics.enabled = false;
-
-                    self.hideAllEdgesByScriptname();
-                    self.activateStartingEdgeType(config.linkType);
-
-                    self.network.updateDisposition(config);
-
-                    var changeSet = self.network.getEnabledVisNodes();
-                    self.nodes.add(changeSet);
-                    self.fillFilter(changeSet);
-                    self.updatePhysics(false);
-                    self.networkOptions.physics.enabled = true;
-                    changeSet = [];
-                    self.nodes.forEach(function(node) {
-                        node.x = undefined;
-                        node.y = undefined;
-                        changeSet.push(node);
-                    });
-                    self.nodes.update(changeSet);
-
-                    self.colorAllNodes();
-                    self.colorAllEdges();
-
                     self.networkConfiguration.selected = self.networkConfiguration.nodes[id];
-
-                    
-                    self.fillValueInClusterFilter(config.clusterByGroupOption.head, config.clusterByGroupOption.child);
-                    self.clusterByGroup();
-                    self.activateClusterEvent();
-
-                    self.updateExternalFilterInformation(config.external);
-                    self.networkUI.moveTo({
-                        position: config.camera.position,
-                        scale: config.camera.scale,
-                        animation: true
-                    });
-     
+                    self.loadCwApiNetwork(config);
                 }
             }
             if (cwAPI.isDebugMode() === true) console.log("network set");
@@ -410,13 +373,11 @@
             this.activateStartingGroup();
         }
 
-
         // before drawing event
         this.networkUI.on("beforeDrawing", this.beforeDrawing.bind(this));
 
-
         // Activate Cluster
-        this.activateStartingCluster();
+        if(!this.startingNetwork) this.activateStartingCluster();
 
         // Creation du menu et binding
         this.createMenu(networkContainer);
@@ -487,6 +448,19 @@
 
         this.saveEvent = false;
         this.addEventOnSave();
+
+
+        if(this.startingNetwork && this.networkConfiguration && this.networkConfiguration.nodes) {
+            let startCwApiNetwork = this.networkConfiguration.nodes[Object.keys(this.networkConfiguration.nodes)[0]];
+            if(startCwApiNetwork.configuration) {
+                this.loadCwApiNetwork(startCwApiNetwork.configuration);
+                $('select.selectNetworkConfiguration_' + this.nodeID).each(function( index ) { // put values into filters
+                    $(this).selectpicker('val',startCwApiNetwork.label ); //init cwAPInetworkfilter
+                });               
+            }
+
+        }
+
     };
 
 

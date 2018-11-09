@@ -336,7 +336,6 @@
     };
 
 
-
     cwApi.cwEditProperties.cwEditProperty.prototype.getValueFromEditModeInDOM = function(isInitialValueLoad) {
         var data = this.getDataForUpdate();
         data = this.getValueFromEditModeInDOMCustom(data, isInitialValueLoad);
@@ -356,7 +355,56 @@
         };
     };
 
+    cwLayoutNetwork.prototype.loadCwApiNetwork = function(config) {
 
+        // unselect everything and disable physics
+        this.setExternalFilterToNone();
+        this.deActivateAllGroup();
+        this.networkOptions.physics.enabled = false;
+        this.hideAllEdgesByScriptname();
+
+        // load links
+        this.activateStartingEdgeType(config.linkType);
+
+        //load position and activate node
+        this.network.updateDisposition(config);
+
+        var changeSet = this.network.getEnabledVisNodes();
+        this.nodes.add(changeSet);
+        this.fillFilter(changeSet);
+
+        // play with physics
+        this.updatePhysics(false);
+        this.networkOptions.physics.enabled = true;
+
+        // remove position from nodes
+        changeSet = [];
+        this.nodes.forEach(function(node) {
+            node.x = undefined;
+            node.y = undefined;
+            changeSet.push(node);
+        });
+        this.nodes.update(changeSet);
+
+        // put colour
+        this.colorAllNodes();
+        this.colorAllEdges();
+
+        // clusters
+        this.fillValueInClusterFilter(config.clusterByGroupOption.head, config.clusterByGroupOption.child);
+        this.clusterByGroup();
+        this.activateClusterEvent();
+
+        // external filters
+        this.updateExternalFilterInformation(config.external);
+
+        //camera
+        this.networkUI.moveTo({
+            position: config.camera.position,
+            scale: config.camera.scale,
+            animation: true
+        });
+    };
 
 
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;

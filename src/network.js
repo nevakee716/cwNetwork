@@ -147,11 +147,13 @@
     
     network.prototype.setFullGroups = function(groups) {
         var self = this;
-        groups.forEach(function(g) {
-            if (self.objectTypeNodes.hasOwnProperty(g)) {
-                self.objectTypeNodes[g].full = true;
-            }
-        });
+        if(groups) {
+            groups.forEach(function(g) {
+                if (self.objectTypeNodes.hasOwnProperty(g)) {
+                    self.objectTypeNodes[g].full = true;
+                }
+            });            
+        }
     };
 
 

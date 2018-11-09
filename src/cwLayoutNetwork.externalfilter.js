@@ -78,7 +78,7 @@
         
         if(nodesToHighlight) {
             nodesToHighlight.forEach(function(node) {
-                nodesIdToHighlight.push(node.object_id + "#" + node.objectTypeScriptName);
+                nodesIdToHighlight.push(node.id);
             });
         }
 
