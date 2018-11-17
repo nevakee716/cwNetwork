@@ -453,6 +453,7 @@
         if(this.startingNetwork && this.networkConfiguration && this.networkConfiguration.nodes) {
             let startCwApiNetwork = this.networkConfiguration.nodes[Object.keys(this.networkConfiguration.nodes)[0]];
             if(startCwApiNetwork.configuration) {
+                this.networkConfiguration.selected = startCwApiNetwork;
                 this.loadCwApiNetwork(startCwApiNetwork.configuration);
                 $('select.selectNetworkConfiguration_' + this.nodeID).each(function( index ) { // put values into filters
                     $(this).selectpicker('val',startCwApiNetwork.label ); //init cwAPInetworkfilter
