@@ -51,7 +51,7 @@ The C:\Casewise\Evolve\Site\bin\evolve.json containes now all of your layout, if
 * Select the zip file of the layout you want to install
 * for exemple Network-v0.4.0-evolve-v4.0.zip
 
-## Installation offline
+## Installation offline (mandatory for statics)
 
 * unzip the zip file
 * Put the contenant of Evolve in Casewise\Evolve
@@ -61,6 +61,10 @@ The C:\Casewise\Evolve\Site\bin\evolve.json containes now all of your layout, if
 * Put the contenant of fonts in Casewise\Evolve\Site\bin\webDesigner\fonts
 * Put the contenant of angularHTMLayout in Casewise\Evolve\Data\Common\html\
 * Put the contenant of theme in Casewise\Evolve\Site\bin\webDesigner\themes
+
+## if you are in statics, please move the folder Casewise\Evolve\Data\Common\html\ inside 
+Casewise\Evolve\Data\Statics\{siteName}\html\
+
 
 # Create a Custom Layout 
 
