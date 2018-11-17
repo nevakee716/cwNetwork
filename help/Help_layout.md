@@ -184,7 +184,7 @@ Fill theses variable with the scriptname of your model
 
 Inside your evolve configuration 
 You need to put the association to capinetwork to the main object if you are on an objectPage 
-On an Indexpage, you need to add a new capinetwork node with a filter(createOnCWview = indexpage)
+On an Indexpage, you need to add a new capinetwork node with a filter(createOnCWview = indexpage.nodeIDofTheNetworkLayout)
 (don't forget to use complementary node if needed)
 
 <img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/networkEvolveConfig.jpg" alt="Drawing" style="width: 95%;"/>
