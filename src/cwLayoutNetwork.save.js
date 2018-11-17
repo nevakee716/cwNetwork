@@ -414,11 +414,14 @@
         this.colorAllEdges();
 
         // clusters
-        this.clusterByGroupOption.head = config.clusterByGroupOption.head;
-        this.clusterByGroupOption.child = config.clusterByGroupOption.child;
-        this.fillValueInClusterFilter(config.clusterByGroupOption.head, config.clusterByGroupOption.child);
-        this.clusterByGroup();
-        this.activateClusterEvent();
+        if(this.clusterOption) {
+            this.clusterByGroupOption.head = config.clusterByGroupOption.head;
+            this.clusterByGroupOption.child = config.clusterByGroupOption.child;
+            this.fillValueInClusterFilter(config.clusterByGroupOption.head, config.clusterByGroupOption.child);
+            this.clusterByGroup();
+            this.activateClusterEvent();            
+        }
+
 
         // external filters
         this.updateExternalFilterInformation(config.external);
