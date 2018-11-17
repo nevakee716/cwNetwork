@@ -278,17 +278,17 @@
                 newObj.associations[self.nodeID] = {};
                 newObj.associations[self.nodeID].items = [];
                 newObj.associations[self.nodeID].associationScriptName = self.definition.capinetworkToAnyAssociationScriptname;
-
                 newObj.object_id = elem.id;
-                newNewObj.object_id = elem.id;
+                
 
                 if(cwApi.isIndexPage()) {
                     self.networkConfiguration.nodes[elem.id] = {};
-                    self.networkConfiguration.nodes[elem.id].obj = obj;
+                    self.networkConfiguration.nodes[elem.id].obj = newObj;
                     self.networkConfiguration.nodes[elem.id].label = networkName;
                     self.networkConfiguration.selected = self.networkConfiguration.nodes[elem.id];
                     self.addNetworkInFilter(elem.id,networkName);
                 } else {
+                    newNewObj.object_id = elem.id;
                     cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, newObj, newNewObj, newObj.object_id, self.definition.capinetworkScriptname, function(response) {
                         if (!cwApi.statusIsKo(response)) {
                             self.createdSaveObjFromReponse(newNewObj, response, networkName, config);
