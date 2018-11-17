@@ -281,26 +281,35 @@
 
                 newObj.object_id = elem.id;
                 newNewObj.object_id = elem.id;
-                cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, newObj, newNewObj, newObj.object_id, self.definition.capinetworkScriptname, function(response) {
-                    if (!cwApi.statusIsKo(response)) {
-                        self.createdSaveObjFromReponse(newNewObj, response, networkName, config);
 
-                        var html = '<option id="' + response.id + '">' + networkName + '</>';
-                        $('.selectNetworkConfiguration_' + self.nodeID).append(html)
-                            .selectpicker("refresh");
-
-                        $("div.selectNetworkConfiguration_" + self.nodeID + " > option").remove();
-                        $('.selectNetworkConfiguration_' + self.nodeID).val(networkName).selectpicker("refresh");
-
-                    }
-                });
+                if(cwApi.isIndexPage()) {
+                    self.networkConfiguration.nodes[elem.id] = {};
+                    self.networkConfiguration.nodes[elem.id].obj = obj;
+                    self.networkConfiguration.nodes[elem.id].label = networkName;
+                    self.networkConfiguration.selected = self.networkConfiguration.nodes[elem.id];
+                    self.addNetworkInFilter(elem.id,networkName);
+                } else {
+                    cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, newObj, newNewObj, newObj.object_id, self.definition.capinetworkScriptname, function(response) {
+                        if (!cwApi.statusIsKo(response)) {
+                            self.createdSaveObjFromReponse(newNewObj, response, networkName, config);
+                            self.addNetworkInFilter(response.id,networkName);
+                        }
+                    });
+                }
             }
-
-
         });
 
     };
 
+    cwLayoutNetwork.prototype.addNetworkInFilter = function(object_id, networkName) {
+        var html = '<option id="' +object_id + '">' + networkName + '</>';
+        $('.selectNetworkConfiguration_' + this.nodeID).append(html)
+            .selectpicker("refresh");
+
+        $("div.selectNetworkConfiguration_" + this.nodeID + " > option").remove();
+        $('.selectNetworkConfiguration_' + this.nodeID).val(networkName).selectpicker("refresh");
+
+    };
     cwLayoutNetwork.prototype.createdSaveObjFromReponse = function(obj, response, networkName, config) {
         var r, self = this;
 
