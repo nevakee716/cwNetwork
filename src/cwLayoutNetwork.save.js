@@ -285,6 +285,7 @@
                     self.networkConfiguration.nodes[elem.id] = {};
                     self.networkConfiguration.nodes[elem.id].obj = newObj;
                     self.networkConfiguration.nodes[elem.id].label = networkName;
+                    self.networkConfiguration.nodes[elem.id].configuration = config;
                     self.networkConfiguration.selected = self.networkConfiguration.nodes[elem.id];
                     self.addNetworkInFilter(elem.id,networkName);
                 } else {
