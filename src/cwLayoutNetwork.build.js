@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
+﻿/* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
 
 
 
@@ -452,7 +452,7 @@
 
         if(this.startingNetwork && this.networkConfiguration && this.networkConfiguration.nodes) {
             let startCwApiNetwork = this.networkConfiguration.nodes[Object.keys(this.networkConfiguration.nodes)[0]];
-            if(startCwApiNetwork.configuration) {
+            if(startCwApiNetwork && startCwApiNetwork.configuration) {
                 this.networkConfiguration.selected = startCwApiNetwork;
                 this.loadCwApiNetwork(startCwApiNetwork.configuration);
                 $('select.selectNetworkConfiguration_' + this.nodeID).each(function( index ) { // put values into filters
