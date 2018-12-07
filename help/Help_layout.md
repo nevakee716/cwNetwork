@@ -1,10 +1,11 @@
 | **Name** | **cwLayoutNetwork** | **Version** | 
 | --- | --- | --- |
-| **Updated by** | Mathias PFAUWADEL | 6.0 |
+| **Updated by** | Mathias PFAUWADEL | 6.1 |
 
 
 ## Patch Notes
 
+* 6.1 : Adding Contextual Filter for objectPage 
 * 6.0 : Allow Duplicate item, Changing saving system (not compatible with 5.0 capinetwork)
 * 5.1 : Traduction Menu
 * 5.0 : Adding Image, Save, Link Type
@@ -28,6 +29,9 @@
 * More Options
 * Edition
 
+## Attention 
+
+Since 6.1, you need https://github.com/nevakee716/Utils/wiki to be installed
 
 ## Description 
 Allow you to display objects and their associations in a network. The layout provide the same interaction than diagram, simple click for popOUT and double click to go on the objectPage. This layout can be use on IndexPage of ObjectPage.
@@ -125,6 +129,12 @@ This option will define the way your action(add close node, add connected node..
 add : this will add the selected node to your network
 highlight : this will highlight the selected node
 absolute : this will only display the selected node
+
+### Contextual Node ID :
+
+If you want object to be associated to your objectPage object, use this option like that : 
+<img src="https://raw.githubusercontent.com/nevakee716/cwNetwork/master/screen/Contextual.png" alt="Drawing" style="width: 95%;"/>
+Here in the node Emet Flux Admin, only the flow that are associated to my applications of my objects page will be display, others will be deleted
 
 ### Complementary Node :
 
