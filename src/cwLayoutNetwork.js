@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
+﻿/* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
 
 
 
@@ -77,10 +77,10 @@
 
         this.multiLineCount = this.options.CustomOptions['multiLineCount'];
         this.getOption('complementaryNode','complementaryNode',',');
+        this.getOption('contextualFilter','contextualNode',',');
         this.getOption('hidden-nodes','hiddenNodes',',');
         this.getOption('groupToSelectOnStart','groupToSelectOnStart',',');        
-        this.getOption('specificGroup','specificGroup','#',',');
-        this.getOption('complementaryNode','assignEdge','#',',');     
+        this.getOption('specificGroup','specificGroup','#',',');  
         this.getOption('popOutList','popOut','#',',');       
 
         this.startingNetwork = this.options.CustomOptions['startingNetwork'];

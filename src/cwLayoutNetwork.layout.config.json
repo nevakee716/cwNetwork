@@ -65,6 +65,12 @@
         "Type": 0
     },
     {
+        "Id": "contextualFilter",
+        "DisplayName": "Contextual Node ID",
+        "Description": "Node That Need To be Attach to the Main Object",
+        "Type": 0
+    },
+    {
         "Id": "clusterOn",
         "DisplayName": "Activate Cluster",
         "Description": "Check to Activate the cluster",

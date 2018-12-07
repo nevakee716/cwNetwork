@@ -130,7 +130,12 @@
                             element.edge.id = child.object_id;
                             element.edge.unique = false;
                             element.edge.objectTypeScriptName = child.objectTypeScriptName;
-                            
+                             if(this.assignEdge.hasOwnProperty(child.nodeID)) {
+                                element.edge.objectTypeScriptName = this.assignEdge[child.nodeID];
+                            } else {
+                                element.edge.objectTypeScriptName = child.objectTypeScriptName;
+                            }
+                    
                             element.filterArray = filterArray; 
                             filtersGroup.forEach(function(filterGroup) {
                                 Object.keys(filterGroup).map(function(filterKey, index) {
@@ -214,6 +219,8 @@
                 this.networkDisposition = JSON.parse(object.properties.configuration.replaceAll("\\",""));
             }
 
+
+
             this.originalObject  = $.extend({}, object);
             var simplifyObject, i, assoNode = {} , isData = false;
             // keep the node of the layout
@@ -225,8 +232,16 @@
                 }
             });
     
-            this.originalObject.associations = assoNode;     
-            var simplifyObject = this.simplify(this.originalObject);
+            this.originalObject.associations = assoNode;    
+             
+            var simplifyObject = this.originalObject;
+
+            if(!cwAPI.isIndexPage() || object.hasOwnProperty("object_id")) {
+                cwAPI.customLibs.utils.manageContextualNodes(simplifyObject.associations,this.contextualNode,object.object_id);
+            }
+            
+
+            simplifyObject = this.simplify(simplifyObject);
             if(simplifyObject.length > 0) isData = true;
             if(!cwAPI.isIndexPage() || object.hasOwnProperty("object_id")) {
                 simplifyObject = this.addObjectOfObjectPage(simplifyObject,object);

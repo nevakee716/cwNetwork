@@ -51,14 +51,7 @@
             this.fillValueInClusterFilter(this.clusterByGroupOption.head,this.clusterByGroupOption.child);
             this.clusterByGroup();
         }
-
-
     };
-
-
-       
-
-
 
     // Adding all group
     cwLayoutNetwork.prototype.activateAllGroup = function (event) {
