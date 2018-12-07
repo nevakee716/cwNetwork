@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
+﻿/* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
 
 
 
@@ -134,7 +134,7 @@
         });
 
         nodes.forEach(function(node) {
-            if((node.group === self.clusterByGroupOption.head || node.group === self.clusterByGroupOption.head + "Hidden") && !nodeInCluster.hasOwnProperty(node.id)) {
+            if((node.group.replaceAll(" ","_") === self.clusterByGroupOption.head || node.group.replaceAll(" ","_") === self.clusterByGroupOption.head + "Hidden") && !nodeInCluster.hasOwnProperty(node.id)) {
                 var ncs = self.networkUI.getConnectedNodes(node.id);
                 if(ncs.length > 0) {
                     cluster = {};
