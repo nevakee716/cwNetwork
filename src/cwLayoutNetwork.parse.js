@@ -215,6 +215,11 @@
    // obligatoire appeler par le system
     cwLayoutNetwork.prototype.drawAssociations = function (output, associationTitleText, object) {
         try {
+            if (cwApi.customLibs.utils === undefined) {
+                output.push("<h2> Please Install Utils library </h2>");
+                return;
+            }
+
             if(!cwAPI.isIndexPage() && object.objectTypeScriptName === this.definition.capinetworkScriptname && object.properties.configuration) {
                 this.networkDisposition = JSON.parse(object.properties.configuration.replaceAll("\\",""));
             }
