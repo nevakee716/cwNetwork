@@ -3,13 +3,13 @@
 
 
 /*global cwAPI, jQuery */
-(function (cwApi, $) {
+(function(cwApi, $) {
     "use strict";
-    if(cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
-      var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
+    if (cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
+        var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
     } else {
-    // constructor
-        var cwLayoutNetwork = function (options, viewSchema) {
+        // constructor
+        var cwLayoutNetwork = function(options, viewSchema) {
             cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
             cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
             this.construct(options);
@@ -17,10 +17,16 @@
     }
 
 
-    cwLayoutNetwork.prototype.downloadImage = function (event) {
+    cwLayoutNetwork.prototype.downloadImage = function(event) {
+        var self = this;
 
         function downloadURI(canvas, name) {
+
             var link = document.createElement("a");
+
+            var actionContainer = document.getElementById("cwLayoutNetworkAction" + self.nodeID);
+            actionContainer.appendChild(link);
+            link.style = "display: none";
             //link.download = name;
             //link.href = uri;
             //link.click();
@@ -31,14 +37,30 @@
                 var blob = canvas.msToBlob();
                 window.navigator.msSaveBlob(blob, name);
             } else {
-                //other browsers
-                link.href = canvas.toDataURL('image/png');
-                link.download = name;
-                // create a mouse event
-                var event = new MouseEvent('click');
 
-                // dispatching it will open a save as dialog in FF
-                link.dispatchEvent(event);
+                canvas.toBlob(function(blob) {
+                    link.href = URL.createObjectURL(blob);
+
+                    link.download = name;
+                    link.style = "display: block";
+                    link.click();
+                    link.remove();
+                    // create a mouse event
+                    //var event = new MouseEvent('click');
+
+                    // dispatching it will open a save as dialog in FF
+                    //link.dispatchEvent(event);
+
+                }, 'image/png');
+
+                ////other browsers
+                //link.href = canvas.toDataURL('image/png');
+                //link.download = name;
+                //// create a mouse event
+                //var event = new MouseEvent('click');
+
+                //// dispatching it will open a save as dialog in FF
+                //link.dispatchEvent(event);
             }
 
 
@@ -47,23 +69,21 @@
         try {
             this.networkUI.fit();
             var container = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
-            var oldheight = container.offsetHeight; 
+            var oldheight = container.offsetHeight;
             var scale = this.networkUI.getScale(); // change size of the canva to have element in good resolution
-            container.style.width = (container.offsetWidth * 2/scale ).toString() + "px";
-            container.style.height = (container.offsetHeight * 2/scale ).toString() + "px";
+            container.style.width = (container.offsetWidth * 2 / scale).toString() + "px";
+            container.style.height = (container.offsetHeight * 2 / scale).toString() + "px";
             this.networkUI.redraw();
-            downloadURI(container.firstElementChild.firstElementChild,cwAPI.getPageTitle() + ".png");
-            this.networkUI.on("afterDrawing",function (ctx) {});
+            downloadURI(container.firstElementChild.firstElementChild, cwAPI.getPageTitle() + ".png");
+            this.networkUI.on("afterDrawing", function(ctx) {});
             container.style.height = oldheight + "px";
             container.style.width = "";
-            
+
             this.networkUI.redraw();
             this.networkUI.fit();
-        }
-        catch (e) {
+        } catch (e) {
             console.log(e);
         }
-
 
 
 
