@@ -106,6 +106,7 @@
 
         this.removeLonely = this.options.CustomOptions['removeLonelyOn'];
 
+        this.assignEdge = {};
         try {
             this.edgeConfiguration = JSON.parse(this.options.CustomOptions['edgeColor']);
             this.getOption('edgeTypeToSelect','edgeTypeToSelect',',');     

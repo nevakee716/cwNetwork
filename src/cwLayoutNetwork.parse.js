@@ -50,6 +50,7 @@
             } 
             return getDisplayStringFromLayout(this.layoutsByNodeId[assoNodeID],assoItem);
         } catch(e) {
+            console.log(e);
             return;
         }
         
@@ -274,6 +275,7 @@
             output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
             this.object = this.originalObject.associations;
         } catch(e) {
+            console.log(e);
             return ;
         }   
     };
