@@ -24,7 +24,7 @@
     cwLayoutNetwork.prototype.positionClusters = function (ctx) {
         var self = this;
         self.clusters.forEach(function(cluster){
-            if(self.dragged[cluster.head]) {
+            
                 var nodePosition = self.networkUI.getPositions(cluster.nodes[0]);
                 nodePosition = nodePosition[cluster.nodes[0]];
                 var n = cluster.nodes.length;
@@ -46,12 +46,13 @@
                 } else ystep = 60;
 
                 
-
-                for(i=1;i < n;i++) {
-                   self.networkUI.moveNode(cluster.nodes[i],nodePosition.x,nodePosition.y+ystep*(i));
-                }
-                self.networkUI.moveNode(cluster.head,nodePosition.x,nodePosition.y-ymargin*2-labelmargin - headerOffset);
-
+                if(cluster.nodes.length > 0 && (self.dragged[cluster.nodes[0]] || cluster.init)) {
+                    for(i=1;i < n;i++) {
+                       self.networkUI.moveNode(cluster.nodes[i],nodePosition.x,nodePosition.y+ystep*(i));
+                    }
+                    self.networkUI.moveNode(cluster.head,nodePosition.x,nodePosition.y-ymargin*2-labelmargin - headerOffset);
+                }   
+                cluster.init = false;
                 ctx.strokeStyle = group.color.border;
                 ctx.lineWidth = 2;
                 if(group.shape === "icon" || group.shape === "image" ||group.shape === "circularImage") ctx.fillStyle = self.LightenDarkenColor(group.color.background,100);
@@ -59,7 +60,7 @@
                 ctx.rect(nodePosition.x-xmargin, nodePosition.y-ymargin*2-labelmargin,2*xmargin,ystep*n+labelmargin);
                 ctx.fill();
                 ctx.stroke();
-            }
+            
           
         }); 
 

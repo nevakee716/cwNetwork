@@ -161,6 +161,7 @@
                             }
                         }
                     });
+                    cluster.init = true;
                     self.clusters.push(cluster);
                     i++;
                 }
