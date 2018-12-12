@@ -403,6 +403,20 @@
             };
         });
 
+        this.networkUI.on("dragStart", function(params) {
+            if (params.hasOwnProperty('nodes') && params.nodes.length === 1) {
+                self.dragged[params.nodes[0]] = true;
+
+            }
+        });
+
+        this.networkUI.on("dragEnd", function(params) {
+            if (params.hasOwnProperty('nodes') && params.nodes.length === 1) {
+                delete self.dragged[params.nodes[0]];
+            }
+        });
+
+
         this.networkUI.on("doubleClick", function(params) {
             if (params.hasOwnProperty('nodes') && params.nodes.length === 1) {
                 let node = self.nodes.get(params.nodes[0]);
@@ -453,7 +467,6 @@
         if(this.startingNetwork && this.networkConfiguration && this.networkConfiguration.nodes) {
             let startCwApiNetwork = this.networkConfiguration.nodes[Object.keys(this.networkConfiguration.nodes)[0]];
             if(startCwApiNetwork && startCwApiNetwork.configuration) {
-                this.networkConfiguration.selected = startCwApiNetwork;
                 this.loadCwApiNetwork(startCwApiNetwork.configuration);
                 $('select.selectNetworkConfiguration_' + this.nodeID).each(function( index ) { // put values into filters
                     $(this).selectpicker('val',startCwApiNetwork.label ); //init cwAPInetworkfilter

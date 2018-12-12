@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
+/* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
 
 
 
@@ -72,7 +72,7 @@
         this.clusterByGroupOption = {};
         this.clusterByGroupOption.head = "";
         this.clusterByGroupOption.child = [];
-
+        this.dragged = {};
 
 
         this.multiLineCount = this.options.CustomOptions['multiLineCount'];
@@ -80,7 +80,7 @@
         this.getOption('contextualFilter','contextualNode',',');
         this.getOption('hidden-nodes','hiddenNodes',',');
         this.getOption('groupToSelectOnStart','groupToSelectOnStart',',');        
-        this.getOption('specificGroup','specificGroup','#',',');  
+        this.getOption('specificGroup','specificGroup','#',',');
         this.getOption('popOutList','popOut','#',',');       
 
         this.startingNetwork = this.options.CustomOptions['startingNetwork'];
