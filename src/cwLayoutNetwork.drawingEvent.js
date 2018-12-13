@@ -46,11 +46,15 @@
                 } else ystep = 60;
 
                 
-                if(cluster.nodes.length > 0 && (self.dragged[cluster.nodes[0]] || cluster.init)) {
+                if(cluster.nodes.length > 0) {
                     for(i=1;i < n;i++) {
-                       self.networkUI.moveNode(cluster.nodes[i],nodePosition.x,nodePosition.y+ystep*(i));
+                        if(self.dragged[cluster.nodes[0]] || cluster.init || self.dragged[cluster.nodes[i]]) {
+                            self.networkUI.moveNode(cluster.nodes[i],nodePosition.x,nodePosition.y+ystep*(i));
+                        }
                     }
-                    self.networkUI.moveNode(cluster.head,nodePosition.x,nodePosition.y-ymargin*2-labelmargin - headerOffset);
+                    if(self.dragged[cluster.nodes[0]] || cluster.init || self.dragged[cluster.head]) {
+                        self.networkUI.moveNode(cluster.head,nodePosition.x,nodePosition.y-ymargin*2-labelmargin - headerOffset);
+                    }
                 }   
                 cluster.init = false;
                 ctx.strokeStyle = group.color.border;
