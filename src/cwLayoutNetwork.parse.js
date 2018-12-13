@@ -48,7 +48,10 @@
                 var layoutOptions = this.viewSchema.NodesByID[assoNodeID].LayoutOptions;
                 this.layoutsByNodeId[assoNodeID] = new cwApi.cwLayouts[this.viewSchema.NodesByID[assoNodeID].LayoutName](layoutOptions, this.viewSchema);
             } 
-            return getDisplayStringFromLayout(this.layoutsByNodeId[assoNodeID],assoItem);
+            if(this.layoutsByNodeId[assoNodeID]) {
+            	return getDisplayStringFromLayout(this.layoutsByNodeId[assoNodeID],assoItem);
+            } 
+            
         } catch(e) {
             console.log(e);
             return;
@@ -247,7 +250,7 @@
             }
             
 
-            simplifyObject = this.simplify(simplifyObject);
+            simplifyObject = this.simplify(simplifyObject,this.addObjectOfObjectPage(null,object));
             if(simplifyObject.length > 0) isData = true;
             if(!cwAPI.isIndexPage() || object.hasOwnProperty("object_id")) {
                 simplifyObject = this.addObjectOfObjectPage(simplifyObject,object);
@@ -305,9 +308,16 @@
           if(this.directionList.hasOwnProperty(rootID)) { // ajout de la direction
             element.direction = this.directionList[rootID];
         }
-        element.children = simplifyObject;
         element.id = element.object_id + "#" + element.group ;
-        return [element];
+
+        if(simplifyObject) {
+        	element.children = simplifyObject;
+        	return [element];
+        } else {
+        	return element;
+        }
+        
+        
 
     };
     
