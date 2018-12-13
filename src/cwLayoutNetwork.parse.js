@@ -44,7 +44,7 @@
             assoItem.properties = item.iProperties;
 
             assoNodeID = this.viewSchema.NodesByID[item.nodeID].IntersectionSchemaNodeId;
-            if (!this.layoutsByNodeId.hasOwnProperty(assoNodeID)){
+            if (!this.layoutsByNodeId.hasOwnProperty(assoNodeID) && this.viewSchema.NodesByID[assoNodeID]){
                 var layoutOptions = this.viewSchema.NodesByID[assoNodeID].LayoutOptions;
                 this.layoutsByNodeId[assoNodeID] = new cwApi.cwLayouts[this.viewSchema.NodesByID[assoNodeID].LayoutName](layoutOptions, this.viewSchema);
             } 
