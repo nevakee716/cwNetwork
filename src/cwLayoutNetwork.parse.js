@@ -247,10 +247,12 @@
 
             if(!cwAPI.isIndexPage() || object.hasOwnProperty("object_id")) {
                 cwAPI.customLibs.utils.manageContextualNodes(simplifyObject.associations,this.contextualNode,object.object_id);
+                simplifyObject = this.simplify(simplifyObject,this.addObjectOfObjectPage(null,object));
+            } else {
+            	simplifyObject = this.simplify(simplifyObject);
             }
             
 
-            simplifyObject = this.simplify(simplifyObject,this.addObjectOfObjectPage(null,object));
             if(simplifyObject.length > 0) isData = true;
             if(!cwAPI.isIndexPage() || object.hasOwnProperty("object_id")) {
                 simplifyObject = this.addObjectOfObjectPage(simplifyObject,object);
