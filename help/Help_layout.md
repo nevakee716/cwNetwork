@@ -1,10 +1,11 @@
 | **Name** | **cwLayoutNetwork** | **Version** | 
 | --- | --- | --- |
-| **Updated by** | Mathias PFAUWADEL | 6.1 |
+| **Updated by** | Mathias PFAUWADEL | 6.2 |
 
 
 ## Patch Notes
 
+* 6.2 : Can save to png very big network
 * 6.1 : Adding Contextual Filter for objectPage 
 * 6.0 : Allow Duplicate item, Changing saving system (not compatible with 5.0 capinetwork)
 * 5.1 : Traduction Menu
