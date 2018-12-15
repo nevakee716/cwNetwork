@@ -121,7 +121,8 @@
                             } else {
                                 element.group = cwAPI.mm.getObjectType(nextChild.objectTypeScriptName).name;                           
                             }
-                            this.objects[element.object_id + "#" + element.objectTypeScriptName + fatherID] = element.group;                           
+                            this.objects[element.object_id + "#" + element.objectTypeScriptName + fatherID] = element.group;  
+                            this.originalObjects[element.object_id + "#" + element.objectTypeScriptName] =  nextChild;                    
                         } else {
                             element.group = this.objects[element.object_id + "#" + element.objectTypeScriptName + fatherID];
                         }

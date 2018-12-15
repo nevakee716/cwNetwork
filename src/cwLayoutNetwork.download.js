@@ -75,7 +75,7 @@
             container.style.height = (container.offsetHeight * 2 / scale).toString() + "px";
             this.networkUI.redraw();
             downloadURI(container.firstElementChild.firstElementChild, cwAPI.getPageTitle() + ".png");
-            this.networkUI.on("afterDrawing", function(ctx) {});
+//            this.networkUI.on("afterDrawing", function(ctx) {});
             container.style.height = oldheight + "px";
             container.style.width = "";
 

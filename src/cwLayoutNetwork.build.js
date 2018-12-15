@@ -374,7 +374,9 @@
         }
 
         // before drawing event
+        this.networkUI.on("afterDrawing", this.afterDrawing.bind(this));
         this.networkUI.on("beforeDrawing", this.beforeDrawing.bind(this));
+
 
         // Activate Cluster
         if(!this.startingNetwork) this.activateStartingCluster();

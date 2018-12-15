@@ -64,7 +64,7 @@
 
     cwLayoutNetwork.prototype.disableGroupClusters = function () {
         var node,self = this;
-        this.networkUI.off("afterDrawing");
+        
         self.clusters.forEach(function(cluster){
             self.disableCluster(cluster);
         });

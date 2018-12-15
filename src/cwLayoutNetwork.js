@@ -115,7 +115,7 @@
             this.edgeConfiguration = {};
         }
 
-
+        this.originalObjects = {};
         this.wiggle = true;
         this.CDSNodesOption = true;
         this.CDSFilterOption = true;
@@ -124,6 +124,19 @@
             "CDSFilterOption": this.CDSFilterOption,
             "CDSNodesOption": this.CDSNodesOption
         };
+
+
+        var url = cwApi.getLiveServerURL() + "Diagram/Vector/109" + '?' + Math.random();
+
+        var self = this;
+        $.getJSON(url, function(json) {
+
+
+           if(json.status === "Ok") {
+                self.diagramTemplate = json.result;
+           }
+        });
+
 
     };
 
