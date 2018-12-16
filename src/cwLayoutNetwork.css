@@ -38,3 +38,14 @@ div.cwLayoutNetworkLegend i{
 div.bootstrap-select > div.dropdown-menu {
 	overflow : inherit !important;
 }
+
+div.cwLayoutNetworkPhysicsConfig {
+    position: absolute;
+    right: 0;
+    z-index: 2000;
+}
+
+.vis-configuration.vis-config-select {
+	    width: auto;
+
+};

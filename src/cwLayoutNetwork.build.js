@@ -57,6 +57,7 @@
         var networkContainer = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
         var filterContainer = document.getElementById("cwLayoutNetworkFilter" + this.nodeID);
         var actionContainer = document.getElementById("cwLayoutNetworkAction" + this.nodeID);
+        var physicsConfigContainer = document.getElementById("cwLayoutNetworkPhysicsConfig" + this.nodeID);
         var objectTypeNodes = this.network.getObjectTypeNodes();
         var ObjectTypeNode, externalfilter;
         var i = 0;
@@ -93,6 +94,21 @@
             physics: phys,
             interaction: {
                 keyboard: true
+            },
+            configure: {
+            filter:function (option, path) {
+                if (path.indexOf('physics') !== -1) {
+                  return true;
+                }
+                if (path.indexOf('layout') !== -1) {
+                  return true;
+                }
+                if (path.indexOf('smooth') !== -1 || option === 'smooth') {
+                  return true;
+                }
+                return false;
+              },
+              container: physicsConfigContainer
             }
         };
 

@@ -126,12 +126,14 @@
         };
 
 
-        var url = cwApi.getLiveServerURL() + "Diagram/Vector/109" + '?' + Math.random();
+        var idTemplateDiagram =  this.options.CustomOptions['idTemplateDiagram'];
+        idTemplateDiagram = 355;
+        var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + idTemplateDiagram + '?' + Math.random();
+
+
 
         var self = this;
         $.getJSON(url, function(json) {
-
-
            if(json.status === "Ok") {
                 self.diagramTemplate = json.result;
            }

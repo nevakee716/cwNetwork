@@ -60,7 +60,16 @@
                 if(optionList[i] !== "") {
                     var optionSplit = optionList[i].split(",");
                     groups[optionSplit[0]] = {};
-                    if(optionSplit[1] === "icon") {
+                    if(optionSplit[1] === "diagram") {
+                        groups[optionSplit[0]].shape = 'box';
+                        groups[optionSplit[0]].color = {};
+                        groups[optionSplit[0]].color.border = this.LightenDarkenColor(optionSplit[2],50);
+                        groups[optionSplit[0]].color.highlight = {};
+                        groups[optionSplit[0]].color.highlight.border = this.LightenDarkenColor(optionSplit[2],-50);
+                        groups[optionSplit[0]].color.highlight.background = this.LightenDarkenColor(optionSplit[2],-50);
+                        groups[optionSplit[0]].color.background = optionSplit[2];
+                        groups[optionSplit[0]].diagram = true;
+                    } else if(optionSplit[1] === "icon") {
                         groups[optionSplit[0]].shape = 'icon';
                         groups[optionSplit[0]].icon = {};
                         groups[optionSplit[0]].icon.face = 'FontAwesome';
@@ -70,7 +79,7 @@
                             groups[optionSplit[0]].icon.color = optionSplit[3];   
                             groups[optionSplit[0]].color = getColorForNode(optionSplit[3]);
                         }
-                        groups[optionSplit[0]].icon.size = '40'; 
+                        groups[optionSplit[0]].icon.size = 40*4; 
                         groups[optionSplit[0]].font = {background: '#FFFFFF'}  ; 
                         groups[optionSplit[0]].background = {background: '#FFFFFF'}  ; 
                     } else if(optionSplit[1] === "image" || optionSplit[1] === "circularImage" ) {
@@ -95,9 +104,15 @@
                                 groups[optionSplit[0]].color.highlight.background = this.LightenDarkenColor(optionSplit[2],-50);
                             }
                             groups[optionSplit[0]].color.background = optionSplit[2];
-
                         }                
                     }
+
+
+
+
+                    groups[optionSplit[0]].font = {};
+                    groups[optionSplit[0]].font.size = '56';
+                    
                                  
                 }
             }

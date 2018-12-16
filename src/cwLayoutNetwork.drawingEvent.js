@@ -18,6 +18,7 @@
 
     cwLayoutNetwork.prototype.beforeDrawing = function(ctx) {
         this.positionClusters(ctx);
+        //if (this.diagramTemplate) this.diagramDesign(ctx);
     };
 
 
@@ -27,45 +28,71 @@
     };
 
 
+    cwLayoutNetwork.prototype.reSizeNode = function(node,palette) {
+        if(node.resized !== true) {
+            node.resized = true;
+            node.widthConstraint = {};
+            node.widthConstraint.minimum = palette.Width * 3.5; //80
+            node.widthConstraint.maximum = palette.Width * 3.5;
+            
+            node.heightConstraint = {};
+            node.heightConstraint.minimum = palette.Height * 3.4;
+
+
+        }
+        return node;
+    };
+
+
     cwLayoutNetwork.prototype.diagramDesign = function(ctx) {
 
         ctx.save();
-
+        var changeNode = [];
         var self = this;
 
         self.nodes.forEach(function(node) {
-            let nodePosition = self.networkUI.getPositions(node.id)[node.id];
-            let obj = self.originalObjects[node.object_id + "#" + node.objectTypeScriptName];
-            let palette = self.diagramTemplate.diagram.paletteEntries["PROCESS|315"];
-            var shape = {};
 
-            shape.H = palette.Height * 4;
-            shape.W = palette.Width * 4;
-            shape.X = nodePosition.x - shape.W / 2;
-            shape.Y = nodePosition.y - shape.H / 2;
+            if(self.groupsArt[node.group] && self.groupsArt[node.group].diagram === true) {
+                let obj = self.originalObjects[node.object_id + "#" + node.objectTypeScriptName];
+                if(obj.properties.type_id && self.diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id]) {
+                    let nodePosition = self.networkUI.getPositions(node.id)[node.id];
+                    let palette = self.diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id];
+                    var shape = {};
 
-            shape.cwObject = obj;
+                    changeNode.push(self.reSizeNode(node,palette));
 
-            var diagC = {};
-            diagC.objectTypesStyles = self.diagramTemplate.diagram.paletteEntries;
-            diagC.json = {};
-            diagC.json.diagram = {};
-            diagC.json.diagram.Style = palette.Style;
-            diagC.json.diagram.symbols = self.diagramTemplate.diagram.symbols;
-            diagC.ctx = ctx;
-            diagC.CorporateModelerDiagramScale = 1;
-            diagC.loop = 0;
-            diagC.pictureGalleryLoader = new cwApi.CwPictureGalleryLoader.Loader(diagC);
 
-            diagC.getDiagramPopoutForShape = function(){};
-            var shapeObj = new cwApi.Diagrams.CwDiagramShape(shape,palette,diagC);
-            shapeObj.draw(ctx);
+
+                    shape.H = palette.Height*4;
+                    shape.W = palette.Width*4;
+                    shape.X = nodePosition.x - shape.W / 2;
+                    shape.Y = nodePosition.y - shape.H / 2;
+
+                    shape.cwObject = obj;
+
+                    var diagC = {};
+                    diagC.objectTypesStyles = self.diagramTemplate.diagram.paletteEntries;
+                    diagC.json = {};
+                    diagC.json.diagram = {};
+                    diagC.json.diagram.Style = palette.Style;
+                    diagC.json.diagram.symbols = self.diagramTemplate.diagram.symbols;
+                    diagC.camera = {};
+                    diagC.camera.scale = 1;
+                    diagC.ctx = ctx;
+                    diagC.CorporateModelerDiagramScale = 1;
+                    diagC.loop = 0;
+                    diagC.pictureGalleryLoader = new cwApi.CwPictureGalleryLoader.Loader(diagC);
+
+                    diagC.getDiagramPopoutForShape = function(){};
+                    var shapeObj = new cwApi.Diagrams.CwDiagramShape(shape,palette,diagC);
+                    shapeObj.draw(ctx);              
+                }
+            }
+
+               
         });
 
-
-
-
-    
+        this.nodes.update(changeNode);
     };
 
 

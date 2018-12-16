@@ -72,7 +72,9 @@
             if (child.associations.hasOwnProperty(associationNode)) {
                 for (var i = 0; i < child.associations[associationNode].length; i += 1) {
                     nextChild = child.associations[associationNode][i];
-                    if(this.nodeFiltered.hasOwnProperty(associationNode)) { // external Filter Node
+                    if(associationNode.includes("|0|")) {
+
+                    } else if(this.nodeFiltered.hasOwnProperty(associationNode)) { // external Filter Node
                         filterElement = {}; 
                         filterElement.name = child.associations[associationNode][i].name; 
                         filterElement.object_id = child.associations[associationNode][i].object_id; 
@@ -169,9 +171,6 @@
                                     element.edge.unique = true;
                                     element.edge.id = child.object_id;  
                                 }
-                                
-
-
                             } 
                         }
 
@@ -278,6 +277,7 @@
 
             output.push('<button id="cwLayoutNetworkButtonsDownload' + this.nodeID + '"><i class="fa fa-download" aria-hidden="true"></i></button>');
             output.push('</div>');
+            output.push('<div class="cwLayoutNetworkPhysicsConfig" id="cwLayoutNetworkPhysicsConfig' + this.nodeID + '"></div>');
             output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
             this.object = this.originalObject.associations;
         } catch(e) {
