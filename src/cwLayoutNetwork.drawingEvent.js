@@ -28,13 +28,13 @@
     };
 
 
-    cwLayoutNetwork.prototype.reSizeNode = function(node,palette) {
-        if(node.resized !== true) {
+    cwLayoutNetwork.prototype.reSizeNode = function(node, palette) {
+        if (node.resized !== true) {
             node.resized = true;
             node.widthConstraint = {};
             node.widthConstraint.minimum = palette.Width * 3.5; //80
             node.widthConstraint.maximum = palette.Width * 3.5;
-            
+
             node.heightConstraint = {};
             node.heightConstraint.minimum = palette.Height * 3.4;
 
@@ -52,19 +52,24 @@
 
         self.nodes.forEach(function(node) {
 
-            if(self.groupsArt[node.group] && self.groupsArt[node.group].diagram === true) {
+            if (self.groupsArt[node.group] && self.groupsArt[node.group].diagram === true) {
                 let obj = self.originalObjects[node.object_id + "#" + node.objectTypeScriptName];
-                if(obj.properties.type_id && self.diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id]) {
+                let palette;
+                if (obj.properties.type_id && self.diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id]) {
+                    palette = self.diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id];
+                } else if (self.diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"]) {
+                    palette = self.diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"];
+                }
+                if (palette) {
+
                     let nodePosition = self.networkUI.getPositions(node.id)[node.id];
-                    let palette = self.diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id];
+
                     var shape = {};
 
-                    changeNode.push(self.reSizeNode(node,palette));
+                    changeNode.push(self.reSizeNode(node, palette));
 
-
-
-                    shape.H = palette.Height*4;
-                    shape.W = palette.Width*4;
+                    shape.H = palette.Height * 4;
+                    shape.W = palette.Width * 4;
                     shape.X = nodePosition.x - shape.W / 2;
                     shape.Y = nodePosition.y - shape.H / 2;
 
@@ -83,18 +88,17 @@
                     diagC.loop = 0;
                     diagC.pictureGalleryLoader = new cwApi.CwPictureGalleryLoader.Loader(diagC);
 
-                    diagC.getDiagramPopoutForShape = function(){};
-                    var shapeObj = new cwApi.Diagrams.CwDiagramShape(shape,palette,diagC);
-                    shapeObj.draw(ctx);              
+                    diagC.getDiagramPopoutForShape = function() {};
+                    var shapeObj = new cwApi.Diagrams.CwDiagramShape(shape, palette, diagC);
+                    shapeObj.draw(ctx);
                 }
             }
 
-               
+
         });
 
         this.nodes.update(changeNode);
     };
-
 
 
 

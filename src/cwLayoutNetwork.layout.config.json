@@ -41,6 +41,12 @@
         "Type": 0
     },
         {
+        "Id": "diagramTemplate",
+        "DisplayName": "Diagram Template",
+        "Description": "Select the ID of the diagram Template to use for the network node",
+        "Type": 0
+    },
+    {
         "Id": "arrowDirection",
         "DisplayName": "Arrow Direction",
         "Description": "Select the direction of each node. For exemple, processus_niveau_2_20006_883051288,'to'#processus_niveau_2_20005_1079817132,'from'. Use to, if you want the arrow that arrive to this node. Use from, if you want the arrow to leave from this node.",
@@ -122,6 +128,18 @@
         "Id": "physicsInitialState",
         "DisplayName": "Physics Initially Activated",
         "Description": "Activate the physics at beginning",
+        "Type": 1
+    },
+    {
+        "Id": "physicsConfiguration",
+        "DisplayName": "Physics Json Configuration",
+        "Description": "Don't forget to mimify it",
+        "Type": 0
+    },
+    {
+        "Id": "expertMode",
+        "DisplayName": "Expert Mode Available",
+        "Description": "If you have the abiility to modify or create a network you will always have access to expert Mode",
         "Type": 1
     },
     {

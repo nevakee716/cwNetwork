@@ -24,15 +24,15 @@
         this.definition.capinetworkLabelDisplayname = "Libéllé";
         this.definition.capinetworkToAnyAssociationScriptname = "CAPINETWORKTOASSOCWAPINETWORKTOANYOBJECTTOANYOBJECT";
         this.definition.capinetworkToAnyAssociationDisplayName = "Present On Network";
-        this.definition.capinetworkCreateOnViewScriptname = "createonview";
+        this.definition.capinetworkCreateOnViewScriptname = "createoncwview";
         this.definition.capinetworkConfigurationScriptname = "configuration";
         this.canCreateNetwork = false;
         this.canUpdateNetwork = false;
         this.networkConfiguration = {};
         this.networkConfiguration.enableEdit = this.options.CustomOptions['enableEdit'];
         this.networkConfiguration.nodes = {}; 
-        
-
+        this.expertMode = false;
+        this.expertModeAvailable = this.options.CustomOptions['expertMode'];
 
         try {
             this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkCreateOnViewScriptname).name;
@@ -103,6 +103,8 @@
         this.physicsOption = this.options.CustomOptions['physicsOn'];
         this.hidePhysicsButton = this.options.CustomOptions['hidePhysicsButton'];
         this.physicsOptionInitialState = this.options.CustomOptions['physicsInitialState'];
+        this.physConfiguration = this.options.CustomOptions['physicsConfiguration'];
+
 
         this.removeLonely = this.options.CustomOptions['removeLonelyOn'];
 
@@ -129,8 +131,6 @@
         var idTemplateDiagram =  this.options.CustomOptions['idTemplateDiagram'];
         idTemplateDiagram = 355;
         var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + idTemplateDiagram + '?' + Math.random();
-
-
 
         var self = this;
         $.getJSON(url, function(json) {

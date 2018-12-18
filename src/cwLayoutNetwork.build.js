@@ -79,37 +79,22 @@
             nodes: this.nodes,
             edges: this.edges
         };
-        var phys;
-        phys = {
-            barnesHut: {
-                springLength: 150
-            },
-            minVelocity: 0.75,
-        };
-        //phys.enabled = this.physicsOptionInitialState;
 
+        if(this.physConfiguration === undefined || this.physConfiguration === "") {
+            this.physConfiguration = {
+                barnesHut: {
+                    springLength: 150
+                },
+                minVelocity: 0.75,
+            };
+        }
 
         this.networkOptions = {
             groups: this.groupsArt,
-            physics: phys,
+            physics: this.physConfiguration,
             interaction: {
                 keyboard: true
             },
-            configure: {
-            filter:function (option, path) {
-                if (path.indexOf('physics') !== -1) {
-                  return true;
-                }
-                if (path.indexOf('layout') !== -1) {
-                  return true;
-                }
-                if (path.indexOf('smooth') !== -1 || option === 'smooth') {
-                  return true;
-                }
-                return false;
-              },
-              container: physicsConfigContainer
-            }
         };
 
         this.createFilterObjects(filterContainer);
@@ -329,6 +314,7 @@
             physicsButton.addEventListener('click', this.stopPhysics.bind(this));
         }
 
+
         if (this.edgeOption) {
             if (this.hideEdgeButton === false) {
                 var zipEdgeButton = document.getElementById("cwLayoutNetworkButtonsZipEdge" + this.nodeID);
@@ -350,7 +336,12 @@
             saveButton.addEventListener('click', this.saveIndexPage.bind(this));
         }
 
-
+        if(saveButton || this.expertModeAvailable) {
+            var expertButton = document.getElementById("cwLayoutNetworkExpertModeButton" + this.nodeID);
+            if(expertButton) {
+                expertButton.addEventListener('click', this.manageExpertMode.bind(this));
+            }
+        }
 
         if (this.removeLonely) {
             var removeLonelyButton = document.getElementById("cwLayoutNetworkButtonsLonelyNodes" + this.nodeID);
@@ -486,6 +477,7 @@
             let startCwApiNetwork = this.networkConfiguration.nodes[Object.keys(this.networkConfiguration.nodes)[0]];
             if(startCwApiNetwork && startCwApiNetwork.configuration) {
                 this.loadCwApiNetwork(startCwApiNetwork.configuration);
+                self.networkConfiguration.selected = startCwApiNetwork;
                 $('select.selectNetworkConfiguration_' + this.nodeID).each(function( index ) { // put values into filters
                     $(this).selectpicker('val',startCwApiNetwork.label ); //init cwAPInetworkfilter
                 });               

@@ -228,8 +228,6 @@
                 this.networkDisposition = JSON.parse(object.properties.configuration.replaceAll("\\",""));
             }
 
-
-
             this.originalObject  = $.extend({}, object);
             var simplifyObject, i, assoNode = {} , isData = false;
             // keep the node of the layout
@@ -251,7 +249,6 @@
             } else {
             	simplifyObject = this.simplify(simplifyObject);
             }
-            
 
             if(simplifyObject.length > 0) isData = true;
             if(!cwAPI.isIndexPage() || object.hasOwnProperty("object_id")) {
@@ -273,11 +270,9 @@
             if(this.removeLonely) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '">' + $.i18n.prop('remove_lonely_node') + '</button>');
             output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsBehaviour' + this.nodeID + '">' + $.i18n.prop('behaviour_highlight') + '</button>');
 
-
-
             output.push('<button id="cwLayoutNetworkButtonsDownload' + this.nodeID + '"><i class="fa fa-download" aria-hidden="true"></i></button>');
+            output.push('<button id="cwLayoutNetworkExpertModeButton' + this.nodeID + '">Expert Mode</button>');
             output.push('</div>');
-            output.push('<div class="cwLayoutNetworkPhysicsConfig" id="cwLayoutNetworkPhysicsConfig' + this.nodeID + '"></div>');
             output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
             this.object = this.originalObject.associations;
         } catch(e) {

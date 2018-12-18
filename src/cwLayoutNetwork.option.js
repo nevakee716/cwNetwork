@@ -63,11 +63,18 @@
                     if(optionSplit[1] === "diagram") {
                         groups[optionSplit[0]].shape = 'box';
                         groups[optionSplit[0]].color = {};
-                        groups[optionSplit[0]].color.border = this.LightenDarkenColor(optionSplit[2],50);
-                        groups[optionSplit[0]].color.highlight = {};
-                        groups[optionSplit[0]].color.highlight.border = this.LightenDarkenColor(optionSplit[2],-50);
-                        groups[optionSplit[0]].color.highlight.background = this.LightenDarkenColor(optionSplit[2],-50);
-                        groups[optionSplit[0]].color.background = optionSplit[2];
+                        if(optionSplit[3]) {
+                            groups[optionSplit[0]].color.border = optionSplit[3];
+                            groups[optionSplit[0]].color.highlight = {};
+                            groups[optionSplit[0]].color.highlight.border = optionSplit[3];
+                            groups[optionSplit[0]].color.highlight.background = optionSplit[3];
+                        } else {
+                            groups[optionSplit[0]].color.border = this.LightenDarkenColor(optionSplit[2],50);
+                            groups[optionSplit[0]].color.highlight = {};
+                            groups[optionSplit[0]].color.highlight.border = this.LightenDarkenColor(optionSplit[2],-50);
+                            groups[optionSplit[0]].color.highlight.background = this.LightenDarkenColor(optionSplit[2],-50);
+                        }
+                        groups[optionSplit[0]].borderWidthSelected = 50;
                         groups[optionSplit[0]].diagram = true;
                     } else if(optionSplit[1] === "icon") {
                         groups[optionSplit[0]].shape = 'icon';

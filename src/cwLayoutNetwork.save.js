@@ -188,6 +188,9 @@
         config.camera.position = this.networkUI.getViewPosition();
         config.camera.scale = this.networkUI.getScale();
 
+
+        config.physics = this.networkUI.physics.options;
+
         positions = this.networkUI.getPositions();
 
         if(!cwAPI.isIndexPage()) {
@@ -389,11 +392,15 @@
 
     cwLayoutNetwork.prototype.loadCwApiNetwork = function(config) {
 
+
         // unselect everything and disable physics
         this.setExternalFilterToNone();
         this.disableGroupClusters();
         this.deActivateAllGroup();
         this.networkOptions.physics.enabled = false;
+
+        
+        
         this.hideAllEdgesByScriptname();
 
         // load links
@@ -442,6 +449,10 @@
             scale: config.camera.scale,
             animation: true
         });
+
+        if(config.physics) this.networkUI.physics.options = config.physics;
+        this.networkUI.setOptions(this.networkUI.options);
+
     };
 
 
