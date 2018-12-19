@@ -90,7 +90,7 @@
     edgeVis.hideByZipping = false;
     edgeVis.physics = true; 
     edgeVis.font = {};
-    edgeVis.font.size = 6;
+    edgeVis.font.size = 12;
     edgeVis.label = this.label;
     edgeVis.direction = this.getDirection(); 
     return edgeVis;

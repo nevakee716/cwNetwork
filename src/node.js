@@ -54,7 +54,7 @@
         else {
             obj.label = this.label;
         }
-        obj.font = {'size': 9};
+
         if(this.x) {
             obj.x = this.x;
             this.x = undefined;
