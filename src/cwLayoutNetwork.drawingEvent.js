@@ -52,13 +52,15 @@
 
         self.nodes.forEach(function(node) {
 
-            if (self.groupsArt[node.group] && self.groupsArt[node.group].diagram === true) {
+            if (self.groupsArt[node.group] && self.groupsArt[node.group].diagram === true && self.diagramTemplate[self.groupsArt[node.group].diagramTemplateID]) {
                 let obj = self.originalObjects[node.object_id + "#" + node.objectTypeScriptName];
                 let palette;
-                if (obj.properties.type_id && self.diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id]) {
-                    palette = self.diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id];
-                } else if (self.diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"]) {
-                    palette = self.diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"];
+                let diagramTemplate = self.diagramTemplate[self.groupsArt[node.group].diagramTemplateID];
+
+                if (obj.properties.type_id && diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id]) {
+                    palette = diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id];
+                } else if (diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"]) {
+                    palette = diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"];
                 }
                 if (palette) {
 
@@ -76,17 +78,23 @@
                     shape.cwObject = obj;
 
                     var diagC = {};
-                    diagC.objectTypesStyles = self.diagramTemplate.diagram.paletteEntries;
+                    diagC.objectTypesStyles = diagramTemplate.diagram.paletteEntries;
                     diagC.json = {};
                     diagC.json.diagram = {};
                     diagC.json.diagram.Style = palette.Style;
-                    diagC.json.diagram.symbols = self.diagramTemplate.diagram.symbols;
+                    diagC.json.diagram.symbols = diagramTemplate.diagram.symbols;
                     diagC.camera = {};
                     diagC.camera.scale = 1;
                     diagC.ctx = ctx;
                     diagC.CorporateModelerDiagramScale = 1;
                     diagC.loop = 0;
                     diagC.pictureGalleryLoader = new cwApi.CwPictureGalleryLoader.Loader(diagC);
+
+                    if(self.errorOnRegion === undefined)  self.errorOnRegion = false;
+                    diagC.loadRegionExplosionWithRuleAndRefProp= function(){if(self.errorOnRegion === false){
+                        console.log("Explosion Region are not Supported Yet");
+                         self.errorOnRegion = true;
+                    } };
 
                     diagC.getDiagramPopoutForShape = function() {};
                     var shapeObj = new cwApi.Diagrams.CwDiagramShape(shape, palette, diagC);

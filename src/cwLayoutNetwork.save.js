@@ -398,8 +398,6 @@
         this.disableGroupClusters();
         this.deActivateAllGroup();
         this.networkOptions.physics.enabled = false;
-
-        
         
         this.hideAllEdgesByScriptname();
 
