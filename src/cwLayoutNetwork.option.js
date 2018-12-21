@@ -58,6 +58,7 @@
         }
 
         var groups = {};
+        if(this.groupsArt !== undefined) groups = this.groupsArt;
 
         if (options) {
             var optionList = options.split("||");
@@ -65,10 +66,14 @@
             for (var i = 0; i < optionList.length; i += 1) {
                 if (optionList[i] !== "") {
                     var optionSplit = optionList[i].split(",");
-                    groups[optionSplit[0]] = {};
-                    groups[optionSplit[0]].font = {};
-                    groups[optionSplit[0]].font.size = fontSize;
 
+                    if(groups[optionSplit[0]] === undefined) {
+                        groups[optionSplit[0]] = {};
+                        groups[optionSplit[0]].font = {};
+                        groups[optionSplit[0]].font.size = fontSize;
+                        groups[optionSplit[0]].objectTypes = [];                        
+                    }
+                    groups[optionSplit[0]].diagram = false;
                     if (optionSplit[1] === "diagram") {
                         groups[optionSplit[0]].shape = 'box';
                         groups[optionSplit[0]].color = {};
@@ -83,7 +88,7 @@
                         groups[optionSplit[0]].font = {};
                         groups[optionSplit[0]].font.size = 2;
                         groups[optionSplit[0]].diagramTemplateID = optionSplit[3];
-                        if (idTemplateDiagram.indexOf(optionSplit[3]) === -1) idTemplateDiagram.push((optionSplit[3]));
+                        //if (idTemplateDiagram.indexOf(optionSplit[3]) === -1) idTemplateDiagram.push((optionSplit[3]));
 
                     } else if (optionSplit[1] === "icon") {
                         groups[optionSplit[0]].shape = 'icon';
@@ -135,16 +140,7 @@
         this.groupsArt = groups;
 
 
-        var self = this;
-        self.diagramTemplate = {};
-        idTemplateDiagram.forEach(function(id) {
-            var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + '?' + Math.random();
-            $.getJSON(url, function(json) {
-                if (json.status === "Ok") {
-                    self.diagramTemplate[id] = json.result;
-                }
-            });
-        });
+
 
 
     };

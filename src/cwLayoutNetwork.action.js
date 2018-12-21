@@ -226,6 +226,8 @@
            $scope.groups = g;
            $scope.updateGroup = self.updatesGroup.bind(self); 
            $scope.bootstrapFilter = self.bootstrapFilter;
+           $scope.checkIfContainObjectType = self.checkIfGroupMatchTemplate.bind(self);
+           $scope.diagramTemplate = self.diagramTemplate;
 
         });
     };
@@ -265,12 +267,30 @@
     };
 
     cwLayoutNetwork.prototype.bootstrapFilter = function(id,value) {
-
         window.setTimeout(function(params) {
             $('#' + id).selectpicker();
             $('#' + id).selectpicker('val',value); 
         }, 1000);
     };
+
+
+    cwLayoutNetwork.prototype.checkIfGroupMatchTemplate = function(group,template) {
+        var OTs = this.groupsArt[group.replaceAll("Hidden","")].objectTypes;
+
+        for(var paletteEntry in template.diagram.paletteEntries) {
+            if(template.diagram.paletteEntries.hasOwnProperty(paletteEntry)) {
+                for (var i = 0; i < OTs.length; i++) {
+                    let p = paletteEntry.split("|")[0];
+                    p = p .toLowerCase();
+                    if(OTs[i].indexOf(p) !== -1) return true;
+                }
+            }
+
+        }
+        return false;
+    };
+
+
 
 
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;

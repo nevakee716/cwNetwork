@@ -128,6 +128,8 @@
         };
 
 
+
+        this.loadDiagramTemplate("z_diagram_template");
   
 
 

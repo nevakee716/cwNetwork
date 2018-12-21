@@ -129,6 +129,9 @@
                             element.group = this.objects[element.object_id + "#" + element.objectTypeScriptName + fatherID];
                         }
                         
+                        if(element.group && element.objectTypeScriptName && this.groupsArt[element.group] && this.groupsArt[element.group].objectTypes && this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1) {
+                            this.groupsArt[element.group].objectTypes.push(element.objectTypeScriptName);
+                        }
                         element.id = element.object_id + "#" + element.group + fatherID ;
 
                         if(hiddenNode) { //lorsqu'un node est hidden ajouter les elements en edges
