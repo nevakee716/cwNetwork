@@ -22,5 +22,8 @@ remove_closes_nodes = Rimuovi nodi limitrofi
 add_all_nodes_from = Inserisci tutti i nodi da...		
 add_all_nodes_to = Inserisci tutti i nodi a...			
 add_all_connected_nodes = Inserisci tutti i nodi collegati	
+activate_expert_mode = Abilita Modalità Esperto
+deactivate_expert_mode = Disabilita la Modalità Esperto
+expert_mode = Modalità Esperto
 
 

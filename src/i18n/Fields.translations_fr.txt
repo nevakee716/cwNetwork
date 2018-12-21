@@ -22,3 +22,6 @@ remove_closes_nodes = Masquer les objets connexes (1 niveau)
 add_all_nodes_from = Afficher tous les objets entrants (n niveaux)
 add_all_nodes_to = Afficher tous les objets sortants (n niveaux)
 add_all_connected_nodes = Afficher tous les objets connexes (n niveaux)
+activate_expert_mode = Activer le Mode Expert
+deactivate_expert_mode = Déactiver le Mode Expert
+expert_mode = Mode Expert
