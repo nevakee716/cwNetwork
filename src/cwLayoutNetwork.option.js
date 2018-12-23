@@ -69,10 +69,10 @@
 
                     if(groups[optionSplit[0]] === undefined) {
                         groups[optionSplit[0]] = {};
-                        groups[optionSplit[0]].font = {};
-                        groups[optionSplit[0]].font.size = fontSize;
                         groups[optionSplit[0]].objectTypes = [];                        
                     }
+                    groups[optionSplit[0]].font = {};
+                    groups[optionSplit[0]].font.size = fontSize;
                     groups[optionSplit[0]].diagram = false;
                     if (optionSplit[1] === "diagram") {
                         groups[optionSplit[0]].shape = 'box';

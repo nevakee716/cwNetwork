@@ -54,10 +54,8 @@
             document.body.appendChild(node);
         }
 
+        var self = this;
         var networkContainer = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
-        var filterContainer = document.getElementById("cwLayoutNetworkFilter" + this.nodeID);
-        var actionContainer = document.getElementById("cwLayoutNetworkAction" + this.nodeID);
-        var physicsConfigContainer = document.getElementById("cwLayoutNetworkPhysicsConfig" + this.nodeID);
         var objectTypeNodes = this.network.getObjectTypeNodes();
         var ObjectTypeNode, externalfilter;
         var i = 0;
@@ -97,183 +95,15 @@
             },
         };
 
-        this.createFilterObjects(filterContainer);
-
-
 
         // Adding filter search
+        var actionContainer = document.getElementById("cwLayoutNetworkAction" + this.nodeID);
         actionContainer.insertBefore(this.network.getSearchFilterObject(this.nodeID), actionContainer.firstChild);
-
-
-        // Adding filter options
-        //filterContainer.appendChild(this.network.getFilterOptions());
-        //give bootstrap select to filter
-        $('.selectNetworkPicker_' + this.nodeID).selectpicker();
-        $('.selectNetworkExternal_' + this.nodeID).selectpicker();
         $('.selectNetworkSearch_' + this.nodeID).selectpicker();
-        $('.selectNetworkConfiguration_' + this.nodeID).selectpicker();
-        if (this.networkConfiguration.enableEdit && this.canCreateNetwork) {
-            $('.selectNetworkConfiguration_' + this.nodeID)[0].children[1].children[0].appendChild(this.createAddButton());
-        }
-        $('.selectNetworkClusterByGroup_' + this.nodeID + '_child').selectpicker();
-        $('.selectNetworkClusterByGroup_' + this.nodeID + '_head').selectpicker();
-        $('.selectNetworkEdge_' + this.nodeID).selectpicker();
 
 
-        // set height
-        var titleReact = document.querySelector("#cw-top-bar").getBoundingClientRect();
-        var topBarReact = document.querySelector(".page-top").getBoundingClientRect();
-        var actionReact = actionContainer.getBoundingClientRect();
-        var filterReact = filterContainer.getBoundingClientRect();
-        var canvaHeight = window.innerHeight - titleReact.height - actionReact.height - filterReact.height - topBarReact.height;
-        networkContainer.setAttribute('style', 'height:' + canvaHeight + 'px');
-
-        var self = this;
-
-
-        // Event for filter
-        // Network Node Selector
-        $('select.selectNetworkPicker_' + this.nodeID).on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
-            var group = $(this).context['id'];
-            var scriptname = $(this).context.getAttribute('scriptname');
-            var changeSet, id,  i;
-
-            if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-                id = $(this).context[clickedIndex]['id'];
-                if (newValue === false) { // hide a node
-                    self.removeNodes([id]);
-                } else { // add one node
-                    self.network.show(id, group);
-                    changeSet = self.network.getVisNode(id, group); // get all the node self should be put on
-                    self.nodes.add(changeSet); // adding nodes into network
-                    self.setAllExternalFilter();
-                    self.updatePhysics();
-                }
-            } else { // select or deselect all node
-                if ($(this).context[0]) {
-                    var changeSet = self.network.SetAllAndGetNodesObject($(this).context[0].selected, group);
-                    if ($(this).context[0].selected === true) {
-                        self.nodes.add(changeSet);
-                        self.updatePhysics();
-                    } else {
-                        self.removeNodes(changeSet);
-                    }
-                    if (self.networkUI) {
-                        self.colorAllNodes();
-                        self.colorAllEdges();
-                    }
-                    self.setExternalFilterToNone();
-                }
-            }
-        });
-
-
-        // Event for filter
-        // Edge Selector
-        $('select.selectNetworkEdge_' + this.nodeID).on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
-            var group = $(this).context['id'];
-            var scriptname = $(this).context.getAttribute('scriptname');
-            var changeSet, id, nodeId, i;
-
-            if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-                id = $(this).context[clickedIndex]['id'];
-                if (newValue === false) { // hide a node
-                    self.edgeConfiguration[id].show = false;
-                    self.hideEdgeByScriptname(id,true);
-                } else { // add one node
-                    self.edgeConfiguration[id].show = true;
-                    self.showEdgeByScriptname(id,true);
-                }
-            } else { // select or deselect all node
-                if ($(this).context[0]) {
-                    if ($(this).context[0].selected === true) {
-                        self.showAllEdgesByScriptname();
-                    } else {
-                        self.hideAllEdgesByScriptname();
-                    }
-                    if (self.networkUI) {
-                        self.colorAllNodes();
-                        self.colorAllEdges();
-                    }
-                }
-            }
-        });
-
-
-        // Cluster Group Filter Head
-        $('select.selectNetworkClusterByGroup_' + this.nodeID + "_head").on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
-            var group = $(this).context['id'];
-            if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-                self.clusterByGroupOption.head = $(this).selectpicker('val').replaceAll("_", " ");;
-                self.clusterByGroup();
-            }
-        });
-
-
-        // Cluster Group Filter Child
-        $('select.selectNetworkClusterByGroup_' + this.nodeID + "_child").on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
-            if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-                self.clusterByGroupOption.child = [];
-                if ($(this).selectpicker('val') && $(this).selectpicker('val').length > 0) {
-                    $(this).selectpicker('val').forEach(function(c) {
-                        self.clusterByGroupOption.child.push(c.replaceAll("_", " "));
-                    });
-                } else {
-                    self.clusterByGroupOption.child = [];
-                }
-                self.clusterByGroup();
-            }
-        });
-
-
-        // External Filter
-        $('select.selectNetworkExternal_' + this.nodeID).on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
-            var group = $(this).context['id'];
-            var filterName = $(this).context.getAttribute('filterName');
-            var nodesArray, id, nodeId, i, changeSet;
-
-            var allNodes;
-
-            if (self.behaviour.absolute === true) {
-                self.deActivateAllGroup();
-            }
-
-            if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-                id = $(this).context[clickedIndex]['id'];
-                if (newValue === false) { // hide a node
-                    self.removeExternalFilterValue(filterName, id);
-                } else {
-                    self.addExternalFilterValue(filterName, id);
-                    self.setAllExternalFilter();
-                }
-            } else { // select or deselect all node
-                if ($(this).context[0]) {
-                    if ($(this).context[0].selected === true) {
-                        self.addAllExternalFilterValue(filterName, id);
-                    } else {
-                        self.removeAllExternalFilterValue(filterName, id);
-                    }
-                }
-            }
-            self.setAllExternalFilter();
-
-        });
-
-        // Event for filter
-        // Load a new network
-        $('select.selectNetworkConfiguration_' + this.nodeID).on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
-            var changeSet, id, nodeId, i,config;
-            var groupArray = {};
-            if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-                id = $(this).context[clickedIndex]['id'];
-                if (id != 0) {
-                    config = self.networkConfiguration.nodes[id].configuration;
-                    self.networkConfiguration.selected = self.networkConfiguration.nodes[id];
-                    self.loadCwApiNetwork(config);
-                }
-            }
-            if (cwAPI.isDebugMode() === true) console.log("network set");
-        });
+        this.setFilters();
+       
 
         // Event for filter
         // Move On a Node
@@ -484,6 +314,186 @@
             }
 
         }
+
+    };
+
+    // Building network
+    cwLayoutNetwork.prototype.setFilters = function() {
+
+        var self = this;
+        var filterContainer = document.getElementById("cwLayoutNetworkFilter" + this.nodeID);
+        var actionContainer = document.getElementById("cwLayoutNetworkAction" + this.nodeID);
+        var networkContainer = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
+        this.createFilterObjects(filterContainer);
+
+
+        // Adding filter options
+        //filterContainer.appendChild(this.network.getFilterOptions());
+        //give bootstrap select to filter
+        $('.selectNetworkPicker_' + this.nodeID).selectpicker();
+        $('.selectNetworkExternal_' + this.nodeID).selectpicker();
+        $('.selectNetworkConfiguration_' + this.nodeID).selectpicker();
+        if (this.networkConfiguration.enableEdit && this.canCreateNetwork) {
+            $('.selectNetworkConfiguration_' + this.nodeID)[0].children[1].children[0].appendChild(this.createAddButton());
+        }
+        $('.selectNetworkClusterByGroup_' + this.nodeID + '_child').selectpicker();
+        $('.selectNetworkClusterByGroup_' + this.nodeID + '_head').selectpicker();
+        $('.selectNetworkEdge_' + this.nodeID).selectpicker();
+
+
+        // set height
+        var titleReact = document.querySelector("#cw-top-bar").getBoundingClientRect();
+        var topBarReact = document.querySelector(".page-top").getBoundingClientRect();
+        var actionReact = actionContainer.getBoundingClientRect();
+        var filterReact = filterContainer.getBoundingClientRect();
+        var canvaHeight = window.innerHeight - titleReact.height - actionReact.height - filterReact.height - topBarReact.height;
+        networkContainer.setAttribute('style', 'height:' + canvaHeight + 'px');
+
+       
+
+        // Event for filter
+        // Network Node Selector
+        $('select.selectNetworkPicker_' + this.nodeID).on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
+            var group = $(this).context['id'];
+            var scriptname = $(this).context.getAttribute('scriptname');
+            var changeSet, id,  i;
+
+            if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
+                id = $(this).context[clickedIndex]['id'];
+                if (newValue === false) { // hide a node
+                    self.removeNodes([id]);
+                } else { // add one node
+                    self.network.show(id, group);
+                    changeSet = self.network.getVisNode(id, group); // get all the node self should be put on
+                    self.nodes.add(changeSet); // adding nodes into network
+                    self.setAllExternalFilter();
+                    self.updatePhysics();
+                }
+            } else { // select or deselect all node
+                if ($(this).context[0]) {
+                    var changeSet = self.network.SetAllAndGetNodesObject($(this).context[0].selected, group);
+                    if ($(this).context[0].selected === true) {
+                        self.nodes.add(changeSet);
+                        self.updatePhysics();
+                    } else {
+                        self.removeNodes(changeSet);
+                    }
+                    if (self.networkUI) {
+                        self.colorAllNodes();
+                        self.colorAllEdges();
+                    }
+                    self.setExternalFilterToNone();
+                }
+            }
+        });
+
+
+        // Event for filter
+        // Edge Selector
+        $('select.selectNetworkEdge_' + this.nodeID).on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
+            var group = $(this).context['id'];
+            var scriptname = $(this).context.getAttribute('scriptname');
+            var changeSet, id, nodeId, i;
+
+            if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
+                id = $(this).context[clickedIndex]['id'];
+                if (newValue === false) { // hide a node
+                    self.edgeConfiguration[id].show = false;
+                    self.hideEdgeByScriptname(id,true);
+                } else { // add one node
+                    self.edgeConfiguration[id].show = true;
+                    self.showEdgeByScriptname(id,true);
+                }
+            } else { // select or deselect all node
+                if ($(this).context[0]) {
+                    if ($(this).context[0].selected === true) {
+                        self.showAllEdgesByScriptname();
+                    } else {
+                        self.hideAllEdgesByScriptname();
+                    }
+                    if (self.networkUI) {
+                        self.colorAllNodes();
+                        self.colorAllEdges();
+                    }
+                }
+            }
+        });
+
+
+        // Cluster Group Filter Head
+        $('select.selectNetworkClusterByGroup_' + this.nodeID + "_head").on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
+            var group = $(this).context['id'];
+            if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
+                self.clusterByGroupOption.head = $(this).selectpicker('val').replaceAll("_", " ");;
+                self.clusterByGroup();
+            }
+        });
+
+
+        // Cluster Group Filter Child
+        $('select.selectNetworkClusterByGroup_' + this.nodeID + "_child").on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
+            if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
+                self.clusterByGroupOption.child = [];
+                if ($(this).selectpicker('val') && $(this).selectpicker('val').length > 0) {
+                    $(this).selectpicker('val').forEach(function(c) {
+                        self.clusterByGroupOption.child.push(c.replaceAll("_", " "));
+                    });
+                } else {
+                    self.clusterByGroupOption.child = [];
+                }
+                self.clusterByGroup();
+            }
+        });
+
+
+        // External Filter
+        $('select.selectNetworkExternal_' + this.nodeID).on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
+            var group = $(this).context['id'];
+            var filterName = $(this).context.getAttribute('filterName');
+            var nodesArray, id, nodeId, i, changeSet;
+
+            var allNodes;
+
+            if (self.behaviour.absolute === true) {
+                self.deActivateAllGroup();
+            }
+
+            if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
+                id = $(this).context[clickedIndex]['id'];
+                if (newValue === false) { // hide a node
+                    self.removeExternalFilterValue(filterName, id);
+                } else {
+                    self.addExternalFilterValue(filterName, id);
+                    self.setAllExternalFilter();
+                }
+            } else { // select or deselect all node
+                if ($(this).context[0]) {
+                    if ($(this).context[0].selected === true) {
+                        self.addAllExternalFilterValue(filterName, id);
+                    } else {
+                        self.removeAllExternalFilterValue(filterName, id);
+                    }
+                }
+            }
+            self.setAllExternalFilter();
+
+        });
+
+        // Event for filter
+        // Load a new network
+        $('select.selectNetworkConfiguration_' + this.nodeID).on('changed.bs.select', function(e, clickedIndex, newValue, oldValue) {
+            var changeSet, id, nodeId, i,config;
+            var groupArray = {};
+            if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
+                id = $(this).context[clickedIndex]['id'];
+                if (id != 0) {
+                    config = self.networkConfiguration.nodes[id].configuration;
+                    self.networkConfiguration.selected = self.networkConfiguration.nodes[id];
+                    self.loadCwApiNetwork(config);
+                }
+            }
+            if (cwAPI.isDebugMode() === true) console.log("network set");
+        });
 
     };
 

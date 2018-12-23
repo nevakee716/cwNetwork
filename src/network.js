@@ -77,7 +77,7 @@
         var visData = [];
         for (objectType in this.objectTypeNodes) {
             if (this.objectTypeNodes.hasOwnProperty(objectType)) {
-                visData = visData.concat(this.objectTypeNodes[objectType].getVisData());
+                visData = visData.concat(this.objectTypeNodes[objectType].getAllVisData());
             }
         }
         return visData;

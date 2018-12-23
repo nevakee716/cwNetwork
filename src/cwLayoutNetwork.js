@@ -64,7 +64,7 @@
         this.specificGroup = [];
         this.directionList = [];
         this.groupToSelectOnStart = [];
-        this.objects = {};
+
         this.layoutsByNodeId = {};
         this.clusters = [];
         this.init = true;

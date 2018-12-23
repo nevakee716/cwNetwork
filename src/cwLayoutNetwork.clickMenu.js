@@ -94,7 +94,7 @@
 
 
     cwLayoutNetwork.prototype.openObjectPage = function(id,scriptname) {
-        var object = this.lookForObjects(id,scriptname,this.originalObject);
+        var object = this.lookForObjects(id,scriptname,this.copyObject);
         if(object) {
             location.href = this.singleLinkMethod(scriptname, object);
         }
@@ -114,7 +114,7 @@
         scriptname = from[1];
         if(this.popOut[scriptname + "_edge"]) {
             id = from[0];
-            object = this.lookForObjects(id,scriptname,this.originalObject);
+            object = this.lookForObjects(id,scriptname,this.copyObject);
 
             if(cwApi.customLibs.popWorldMap === undefined) cwApi.customLibs.popWorldMap = {};
             cwApi.customLibs.popWorldMap.to = to;
@@ -125,7 +125,7 @@
         scriptname = edge.scriptname;
         if(this.popOut[scriptname]){
             id = edge.object_id;
-            object = this.lookForObjects(id,scriptname,this.originalObject);
+            object = this.lookForObjects(id,scriptname,this.copyObject);
             if(object) {
                 cwApi.cwDiagramPopoutHelper.openDiagramPopout(object,this.popOut[scriptname]);                
             }
