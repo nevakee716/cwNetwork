@@ -128,10 +128,17 @@
                         } else {
                             element.group = this.objects[element.object_id + "#" + element.objectTypeScriptName + fatherID];
                         }
-
+                        // add objectType ScriptName to group
                         if (element.group && element.objectTypeScriptName && this.groupsArt[element.group] && this.groupsArt[element.group].objectTypes && this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1) {
                             this.groupsArt[element.group].objectTypes.push(element.objectTypeScriptName);
                         }
+
+                        if(this.groupsArt.hasOwnProperty(element.group) === false) {
+                            this.options.CustomOptions['iconGroup'] += "||" + element.group + "," + "ellipse" + ",#" + Math.floor(Math.random()*16777215).toString(16);
+                            this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);
+                        }
+
+                        //attribute id, will have the father name in case of duplicate node
                         element.id = element.object_id + "#" + element.group + fatherID;
 
                         if (hiddenNode) { //lorsqu'un node est hidden ajouter les elements en edges

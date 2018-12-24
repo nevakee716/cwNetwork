@@ -135,6 +135,18 @@
         }
     };
 
+
+    network.prototype.setNodesFromChangeset = function(changeSet,value) {
+        var self = this;
+        if(value === undefined) value = true;
+
+        changeSet.forEach(function(n){
+            if (self.objectTypeNodes[n.group] && self.objectTypeNodes[n.group].nodes[n.id]) {
+                self.objectTypeNodes[n.group].nodes[n.id].setStatus(value);
+            }
+        });
+    };
+
     network.prototype.getFullGroups = function() {
         var objectType,r = [];
         for (objectType in this.objectTypeNodes) {

@@ -17,6 +17,29 @@
     }
 
 
+
+
+
+    cwLayoutNetwork.prototype.buildEdges = function() {
+        if (this.edgeOption) {
+            if (this.hideEdgeButton === false) {
+                var zipEdgeButton = document.getElementById("cwLayoutNetworkButtonsZipEdge" + this.nodeID);
+                zipEdgeButton.addEventListener('click', this.edgeZipButtonAction.bind(this));
+            }
+
+            this.createUnzipEdge();
+
+            var event = {};
+            event.target = zipEdgeButton;
+            if (this.edgeZipped === false) {
+                this.edgeZipped = true;
+                this.edgeZipButtonAction(event);
+            }
+        }
+    };
+
+
+
     cwLayoutNetwork.prototype.edgeZipButtonAction = function(event) {
         var self = this;
         var changeSetEdges = [];

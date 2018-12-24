@@ -319,7 +319,9 @@
                     $scope.hnode = $scope.isHiddenNode($scope.data.NodeID);
                     $scope.dnode = $scope.isDuplicateNode($scope.data.NodeID);
                     $scope.cnode = $scope.isComplementaryNode($scope.data.NodeID);
-
+                    if(self.nodeFiltered[$scope.data.NodeID]) $scope.egroup = self.nodeFiltered[$scope.data.NodeID][0];
+                    else $scope.egroup = "";
+                    
                     $scope.$apply();
                 }
             }).jstree({
@@ -335,8 +337,6 @@
             }
 
             $scope.groups = g;
-
-            $scope.nodeFiltered = self.nodeFiltered;
 
 
             $scope.isComplementaryNode = function(nodeID) {
@@ -388,11 +388,34 @@
             };
 
 
+            $scope.updateExtFilters = function(string,nodeID) {
+
+                if(string === "" || string.length < 2) {
+                    delete self.nodeFiltered[nodeID];
+                } else {
+                    self.nodeFiltered[nodeID] = string;
+                }
+
+                this.nodeFilteredString = "";
+                for(var n in self.nodeFiltered) {
+                    if(self.nodeFiltered.hasOwnProperty(n)) {
+                        this.nodeFilteredString += n + ":" + self.nodeFiltered[n] + "#";
+                    }
+                }
+                if(this.nodeFilteredString != "") this.nodeFilteredString = this.nodeFilteredString.slice(0, -1);
+                self.externalFilters = {};
+                self.nodeFiltered = {};
+                self.getExternalFilterNodes(this.nodeFilteredString);
+                self.updateNetworkData();
+
+            };
+
+
 
             $scope.complementaryNodesString = self.complementaryNode.join(',');
             $scope.duplicateNodesString = self.duplicateNode.join(',');
             $scope.hiddenNodesString = self.hiddenNodes.join(',');
-
+            $scope.nodeFilteredString = self.options.CustomOptions['filterNode'];
             $scope.updateNetworkData = self.updateNetworkData;
 
         });
@@ -401,7 +424,8 @@
 
 
     cwLayoutNetwork.prototype.updateNetworkData = function() {
-
+        this.setExternalFilterToNone(); 
+        this.disableGroupClusters();
         this.copyObject = $.extend(true, {}, this.originalObject);
         var sObject = this.manageDataFromEvolve(this.copyObject);
         this.network = new cwApi.customLibs.cwLayoutNetwork.network();
@@ -413,19 +437,41 @@
         this.edges.update(this.network.getVisEdges());
 
         var nodes = this.network.getVisNodes();
-
+        var changeset = [];
+        var nodeToRemove = [];
+        let nodePosition = this.networkUI.getPositions();
 
         this.nodes.forEach(function(n){
-
-            nodes.forEach(function(nn){
-                console.log(n,nn);
+            var s = nodes.every(function(nn){
+                if(n.id === nn.id){
+                    nn.x = nodePosition[n.id].x;
+                    nn.y = nodePosition[n.id].y;
+                    changeset.push(nn);
+                    return false;
+                }
+                return true;
             });;
-
-
-
+            if(s) nodeToRemove.push(n.id);
         });
 
 
+        this.nodes.remove(nodeToRemove);
+        this.fillFilter(changeset);
+        this.network.setNodesFromChangeset(changeset);
+        this.nodes.update(changeset);  
+        changeset = [];
+        this.nodes.forEach(function(node) {
+            node.resized = undefined;
+            node.widthConstraint = undefined;
+            node.heightConstraint = undefined;
+            node.color = undefined;
+            node.x = undefined;
+            node.y = undefined;
+            changeset.push(node);
+        });
+
+        this.nodes.update(changeset);
+        this.buildEdges();
     };
 
     cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;

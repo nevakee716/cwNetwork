@@ -145,21 +145,8 @@
         }
 
 
-        if (this.edgeOption) {
-            if (this.hideEdgeButton === false) {
-                var zipEdgeButton = document.getElementById("cwLayoutNetworkButtonsZipEdge" + this.nodeID);
-                zipEdgeButton.addEventListener('click', this.edgeZipButtonAction.bind(this));
-            }
+        this.buildEdges();
 
-            this.createUnzipEdge();
-
-            var event = {};
-            event.target = zipEdgeButton;
-            if (this.edgeZipped === false) {
-                this.edgeZipped = true;
-                this.edgeZipButtonAction(event);
-            }
-        }
 
         var saveButton = document.getElementById("nodeConfigurationSaveButton_" + this.nodeID);
         if (saveButton) {
