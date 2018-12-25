@@ -132,17 +132,10 @@
 
                     }
                     groups[optionSplit[0]].size = 35;
-
-
                 }
             }
         }
         this.groupsArt = groups;
-
-
-
-
-
     };
 
 

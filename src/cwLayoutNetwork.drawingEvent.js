@@ -37,8 +37,6 @@
 
             node.heightConstraint = {};
             node.heightConstraint.minimum = palette.Height * 3.4;
-
-
         }
         return node;
     };
@@ -57,9 +55,9 @@
                 let palette;
                 let diagramTemplate = self.diagramTemplate[self.groupsArt[node.group].diagramTemplateID];
 
-                if (obj.properties.type_id && diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id]) {
+                if (obj && obj.properties.type_id && diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id]) {
                     palette = diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id];
-                } else if (diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"]) {
+                } else if (obj && diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"]) {
                     palette = diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"];
                 }
                 if (palette) {

@@ -134,7 +134,7 @@
                         }
 
                         if(this.groupsArt.hasOwnProperty(element.group) === false) {
-                            this.options.CustomOptions['iconGroup'] += "||" + element.group + "," + "ellipse" + ",#" + Math.floor(Math.random()*16777215).toString(16);
+                            this.options.CustomOptions['iconGroup'] = element.group + "," + "ellipse" + ",#" + Math.floor(Math.random()*16777215).toString(16) + "||" + this.options.CustomOptions['iconGroup'] ;
                             this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);
                         }
 
