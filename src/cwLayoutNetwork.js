@@ -33,6 +33,7 @@
         this.networkConfiguration.nodes = {}; 
         this.expertMode = false;
         this.expertModeAvailable = this.options.CustomOptions['expertMode'];
+        this.expertModeAvailable = true;
 
         try {
             this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkCreateOnViewScriptname).name;

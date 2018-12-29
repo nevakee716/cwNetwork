@@ -114,28 +114,38 @@
         this.diagramTemplate = {};
         var idToLoad = [];
 
-
-        $.getJSON(cwApi.getLiveServerURL() + "page/" + templateListUrl + '?' + Math.random(), function(json) {
-            if (json) {
-                for (var associationNode in json) {
-                    if (json.hasOwnProperty(associationNode)) {
-                        for (var i = 0; i < json[associationNode].length; i += 1) {
-                            idToLoad.push(json[associationNode][i].object_id);
+        if (this.expertModeAvailable) {
+            $.getJSON(cwApi.getLiveServerURL() + "page/" + templateListUrl + '?' + Math.random(), function(json) {
+                if (json) {
+                    for (var associationNode in json) {
+                        if (json.hasOwnProperty(associationNode)) {
+                            for (var i = 0; i < json[associationNode].length; i += 1) {
+                                idToLoad.push(json[associationNode][i].object_id);
+                            }
                         }
                     }
+                    idToLoad.forEach(function(id) {
+                        var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + '?' + Math.random();
+                        $.getJSON(url, function(json) {
+                            if (json.status === "Ok") {
+                                self.diagramTemplate[id] = json.result;
+                            }
+                        });
+                    });
                 }
-                idToLoad.forEach(function(id) {
-                    var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + '?' + Math.random();
+            });
+        } else {
+            for(var group in this.groupsArt){
+                if(this.groupsArt[group] && this.groupsArt[group].diagramTemplateID !== undefined) {
+                   var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + this.groupsArt[group].diagramTemplateID + '?' + Math.random();
                     $.getJSON(url, function(json) {
                         if (json.status === "Ok") {
                             self.diagramTemplate[id] = json.result;
                         }
                     });
-                });
+                }
             }
-        });
-
-
+        }
 
     };
 

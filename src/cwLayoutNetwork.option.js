@@ -88,7 +88,7 @@
                         groups[optionSplit[0]].font = {};
                         groups[optionSplit[0]].font.size = 2;
                         groups[optionSplit[0]].diagramTemplateID = optionSplit[3];
-                        //if (idTemplateDiagram.indexOf(optionSplit[3]) === -1) idTemplateDiagram.push((optionSplit[3]));
+                        
 
                     } else if (optionSplit[1] === "icon") {
                         groups[optionSplit[0]].shape = 'icon';
