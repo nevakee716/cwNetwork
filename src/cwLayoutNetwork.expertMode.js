@@ -192,9 +192,12 @@
 
 
     cwLayoutNetwork.prototype.addGroup = function(groups,changeGroup) {
-        changeGroup.pop();
-        groups.push(["Add a new group","","","",true]);
-        this.updateGroups(groups,changeGroup);
+        if(changeGroup !== "Add a new group") {
+            changeGroup.pop();
+            groups.push(["Add a new group","","","",true]);
+            this.updateGroups(groups,changeGroup);           
+        }
+
     };
 
     cwLayoutNetwork.prototype.updateGroups = function(groups,changeGroup) {
@@ -321,25 +324,30 @@
 
 
             $scope.data = {};
-            $scope.e = {};
-            $scope.hnode = false;
-            $scope.dnode = false;
-            $scope.cnode = false;
-            $scope.e.group = "";
+            $scope.config = {};
+            $scope.config.hnode = false;
+            $scope.config.dnode = false;
+            $scope.config.cnode = false;
+            $scope.config.egroup = "";
+
+            $scope.optionString = {};
             $("#cwLayoutNetworkExpertModeNodesConfigTree" + self.nodeID).on('changed.jstree', function(e, data) {
                 if (data.node && data.node.original) {
                     $scope.data = data.node.original;
 
-                    $scope.hnode = $scope.isHiddenNode($scope.data.NodeID);
-                    $scope.dnode = $scope.isDuplicateNode($scope.data.NodeID);
-                    $scope.cnode = $scope.isComplementaryNode($scope.data.NodeID);
+                    $scope.config.hnode = $scope.isHiddenNode($scope.data.NodeID);
+                    $scope.config.dnode = $scope.isDuplicateNode($scope.data.NodeID);
+                    $scope.config.cnode = $scope.isComplementaryNode($scope.data.NodeID);
+
+                    if(self.specificGroup[$scope.data.NodeID]) $scope.config.sgroup = self.specificGroup[$scope.data.NodeID];
+                    else $scope.config.sgroup = "None";
 
 
-                    if(self.directionList[$scope.data.NodeID]) $scope.aDirection = self.directionList[$scope.data.NodeID];
-                    else $scope.aDirection = "None";
+                    if(self.directionList[$scope.data.NodeID]) $scope.config.aDirection = self.directionList[$scope.data.NodeID];
+                    else $scope.config.aDirection = "None";
 
-                    if(self.nodeFiltered[data.node.original.NodeID]) $scope.e.group = self.nodeFiltered[data.node.original.NodeID][0];
-                    else $scope.e.group = "";
+                    if(self.nodeFiltered[data.node.original.NodeID]) $scope.config.egroup = self.nodeFiltered[data.node.original.NodeID][0];
+                    else $scope.config.egroup = "";
 
                     $scope.$apply();
                 }
@@ -378,32 +386,32 @@
             };
             $scope.updateComplementaryNode = function(nodeID) {
                 let index = self.complementaryNode.indexOf(nodeID);
-                if (this.cnode && index === -1) self.complementaryNode.push(nodeID);
-                else if (index > -1 && this.cnode === false) {
+                if ($scope.config.cnode && index === -1) self.complementaryNode.push(nodeID);
+                else if (index > -1 && $scope.config.cnode === false) {
                     self.complementaryNode.splice(index, 1);
                 }
-                $scope.complementaryNodesString = self.complementaryNode.join(',');
+                $scope.optionString.complementaryNodesString = self.complementaryNode.join(',');
                 self.updateNetworkData();
             };
 
             $scope.updateDuplicateNode = function(nodeID) {
                 let index = self.duplicateNode.indexOf(nodeID);
-                if (this.dnode && index === -1) self.duplicateNode.push(nodeID);
-                else if (index > -1 && this.dnode === false) {
+                if ($scope.config.dnode && index === -1) self.duplicateNode.push(nodeID);
+                else if (index > -1 && $scope.config.dnode === false) {
                     self.duplicateNode.splice(index, 1);
                 }
-                $scope.duplicateNodesString = self.duplicateNode.join(',');
+                $scope.optionString.duplicateNodesString = self.duplicateNode.join(',');
                 self.updateNetworkData();
-                $('.selectNetworkPicker_' + self.nodeID + "." + sgroup.replaceAll(" ", "_")).selectpicker('selectAll');
+                $('.selectNetworkPicker_' + self.nodeID + "." + $scope.config.sgroup.replaceAll(" ", "_")).selectpicker('selectAll');
             };
 
             $scope.updateHiddenNode = function(nodeID) {
                 let index = self.hiddenNodes.indexOf(nodeID);
-                if (this.hnode && index === -1) self.hiddenNodes.push(nodeID);
-                else if (index > -1 && this.hnode === false) {
+                if ($scope.config.hnode && index === -1) self.hiddenNodes.push(nodeID);
+                else if (index > -1 && $scope.config.hnode === false) {
                     self.hiddenNodes.splice(index, 1);
                 }
-                $scope.hiddenNodesString = self.hiddenNodes.join(',');
+                $scope.optionString.hiddenNodesString = self.hiddenNodes.join(',');
                 self.updateNetworkData();
             };
 
@@ -427,7 +435,7 @@
                 self.nodeFiltered = {};
                 self.getExternalFilterNodes(newNodeFilteredString);
                 self.updateNetworkData();
-                $scope.nodeFilteredString = newNodeFilteredString;
+                $scope.optionString.nodeFilteredString = newNodeFilteredString;
             };
 
 
@@ -451,7 +459,6 @@
                 self.options.CustomOptions['specificGroup'] = this.specificGroupString;
                 self.getOption('specificGroup','specificGroup','#',',');
                 self.updateNetworkData();
-                $('.selectNetworkPicker_' + self.nodeID + "." + sgroup.replaceAll(" ", "_")).selectpicker('selectAll');
 
             };
 
@@ -466,16 +473,16 @@
                 }
 
 
-                $scope.directionListString = "";
+                $scope.optionString.directionListString = "";
                 for(var n in self.directionList) {
                     if(self.directionList.hasOwnProperty(n)) {
-                        $scope.directionListString += n + "," + self.directionList[n] + "#";
+                        $scope.optionString.directionListString += n + "," + self.directionList[n] + "#";
                     }
                 }
-                if($scope.directionListString != "") $scope.directionListString = $scope.directionListString.slice(0, -1);
+                if($scope.optionString.directionListString != "") $scope.optionString.directionListString = $scope.optionString.directionListString.slice(0, -1);
                 self.directionList = {};
-                self.options.CustomOptions['arrowDirection'] = $scope.directionListString;
-                self.getdirectionList($scope.directionListString);
+                self.options.CustomOptions['arrowDirection'] = $scope.optionString.directionListString;
+                self.getdirectionList($scope.optionString.directionListString);
                 self.updateNetworkData();
 
             };
@@ -483,12 +490,12 @@
 
 
 
-            $scope.complementaryNodesString = self.complementaryNode.join(',');
-            $scope.duplicateNodesString = self.duplicateNode.join(',');
-            $scope.hiddenNodesString = self.hiddenNodes.join(',');
-            $scope.nodeFilteredString = self.options.CustomOptions['filterNode'];
-            $scope.directionListString = self.options.CustomOptions['arrowDirection'];
-            $scope.updateNetworkData = self.updateNetworkData;
+            $scope.optionString.complementaryNodesString = self.complementaryNode.join(',');
+            $scope.optionString.duplicateNodesString = self.duplicateNode.join(',');
+            $scope.optionString.hiddenNodesString = self.hiddenNodes.join(',');
+            $scope.optionString.nodeFilteredString = self.options.CustomOptions['filterNode'];
+            $scope.optionString.directionListString = self.options.CustomOptions['arrowDirection'];
+            $scope.optionString.updateNetworkData = self.updateNetworkData;
 
         });
 
