@@ -321,9 +321,11 @@
 
 
             $scope.data = {};
+            $scope.e = {};
             $scope.hnode = false;
             $scope.dnode = false;
             $scope.cnode = false;
+            $scope.e.group = "";
             $("#cwLayoutNetworkExpertModeNodesConfigTree" + self.nodeID).on('changed.jstree', function(e, data) {
                 if (data.node && data.node.original) {
                     $scope.data = data.node.original;
@@ -336,9 +338,9 @@
                     if(self.directionList[$scope.data.NodeID]) $scope.aDirection = self.directionList[$scope.data.NodeID];
                     else $scope.aDirection = "None";
 
-                    if(self.nodeFiltered[$scope.data.NodeID]) $scope.egroup = self.nodeFiltered[$scope.data.NodeID];
-                    else $scope.egroup = "";
-                    
+                    if(self.nodeFiltered[data.node.original.NodeID]) $scope.e.group = self.nodeFiltered[data.node.original.NodeID][0];
+                    else $scope.e.group = "";
+
                     $scope.$apply();
                 }
             }).jstree({
@@ -411,7 +413,7 @@
                 if(string === "" || string.length < 2) {
                     delete self.nodeFiltered[nodeID];
                 } else {
-                    self.nodeFiltered[nodeID] = string;
+                    self.nodeFiltered[nodeID] = [string];
                 }
 
                 var newNodeFilteredString = "";
@@ -464,16 +466,16 @@
                 }
 
 
-                this.directionListString = "";
+                $scope.directionListString = "";
                 for(var n in self.directionList) {
                     if(self.directionList.hasOwnProperty(n)) {
-                        this.directionListString += n + "," + self.directionList[n] + "#";
+                        $scope.directionListString += n + "," + self.directionList[n] + "#";
                     }
                 }
-                if(this.directionListString != "") this.directionListString = this.directionListString.slice(0, -1);
+                if($scope.directionListString != "") $scope.directionListString = $scope.directionListString.slice(0, -1);
                 self.directionList = {};
-                self.options.CustomOptions['directionList'] = this.directionListString;
-                self.getdirectionList(this.directionListString);
+                self.options.CustomOptions['arrowDirection'] = $scope.directionListString;
+                self.getdirectionList($scope.directionListString);
                 self.updateNetworkData();
 
             };
@@ -485,7 +487,7 @@
             $scope.duplicateNodesString = self.duplicateNode.join(',');
             $scope.hiddenNodesString = self.hiddenNodes.join(',');
             $scope.nodeFilteredString = self.options.CustomOptions['filterNode'];
-            $scope.directionListString = self.options.CustomOptions['directionList'];
+            $scope.directionListString = self.options.CustomOptions['arrowDirection'];
             $scope.updateNetworkData = self.updateNetworkData;
 
         });
