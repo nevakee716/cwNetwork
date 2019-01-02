@@ -146,19 +146,9 @@
 
 
         this.buildEdges();
+        this.enableSaveButtonEvent();
+        this.enableExpertModeButtonEvent();
 
-
-        var saveButton = document.getElementById("nodeConfigurationSaveButton_" + this.nodeID);
-        if (saveButton) {
-            saveButton.addEventListener('click', this.saveIndexPage.bind(this));
-        }
-
-        if(saveButton || this.expertModeAvailable) {
-            var expertButton = document.getElementById("cwLayoutNetworkExpertModeButton" + this.nodeID);
-            if(expertButton) {
-                expertButton.addEventListener('click', this.manageExpertMode.bind(this));
-            }
-        }
 
         if (this.removeLonely) {
             var removeLonelyButton = document.getElementById("cwLayoutNetworkButtonsLonelyNodes" + this.nodeID);
@@ -482,6 +472,26 @@
             if (cwAPI.isDebugMode() === true) console.log("network set");
         });
 
+    };
+
+
+    // Save Button Event
+    cwLayoutNetwork.prototype.enableSaveButtonEvent = function() {
+        var saveButton = document.getElementById("nodeConfigurationSaveButton_" + this.nodeID);
+        if (saveButton) {
+            saveButton.addEventListener('click', this.saveIndexPage.bind(this));
+        }
+    };
+
+
+    // Expert Mode Button Event
+    cwLayoutNetwork.prototype.enableExpertModeButtonEvent = function() {
+        if(this.expertModeAvailable) {
+            var expertButton = document.getElementById("cwLayoutNetworkExpertModeButton" + this.nodeID);
+            if(expertButton) {
+                expertButton.addEventListener('click', this.manageExpertMode.bind(this));
+            }
+        }
     };
 
 

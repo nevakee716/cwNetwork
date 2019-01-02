@@ -76,6 +76,17 @@
         this.dragged = {};
 
 
+        this.originalOptions = {};
+        this.originalOptions.groupString = this.options.CustomOptions['iconGroup'];
+        this.originalOptions.directionListString = this.options.CustomOptions['arrowDirection'];
+        this.originalOptions.newNodeFilteredString = this.options.CustomOptions['filterNode'];
+        this.originalOptions.specificGroupString = this.options.CustomOptions['specificGroup'];
+        this.originalOptions.hiddenNodesString = this.options.CustomOptions['hidden-nodes'];
+        this.originalOptions.duplicateNodesString = this.options.CustomOptions['duplicateNodes'];
+        this.originalOptions.complementaryNodesString = this.options.CustomOptions['complementaryNode'];
+
+
+
         this.multiLineCount = this.options.CustomOptions['multiLineCount'];
         this.getOption('complementaryNode','complementaryNode',',');
         this.getOption('contextualFilter','contextualNode',',');

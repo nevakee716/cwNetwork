@@ -1,0 +1,42 @@
+<div ng-controller="expertModeNodeConfig" class="cw-visible">
+
+<h1> Node Configuration</h1>
+<div ng-if="data.NodeID === undefined">Please Select a node to Configure </div>
+<table ng-if="data.NodeID !== undefined">
+	<tr><td> Node : </td><td>{{data.text}}</td></tr>
+		<tr><td> Node ID : </td><td>{{data.NodeID}}</td></tr>
+		<tr><td> Complementary Node : </td><td><input ng-model="config.cnode" ng-change="updateComplementaryNode(data.NodeID)" type="checkbox" ng-checked="isComplementaryNode(data.NodeID)"></td></tr>
+		<tr><td> Duplicate Node : </td><td><input ng-model="config.dnode" ng-change="updateDuplicateNode(data.NodeID)" type="checkbox" ng-checked="isDuplicateNode(data.NodeID)"></td></tr>
+		<tr><td> Hidden Node : </td> <td><input ng-model="config.hnode" ng-change="updateHiddenNode(data.NodeID)" type="checkbox" ng-checked="isHiddenNode(data.NodeID)"></td></tr>
+		<tr><td> External Filter : </td><td> <input type="text" ng-model="config.egroup"></input><button ng-click="updateExtFilters(config.egroup,data.NodeID)"><i class="fa fa-refresh" aria-hidden="true"></i></button></td></tr>
+		<tr><td> Specific Group : </td><td>
+			<select ng-model="config.sgroup" ng-change="updateSpecificGroups(config.sgroup,data.NodeID)">
+    			<option >None</option>
+    			<option ng-repeat="g in groups" ng-selected="isSpecificGroup(g,data.NodeID)">{{g[0]}}</option>
+			</select>
+		</td></tr>
+		<tr><td> Arrow Direction : </td><td>
+			<select ng-model="config.aDirection" ng-change="updateArrowDirection(config.aDirection,data.NodeID)">
+    			<option>None</option>
+    			<option value='from'>From</option>
+    			<option value='to'>To</option>
+			</select>
+		</td></tr>
+</table>
+
+<h1> Config String for Evolve Designer: </h1>
+<div><span>Hidden Nodes : </span><span>{{optionString.hiddenNodesString}}</span></div>
+<div><span>Complementary Nodes : </span><span>{{optionString.complementaryNodesString}}</span></div>
+<div><span>Duplicate Nodes : </span><span>{{optionString.duplicateNodesString}}</span></div>
+<div><span>External Filters : </span><span>{{optionString.nodeFilteredString}}</span></div>
+<div><span>Arrow Direction : </span><span>{{optionString.directionListString}}</span></div>
+</div>
+
+
+
+
+
+
+
+
+

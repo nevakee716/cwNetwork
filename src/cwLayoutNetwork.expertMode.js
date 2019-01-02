@@ -178,8 +178,10 @@
             $scope.configString = self.options.CustomOptions['iconGroup'];
             for (var i = 0; i < g.length; i++) {
                 g[i] = g[i].split(",");
+                if(self.groupToSelectOnStart.indexOf(g[i][0]) !== -1) g[i][4] = true;
+                else g[i][4] = false;
             }
-            if(g[g.length - 1].length < 5) g.push(["Add a new group","","","",true]);
+            if(g[g.length - 1].length < 6) g.push(["Add a new group","","","",false,true]);
             
             $scope.groups = g;
             $scope.updateGroups = self.updateGroups.bind(self);
@@ -201,23 +203,32 @@
     };
 
     cwLayoutNetwork.prototype.updateGroups = function(groups,changeGroup) {
-        if(changeGroup.length < 5) {
+        if(changeGroup.length < 6) {
             var output = "";
             var self = this;
             groups.forEach(function(g, index) {
-                
                     g.forEach(function(c, index2) {
-                        output += c;
-                        if (index2 < g.length - 1) output += ",";
+                        if(index2 < 5) {
+                            output += c;
+                            if (index2 < 4) output += ",";                          
+                        }
                     });
                     if (index < groups.length - 1) output += "||";
             });
+            // starting group
+            let index = self.groupToSelectOnStart.indexOf(changeGroup[0]);
+            if (changeGroup[4] === true && index === -1) self.groupToSelectOnStart.push(changeGroup[0]);
+            else if (index > -1 && changeGroup[4] === false) {
+                self.groupToSelectOnStart.splice(index, 1);
+            }
+
 
             this.getFontAwesomeList(output);
             var opt = {};
             opt.groups = this.groupsArt;
             this.networkUI.setOptions(opt);
             this.angularScope.configString = output;
+            this.groupString = output;
             this.options.CustomOptions['iconGroup'] = output;
             this.setAllExternalFilter();
 
@@ -391,6 +402,7 @@
                     self.complementaryNode.splice(index, 1);
                 }
                 $scope.optionString.complementaryNodesString = self.complementaryNode.join(',');
+                self.complementaryNodesString = $scope.optionString.complementaryNodesString;
                 self.updateNetworkData();
             };
 
@@ -401,6 +413,7 @@
                     self.duplicateNode.splice(index, 1);
                 }
                 $scope.optionString.duplicateNodesString = self.duplicateNode.join(',');
+                self.duplicateNodesString = $scope.optionString.duplicateNodesString;
                 self.updateNetworkData();
                 $('.selectNetworkPicker_' + self.nodeID + "." + $scope.config.sgroup.replaceAll(" ", "_")).selectpicker('selectAll');
             };
@@ -412,6 +425,7 @@
                     self.hiddenNodes.splice(index, 1);
                 }
                 $scope.optionString.hiddenNodesString = self.hiddenNodes.join(',');
+                self.hiddenNodesString = self.hiddenNodes.join(',');
                 self.updateNetworkData();
             };
 
@@ -435,6 +449,7 @@
                 self.nodeFiltered = {};
                 self.getExternalFilterNodes(newNodeFilteredString);
                 self.updateNetworkData();
+                self.newNodeFilteredString = newNodeFilteredString;
                 $scope.optionString.nodeFilteredString = newNodeFilteredString;
             };
 
@@ -457,6 +472,7 @@
                 if(this.specificGroupString != "") this.specificGroupString = this.specificGroupString.slice(0, -1);
                 self.specificGroup = {};
                 self.options.CustomOptions['specificGroup'] = this.specificGroupString;
+                self.specificGroupString = this.specificGroupString;
                 self.getOption('specificGroup','specificGroup','#',',');
                 self.updateNetworkData();
 
@@ -482,6 +498,8 @@
                 if($scope.optionString.directionListString != "") $scope.optionString.directionListString = $scope.optionString.directionListString.slice(0, -1);
                 self.directionList = {};
                 self.options.CustomOptions['arrowDirection'] = $scope.optionString.directionListString;
+                self.directionListString = $scope.optionString.directionListString;
+                
                 self.getdirectionList($scope.optionString.directionListString);
                 self.updateNetworkData();
 
@@ -509,7 +527,7 @@
         var sObject = this.manageDataFromEvolve(this.copyObject);
         this.network = new cwApi.customLibs.cwLayoutNetwork.network();
         this.network.searchForNodesAndEdges(sObject, this.nodeOptions);
-        var filterContainer = document.getElementById("cwLayoutNetworkFilter" + this.nodeID);
+
         this.setFilters();
 
         var opt = {};
@@ -555,6 +573,8 @@
 
         this.nodes.update(changeset);
         this.buildEdges();
+        this.activateStartingGroup();
+        this.enableSaveButtonEvent();
 
 
 
