@@ -128,14 +128,18 @@
                         } else {
                             element.group = this.objects[element.object_id + "#" + element.objectTypeScriptName + fatherID];
                         }
+
+
+                        if (this.groupsArt.hasOwnProperty(element.group) === false) {
+                            let o = this.options.CustomOptions['iconGroup'];
+                            if (o !== "") o = "||" + o;
+                            this.options.CustomOptions['iconGroup'] = element.group + "," + "ellipse" + ",#" + Math.floor(Math.random() * 16777215).toString(16) + o;
+                            this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);
+                        }
+
                         // add objectType ScriptName to group
                         if (element.group && element.objectTypeScriptName && this.groupsArt[element.group] && this.groupsArt[element.group].objectTypes && this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1) {
                             this.groupsArt[element.group].objectTypes.push(element.objectTypeScriptName);
-                        }
-
-                        if(this.groupsArt.hasOwnProperty(element.group) === false) {
-                            this.options.CustomOptions['iconGroup'] = element.group + "," + "ellipse" + ",#" + Math.floor(Math.random()*16777215).toString(16) + "||" + this.options.CustomOptions['iconGroup'] ;
-                            this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);
                         }
 
                         //attribute id, will have the father name in case of duplicate node
@@ -329,6 +333,21 @@
         } else {
             element.group = this.objects[element.object_id + "#" + element.objectTypeScriptName];
         }
+
+        if (this.groupsArt.hasOwnProperty(element.group) === false) {
+            let o = this.options.CustomOptions['iconGroup'];
+            if (o !== "") o = "||" + o;
+            this.options.CustomOptions['iconGroup'] = element.group + "," + "ellipse" + ",#" + Math.floor(Math.random() * 16777215).toString(16) + o;
+            this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);
+        }
+
+        this.originalObjects[element.object_id + "#" + element.objectTypeScriptName] = object;
+
+        // add objectType ScriptName to group
+        if (element.group && element.objectTypeScriptName && this.groupsArt[element.group] && this.groupsArt[element.group].objectTypes && this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1) {
+            this.groupsArt[element.group].objectTypes.push(element.objectTypeScriptName);
+        }
+
         if (this.directionList.hasOwnProperty(rootID)) { // ajout de la direction
             element.direction = this.directionList[rootID];
         }
