@@ -189,6 +189,16 @@
             $scope.checkIfContainObjectType = self.checkIfGroupMatchTemplate.bind(self);
             $scope.diagramTemplate = self.diagramTemplate;
             $scope.addGroup = self.addGroup.bind(self);
+            $scope.copyToClipboard = function(str) {
+              const el = document.createElement('textarea');
+              el.value = str;
+              document.body.appendChild(el);
+              el.select();
+              document.execCommand('copy');
+              document.body.removeChild(el);
+            };
+
+
         });
     };
 
@@ -466,6 +476,17 @@
                 self.newNodeFilteredString = newNodeFilteredString;
                 $scope.optionString.nodeFilteredString = newNodeFilteredString;
             };
+
+
+            $scope.copyToClipboard = function(str) {
+              const el = document.createElement('textarea');
+              el.value = str;
+              document.body.appendChild(el);
+              el.select();
+              document.execCommand('copy');
+              document.body.removeChild(el);
+            };
+
 
 
             $scope.updateSpecificGroups = function(sgroup,nodeID) {

@@ -24,21 +24,14 @@
 		</td></tr>
 </table>
 
-<h1> Config String for Evolve Designer: </h1>
-<div><span>Hidden Nodes : </span><span>{{optionString.hiddenNodesString}}</span></div>
-<div><span>Complementary Nodes : </span><span>{{optionString.complementaryNodesString}}</span></div>
-<div><span>Duplicate Nodes : </span><span>{{optionString.duplicateNodesString}}</span></div>
-<div><span>External Filters : </span><span>{{optionString.nodeFilteredString}}</span></div>
-<div><span>Arrow Direction : </span><span>{{optionString.directionListString}}</span></div>
-<div><span>Specific Group String : </span><span>{{optionString.specificGroupString}}</span></div>
+<h2>Config String for Evolve Designer</h2>
+<h3>(click to copy to clipboard) : </h3>
+<div><button ng-if="optionString.hiddenNodesString != ''" ng-click="copyToClipboard(optionString.hiddenNodesString)">Hidden Nodes</button></div>
+<div><button ng-if="optionString.complementaryNodesString != ''" ng-click="copyToClipboard(optionString.complementaryNodesString)">Complementary Nodes</button></div>
+<div><button ng-if="optionString.duplicateNodesString != ''" ng-click="copyToClipboard(optionString.duplicateNodesString)">Duplicate Nodes</button></div>
+<div><button ng-if="optionString.nodeFilteredString != ''" ng-click="copyToClipboard(optionString.nodeFilteredString)">External Filters</button></div>
+<div><button ng-if="optionString.directionListString != ''" ng-click="copyToClipboard(optionString.directionListString)">Arrow Direction</button></div>
+<div><button ng-if="optionString.specificGroupString != ''" ng-click="copyToClipboard(optionString.specificGroupString)">Specific Group String</button></div>
 
 </div>
-
-
-
-
-
-
-
-
 
