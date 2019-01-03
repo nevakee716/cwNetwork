@@ -185,7 +185,7 @@
                     if (this.nodeFiltered[optionSplit[0]] === undefined) {
                         this.nodeFiltered[optionSplit[0]] = [optionSplit[1]];
                     } else {
-                        this.nodeFiltered[optionSplit[0]].push(optionSplit[1]);
+                        this.nodeFiltered[optionSplit[0]] = [optionSplit[1]];
                     }
                 } else {
                     this.externalFilters[optionSplit[1]] = new cwApi.customLibs.cwLayoutNetwork.externalAssociationFilter(true, optionSplit[0], optionSplit[1]);
