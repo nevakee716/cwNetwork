@@ -79,12 +79,7 @@
         };
 
         if(this.physConfiguration === undefined || this.physConfiguration === "") {
-            this.physConfiguration = {
-                barnesHut: {
-                    springLength: 150
-                },
-                minVelocity: 0.75,
-            };
+            this.physConfiguration = {"barnesHut":{"gravitationalConstant":-26500,"springLength":150},"minVelocity":0.75};
         }
 
         this.networkOptions = {
