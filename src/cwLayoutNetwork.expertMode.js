@@ -181,8 +181,8 @@
                 if(self.groupToSelectOnStart.indexOf(g[i][0]) !== -1) g[i][4] = true;
                 else g[i][4] = false;
             }
-            if(g[g.length - 1].length < 6) g.push(["Add a new group","","","",false,true]);
-            
+
+            $scope.groupToSelectOnStartString = self.options.CustomOptions['groupToSelectOnStart'];
             $scope.groups = g;
             $scope.updateGroups = self.updateGroups.bind(self);
             $scope.bootstrapFilter = self.bootstrapFilter;
@@ -203,60 +203,73 @@
     };
 
 
-    cwLayoutNetwork.prototype.addGroup = function(groups,changeGroup) {
-        if(changeGroup !== "Add a new group") {
-            changeGroup.pop();
-            groups.push(["Add a new group","","","",true]);
-            this.updateGroups(groups,changeGroup);           
-        }
-
+    cwLayoutNetwork.prototype.addGroup = function(groups) {
+        var g = [];
+        g[0] = "New Group";
+        g[1] = "ellipse";
+        g[2] = Math.floor(Math.random() * 16777215).toString(16);
+        g[3] = Math.floor(Math.random() * 16777215).toString(16);        
+        g[4] = false;
+        groups.push(g);
+        this.updateGroups(groups,g);           
+    
     };
 
     cwLayoutNetwork.prototype.updateGroups = function(groups,changeGroup) {
-        if(changeGroup.length < 6) {
-            var output = "";
-            var self = this;
-            groups.forEach(function(g, index) {
-                    g.forEach(function(c, index2) {
-                        if(index2 < 5) {
-                            output += c;
-                            if (index2 < 4) output += ",";                          
-                        }
-                    });
-                    if (index < groups.length - 1) output += "||";
-            });
-            // starting group
-            let index = self.groupToSelectOnStart.indexOf(changeGroup[0]);
-            if (changeGroup[4] === true && index === -1) self.groupToSelectOnStart.push(changeGroup[0]);
-            else if (index > -1 && changeGroup[4] === false) {
-                self.groupToSelectOnStart.splice(index, 1);
-            }
 
+        var output = "";
+        var self = this;
+        var gts = "";
+        groups.forEach(function(g, index) {
+                g.forEach(function(c, index2) {
+                    if(index2 < 5) {
+                        output += c;
+                        if (index2 < 4) output += ",";    
 
-            this.getFontAwesomeList(output);
-            var opt = {};
-            opt.groups = this.groupsArt;
-            this.networkUI.setOptions(opt);
-            this.angularScope.configString = output;
-            this.groupString = output;
-            this.options.CustomOptions['iconGroup'] = output;
-            this.setAllExternalFilter();
+                    }
+                });
+                if(g[4] === true) gts += g[0] + ",";
+                if (index < groups.length - 1) output += "||";
+        });
 
-            var nu = [];
-            var positions = this.networkUI.getPositions();
-            this.nodes.forEach(function(node) {
-                node.resized = undefined;
-                node.widthConstraint = undefined;
-                node.heightConstraint = undefined;
-                node.color = undefined;
-                nu.push(node);
-            });
+        if(gts !== "")  gts = gts.substring(0, gts.length - 1);
 
-            self.nodes.update(nu);
+        // starting group
+        let index = self.groupToSelectOnStart.indexOf(changeGroup[0]);
+        if (changeGroup[4] === true && index === -1) self.groupToSelectOnStart.push(changeGroup[0]);
+        else if (index > -1 && changeGroup[4] === false) {
+            self.groupToSelectOnStart.splice(index, 1);
         }
 
 
+
+        this.getFontAwesomeList(output);
+        var opt = {};
+        opt.groups = this.groupsArt;
+        this.networkUI.setOptions(opt);
+        this.angularScope.configString = output;
+        this.angularScope.groupToSelectOnStartString = gts;
+        this.options.CustomOptions['groupToSelectOnStart'] = gts;
+        this.groupString = output;
+        this.options.CustomOptions['iconGroup'] = output;
+        this.setAllExternalFilter();
+
+        var nu = [];
+        var positions = this.networkUI.getPositions();
+        this.nodes.forEach(function(node) {
+            node.resized = undefined;
+            node.widthConstraint = undefined;
+            node.heightConstraint = undefined;
+            node.color = undefined;
+            nu.push(node);
+        });
+
+        self.nodes.update(nu);
+
+
     };
+
+
 
     cwLayoutNetwork.prototype.bootstrapFilter = function(id, value) {
         window.setTimeout(function(params) {
@@ -550,6 +563,7 @@
             $scope.optionString.nodeFilteredString = self.options.CustomOptions['filterNode'];
             $scope.optionString.directionListString = self.options.CustomOptions['arrowDirection'];
             $scope.optionString.updateNetworkData = self.updateNetworkData;
+            $scope.optionString.specificGroupString = self.options.CustomOptions['specificGroup'];
 
         });
 
