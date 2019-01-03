@@ -36,7 +36,7 @@
         var self = this;
 
         var iconSize = 70;
-        var fontSize = 30;
+        var fontSize = 15;
         var shapeSize = 40;
         var idTemplateDiagram = [];
 

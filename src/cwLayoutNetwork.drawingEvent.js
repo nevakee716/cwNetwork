@@ -159,9 +159,9 @@
             nodePosition = nodePosition[cluster.nodes[0]];
             var n = cluster.nodes.length;
             var ystep;
-            var labelmargin = 40;
-            var xmargin = 60;
-            var ymargin = 10;
+            var labelmargin = 80;
+            var xmargin = 100;
+            var ymargin = 30;
             var headerOffset;
             var group = self.networkUI.groups.get(self.nodes.get(cluster.head).group);
 
@@ -172,8 +172,8 @@
             }
 
             if (group.shape === "image" || group.shape === "circularImage") {
-                ystep = 80;
-            } else ystep = 60;
+                ystep = 130;
+            } else ystep = 100;
 
 
             if (cluster.nodes.length > 0) {
@@ -189,8 +189,14 @@
             cluster.init = false;
             ctx.strokeStyle = group.color.border;
             ctx.lineWidth = 2;
-            if (group.shape === "icon" || group.shape === "image" || group.shape === "circularImage") ctx.fillStyle = self.LightenDarkenColor(group.color.background, 100);
-            else ctx.fillStyle = group.color.background;
+            if (group.shape === "icon" || group.shape === "image" || group.shape === "circularImage") {
+                let color = group.color.background;
+                if(color[0] != "#") color = "#" + color;
+                while (self.getHSL(color) < 150){
+                    color = self.LightenDarkenColor(color, 100);
+                }
+                ctx.fillStyle = color;
+            } else ctx.fillStyle = group.color.background;
             ctx.rect(nodePosition.x - xmargin, nodePosition.y - ymargin * 2 - labelmargin, 2 * xmargin, ystep * n + labelmargin);
             ctx.fill();
             ctx.stroke();
