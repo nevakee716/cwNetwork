@@ -274,7 +274,7 @@
 
 
 
-    cwLayoutNetwork.prototype.nodeIDToFancyTree = function(node) {
+    cwLayoutNetwork.prototype.nodeIDToFancyTree = function(node,noLoop) {
         var self = this;
         if (node === undefined) {
             node = this.viewSchema.NodesByID[this.nodeID];
@@ -285,19 +285,23 @@
             opened: true
         };
 
-        node.SortedChildren.forEach(function(n) {
-            node.children.push(self.nodeIDToFancyTree(self.viewSchema.NodesByID[n.NodeId]));
-        });
+        if(noLoop !== true) {
+            node.SortedChildren.forEach(function(n) {
+                node.children.push(self.nodeIDToFancyTree(self.viewSchema.NodesByID[n.NodeId]));
+            });            
+        }
+
         return node;
 
     };
 
 
     cwLayoutNetwork.prototype.createNodeConfig = function(container) {
-        var source = [];
-        let q = cwAPI.getQueryStringObject();
+        var tmpsource = [],source = [];
+        let q = cwApi.getQueryStringObject();
         let tab = "tab0";
         var self = this;
+
         if (q.cwtabid) tab = q.cwtabid;
         if (this.viewSchema.Tab && this.viewSchema.Tab.Tabs) {
             this.viewSchema.Tab.Tabs.forEach(function(t) {
@@ -307,6 +311,16 @@
                     });
                 }
             });
+        } else {
+            self.viewSchema.RootNodesId.forEach(function(n) {
+                source.push(self.nodeIDToFancyTree(self.viewSchema.NodesByID[n]));
+            });
+        }
+
+        if(cwApi.isIndexPage() === false) {
+            tmpsource.push(self.nodeIDToFancyTree(self.viewSchema.NodesByID[self.viewSchema.RootNodesId[0]]));
+            tmpsource[0].children = source;
+            source = tmpsource;
         }
 
 
@@ -473,6 +487,7 @@
                 self.specificGroup = {};
                 self.options.CustomOptions['specificGroup'] = this.specificGroupString;
                 self.specificGroupString = this.specificGroupString;
+                $scope.optionString.specificGroupString = this.specificGroupString;
                 self.getOption('specificGroup','specificGroup','#',',');
                 self.updateNetworkData();
 
