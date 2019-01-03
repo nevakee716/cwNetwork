@@ -24,23 +24,22 @@
         properties.items.forEach(function(elem) {
             var node = self.nodes.get(elem);
             var label,group;
-            if(self.CDSFilterOption) label = node.label;
-            else label = node.name;
+            label = node.name;
 
             if(self.groupsArt && self.groupsArt[node.group]) {
                 htmltxt += cwApi.customLibs.cwLayoutNetwork.objectTypeNode.prototype.getLegendElement(self.groupsArt[node.group]);
 
                 group = self.groupsArt[node.group];
                 if(group && group.shape == "icon") {
-                    htmltxt += '<option style="color : ' + group.icon.color + '" class="fa" id=' + node.id + '>&#x' + group.unicode + " " + label + '</option>';      
+                    htmltxt += '<option style="color : ' + group.icon.color + '" class="fa" id=' + node.id.replaceAll(" ","¤") + '>&#x' + group.unicode + " " + label + '</option>';      
                 } else if(group && (group.shape === "image" || group.shape === "circularImage")) {
-                    htmltxt += '<option id=' + node.id + ' data-content="' + label + '<img class=\'networkLegendImage\' src=\'' +  group.image + '\'</>">'+ label + '</option>';
+                    htmltxt += '<option id=' + node.id.replaceAll(" ","¤") + ' data-content="' + label + '<img class=\'networkLegendImage\' src=\'' +  group.image + '\'</>">'+ label + '</option>';
                 } else if(group && group.shape) {
-                    htmltxt += '<option style="color : ' + group.color.border + '" class="fa" id=' + node.id + '>&#x' + cwApi.customLibs.cwLayoutNetwork.objectTypeNode.prototype.shapeToFontAwesome(group.shape) + " " + label + '</option>';      
+                    htmltxt += '<option style="color : ' + group.color.border + '" class="fa" id=' + node.id.replaceAll(" ","¤") + '>&#x' + cwApi.customLibs.cwLayoutNetwork.objectTypeNode.prototype.shapeToFontAwesome(group.shape) + " " + label + '</option>';      
                 }
 
             } else {
-               htmltxt += '<option class="fa" id=' + node.id + '>' + label + '</option>'; 
+               htmltxt += '<option class="fa" id=' + node.id.replaceAll(" ","¤") + '>' + label + '</option>'; 
             }
         });
         $('select.selectNetworkSearch_' + this.nodeID)

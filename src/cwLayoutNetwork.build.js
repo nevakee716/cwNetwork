@@ -108,6 +108,7 @@
             var groupArray = {};
             if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
                 id = $(this).context[clickedIndex]['id'];
+                id = id.replaceAll("¤"," ");
                 var options = {
                     position: self.networkUI.getPositions()[id],
                     scale: 2,
