@@ -40,12 +40,6 @@
         "Description": "Use NameGroup,FontAwesomeUnicode,color||NameGroup2,FontAwesomeUnicode2,color2. For exemple, Organisation,f1ad,#f0a30a",
         "Type": 0
     },
-        {
-        "Id": "diagramTemplate",
-        "DisplayName": "Diagram Template",
-        "Description": "Select the ID of the diagram Template to use for the network node",
-        "Type": 0
-    },
     {
         "Id": "arrowDirection",
         "DisplayName": "Arrow Direction",
