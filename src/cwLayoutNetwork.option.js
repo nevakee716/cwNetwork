@@ -91,14 +91,22 @@
                         
 
                     } else if (optionSplit[1] === "icon") {
+                        let color,icon;
+                        if(optionSplit[2].indexOf("#") === 0) {
+                            color = optionSplit[2];
+                            icon = optionSplit[3];
+                        } else {
+                            color = optionSplit[3];
+                            icon = optionSplit[2];                         
+                        }
                         groups[optionSplit[0]].shape = 'icon';
                         groups[optionSplit[0]].icon = {};
                         groups[optionSplit[0]].icon.face = 'FontAwesome';
-                        groups[optionSplit[0]].icon.code = unescape('%u' + optionSplit[3]);
-                        groups[optionSplit[0]].unicode = optionSplit[3];
+                        groups[optionSplit[0]].icon.code = unescape('%u' + icon);
+                        groups[optionSplit[0]].unicode = icon;
 
-                        groups[optionSplit[0]].icon.color = optionSplit[2];
-                        groups[optionSplit[0]].color = getColorForNode(optionSplit[2]);
+                        groups[optionSplit[0]].icon.color = color;
+                        groups[optionSplit[0]].color = getColorForNode(color);
                         groups[optionSplit[0]].icon.size = iconSize;
                         groups[optionSplit[0]].font = {
                             background: '#FFFFFF'
