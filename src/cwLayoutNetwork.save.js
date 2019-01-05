@@ -430,6 +430,8 @@
             this.options.CustomOptions['iconGroup'] = config.options.groupString;
             this.getFontAwesomeList(config.options.groupString);
             
+            this.externalFilters = {};
+            this.nodeFiltered = {};
             this.getdirectionList(config.options.directionListString);
             this.options.CustomOptions['arrowDirection'] = config.options.directionListString;
             this.directionListString = config.options.directionListString;

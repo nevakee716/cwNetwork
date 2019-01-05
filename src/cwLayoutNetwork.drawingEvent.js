@@ -137,7 +137,8 @@
         } else {
             for(var group in this.groupsArt){
                 if(this.groupsArt[group] && this.groupsArt[group].diagramTemplateID !== undefined) {
-                   var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + this.groupsArt[group].diagramTemplateID + '?' + Math.random();
+                    var id = this.groupsArt[group].diagramTemplateID;
+                    var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + this.groupsArt[group].diagramTemplateID + '?' + Math.random();
                     $.getJSON(url, function(json) {
                         if (json.status === "Ok") {
                             self.diagramTemplate[id] = json.result;
