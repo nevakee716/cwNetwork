@@ -1,0 +1,37 @@
+<div ng-controller="expertModeNodeConfig" class="cw-visible">
+
+<h1> Node Configuration</h1>
+<div ng-if="data.NodeID === undefined">Please Select a node to Configure </div>
+<table ng-if="data.NodeID !== undefined">
+	<tr><td> Node : </td><td>{{data.text}}</td></tr>
+		<tr><td> Node ID : </td><td>{{data.NodeID}}</td></tr>
+		<tr><td> Complementary Node : </td><td><input ng-model="config.cnode" ng-change="updateComplementaryNode(data.NodeID)" type="checkbox" ng-checked="isComplementaryNode(data.NodeID)"></td></tr>
+		<tr><td> Duplicate Node : </td><td><input ng-model="config.dnode" ng-change="updateDuplicateNode(data.NodeID)" type="checkbox" ng-checked="isDuplicateNode(data.NodeID)"></td></tr>
+		<tr><td> Hidden Node : </td> <td><input ng-model="config.hnode" ng-change="updateHiddenNode(data.NodeID)" type="checkbox" ng-checked="isHiddenNode(data.NodeID)"></td></tr>
+		<tr><td> External Filter : </td><td> <input type="text" ng-model="config.egroup"></input><button ng-click="updateExtFilters(config.egroup,data.NodeID)"><i class="fa fa-refresh" aria-hidden="true"></i></button></td></tr>
+		<tr><td> Specific Group : </td><td>
+			<select ng-model="config.sgroup" ng-change="updateSpecificGroups(config.sgroup,data.NodeID)">
+    			<option >None</option>
+    			<option ng-repeat="g in groups" ng-selected="isSpecificGroup(g,data.NodeID)">{{g[0]}}</option>
+			</select>
+		</td></tr>
+		<tr><td> Arrow Direction : </td><td>
+			<select ng-model="config.aDirection" ng-change="updateArrowDirection(config.aDirection,data.NodeID)">
+    			<option>None</option>
+    			<option value='from'>From</option>
+    			<option value='to'>To</option>
+			</select>
+		</td></tr>
+</table>
+
+<h2>Config String for Evolve Designer</h2>
+<h3>(click to copy to clipboard) : </h3>
+<div><button ng-if="optionString.hiddenNodesString != ''" ng-click="copyToClipboard(optionString.hiddenNodesString)">Hidden Nodes</button></div>
+<div><button ng-if="optionString.complementaryNodesString != ''" ng-click="copyToClipboard(optionString.complementaryNodesString)">Complementary Nodes</button></div>
+<div><button ng-if="optionString.duplicateNodesString != ''" ng-click="copyToClipboard(optionString.duplicateNodesString)">Duplicate Nodes</button></div>
+<div><button ng-if="optionString.nodeFilteredString != ''" ng-click="copyToClipboard(optionString.nodeFilteredString)">External Filters</button></div>
+<div><button ng-if="optionString.directionListString != ''" ng-click="copyToClipboard(optionString.directionListString)">Arrow Direction</button></div>
+<div><button ng-if="optionString.specificGroupString != ''" ng-click="copyToClipboard(optionString.specificGroupString)">Specific Group String</button></div>
+
+</div>
+
