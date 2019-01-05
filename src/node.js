@@ -12,6 +12,7 @@
         this.shortlabel = label.slice(0,50);
         this.status = status;
         this.customDisplayString = customDisplayString;
+        this.shortCDS = customDisplayString.slice(0,50);
         this.filterArray = filterArray;
         this.icon = icon;
         this.options = nodeOptions;
@@ -49,8 +50,8 @@
         obj.id = this.id;
         obj.object_id = this.object_id;
         if(this.options.CDSNodesOption) {
-            obj.label = this.shortlabel;
-            obj.name = this.label;
+            obj.label = this.shortCDS;
+            obj.name = this.customDisplayString;
         }
         else {
             obj.label = this.label;
