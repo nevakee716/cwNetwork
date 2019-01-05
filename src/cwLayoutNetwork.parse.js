@@ -301,7 +301,8 @@
             output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsBehaviour' + this.nodeID + '">' + $.i18n.prop('behaviour_highlight') + '</button>');
 
             output.push('<button id="cwLayoutNetworkButtonsDownload' + this.nodeID + '"><i class="fa fa-download" aria-hidden="true"></i></button>');
-            output.push('<button id="cwLayoutNetworkExpertModeButton' + this.nodeID + '">Expert Mode</button>');
+            if(this.expertModeAvailable) output.push('<button id="cwLayoutNetworkExpertModeButton' + this.nodeID + '">Expert Mode</button>');
+            
             output.push('</div>');
             output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
 
