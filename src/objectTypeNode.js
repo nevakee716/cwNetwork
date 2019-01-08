@@ -16,9 +16,9 @@
         return this.scriptname;
     };
 
-    objectTypeNode.prototype.addNode = function (id,object_id,label,customDisplayString,icon,filterArray,nodeOptions,networkInfo) {
-        if(!this.nodes.hasOwnProperty(id)) {
-            this.nodes[id] = new cwApi.customLibs.cwLayoutNetwork.node(id,object_id,label,customDisplayString,icon,false,filterArray,nodeOptions,networkInfo);
+    objectTypeNode.prototype.addNode = function (obj,nodeOptions) {
+        if(!this.nodes.hasOwnProperty(obj.id)) {
+            this.nodes[obj.id] = new cwApi.customLibs.cwLayoutNetwork.node(obj,nodeOptions);
         }  
     };
 

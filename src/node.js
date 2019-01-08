@@ -5,27 +5,40 @@
 
     "use strict";
     // constructor
-    var node = function (id,object_id,label,customDisplayString,icon,status,filterArray,nodeOptions,networkInfo) {
-        this.id = id;
-        this.object_id = object_id;
-        this.label = label;
-        this.shortlabel = label.slice(0,50);
-        this.status = status;
-        this.customDisplayString = customDisplayString;
-        this.shortCDS = customDisplayString.slice(0,50);
-        this.filterArray = filterArray;
-        this.icon = icon;
+    var node = function (object,nodeOptions) {
+        this.id = object.id;
+        this.object_id = object.object_id;
+
+        this.label = object.name;
+        this.customDisplayString = object.customDisplayString;
+        this.isDuplicate = object.isDuplicate;
+        this.father = object.father;
+
+
+        this.shortlabel = this.label.slice(0,50);
+        this.status = false;
+
+        this.shortCDS = this.customDisplayString.slice(0,50);
+        this.filterArray = object.filterArray;
+        this.icon = object.icon;
         this.options = nodeOptions;
-        if(networkInfo) {
-            this.x = networkInfo.x;
-            this.y = networkInfo.y;
-            this.status = networkInfo.enable;            
+        if(object.networkInfo) {
+            this.x = object.networkInfo.x;
+            this.y = object.networkInfo.y;
+            this.status = object.networkInfo.enable;            
         }
     };
 
+
     node.prototype.getLabel = function () {
-        if(this.options.CDSFilterOption) return this.customDisplayString;
-        else return this.label;
+        let r;
+        if(this.options.CDSFilterOption) r = this.customDisplayString;
+        else r =  this.label;
+
+        if(this.isDuplicate) {
+            r += " (" + this.father.customDisplayString + ")";
+        }
+        return r;
     };
 
     node.prototype.getStatus = function () {
@@ -52,9 +65,13 @@
         if(this.options.CDSNodesOption) {
             obj.label = this.shortCDS;
             obj.name = this.customDisplayString;
+        } else {
+            obj.label = this.customDisplayString;
+            obj.name = this.label;
         }
-        else {
-            obj.label = this.label;
+
+        if(this.isDuplicate) {
+            obj.name += " (" + this.father.customDisplayString + ")";
         }
 
         if(this.x) {

@@ -110,10 +110,8 @@
                         let fatherID = "";
                         if (this.duplicateNode.indexOf(associationNode) !== -1) {
                             fatherID = "#" + child.object_id;
-                            element.label += ' (' + father.label + ')';
-                            element.label = this.multiLine(element.label, this.multiLineCount);
-                            element.customDisplayString += ' (' + father.customDisplayString + ')';
-                            element.customDisplayString = this.multiLine(element.customDisplayString, this.multiLineCount);
+                            element.father = father;
+                            element.isDuplicate = true;
                         }
 
 
