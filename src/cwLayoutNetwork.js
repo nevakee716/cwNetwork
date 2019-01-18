@@ -34,6 +34,10 @@
         this.expertMode = false;
         this.expertModeAvailable = this.options.CustomOptions['expertMode'];
 
+
+        this.errors = {};
+        this.errors.diagrameTemplate = {};
+
         try {
             this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkCreateOnViewScriptname).name;
             this.definition.capinetworkConfigurationDisplayname = cwAPI.mm.getProperty(this.definition.capinetworkScriptname,this.definition.capinetworkConfigurationScriptname).name;

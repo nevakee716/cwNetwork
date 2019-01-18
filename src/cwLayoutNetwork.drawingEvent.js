@@ -65,7 +65,18 @@
                     let nodePosition = self.networkUI.getPositions(node.id)[node.id];
 
                     var shape = {};
+                    
+                    if(node.initDraw === undefined) {
+                        palette.Regions.forEach(function(region) {
+                            if((region.RegionType === 3 || region.RegionType === 5 ) && !obj.properties.hasOwnProperty(region.SourcePropertyTypeScriptName)) {
+                                if(undefined === self.errors.diagrameTemplate[obj.nodeID]) self.errors.diagrameTemplate[obj.nodeID] = {};
+                                self.errors.diagrameTemplate[obj.nodeID][region.SourcePropertyTypeScriptName] = true;  
+                            }
+                        });
+                    }
 
+
+                    node.initDraw = true;
                     changeNode.push(self.reSizeNode(node, palette));
 
                     shape.H = palette.Height * 4;
