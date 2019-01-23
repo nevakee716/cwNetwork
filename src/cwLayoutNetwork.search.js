@@ -19,6 +19,7 @@
 
     // Adding element to the search filter
     cwLayoutNetwork.prototype.addSearchFilterElement = function (event, properties, senderId) {
+        this.errors.init = false;
         var self = this;
         var htmltxt = "";
         properties.items.forEach(function(elem) {

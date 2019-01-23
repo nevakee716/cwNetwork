@@ -45,9 +45,17 @@
 <h2>(click to copy to clipboard) : </h2>
 <div><button ng-if="configString != ''" ng-click="copyToClipboard(configString)">Icon Group</button></div>
 <div><button ng-if="configString != ''" ng-click="copyToClipboard(groupToSelectOnStartString)">Group Active At Start</button></div>
+
+
+<h1>Information Missing on Evolve Configuration for Diagram Region : </h1>
+<div ng-repeat="(nodeID, errs) in errorsTemplate">
+  <h2 ng-if="Object.keys(errs.properties).length > 0 && Object.keys(errs.associations).length > 0"> {{nodeID}} : </h2>
+  <div ng-if="Object.keys(errs.properties).length > 0"> <span>Please Add the Following Properties : </span><span ng-repeat="(pScriptname, label) in errs.properties"> {{label}}, </span></div>
+  <div ng-if="Object.keys(errs.associations).length > 0"> <span>Please Add the Following Associations : </span><div ng-repeat="(nodeName, label) in errs.associations">{{nodeName}}</div></div>
+  <h2>   </h2>
 </div>
 
-
+</div>
 
 
 

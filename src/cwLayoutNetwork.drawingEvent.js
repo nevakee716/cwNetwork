@@ -66,17 +66,27 @@
 
                     var shape = {};
                     
-                    if(node.initDraw === undefined) {
+                    if(self.errors.init === false) {
                         palette.Regions.forEach(function(region) {
-                            if((region.RegionType === 3 || region.RegionType === 5 ) && !obj.properties.hasOwnProperty(region.SourcePropertyTypeScriptName)) {
-                                if(undefined === self.errors.diagrameTemplate[obj.nodeID]) self.errors.diagrameTemplate[obj.nodeID] = {};
-                                self.errors.diagrameTemplate[obj.nodeID][region.SourcePropertyTypeScriptName] = true;  
+                            if((region.RegionType >= 3 && region.RegionType < 8) && !obj.properties.hasOwnProperty(region.SourcePropertyTypeScriptName)) {
+                                if(undefined === self.errors.diagrameTemplate[obj.nodeID]) {
+                                    self.errors.diagrameTemplate[obj.nodeID] = {};
+                                    self.errors.diagrameTemplate[obj.nodeID].properties = {};
+                                    self.errors.diagrameTemplate[obj.nodeID].associations = {};
+                                }
+                                self.errors.diagrameTemplate[obj.nodeID].properties[region.SourcePropertyTypeScriptName] = cwAPI.mm.getProperty(obj.objectTypeScriptName,region.SourcePropertyTypeScriptName).name;
+                            }
+                            if((region.RegionType < 3) && region.RegionData && !obj.associations.hasOwnProperty(region.RegionData.Key)) {
+                                if(undefined === self.errors.diagrameTemplate[obj.nodeID]) {
+                                    self.errors.diagrameTemplate[obj.nodeID] = {};
+                                    self.errors.diagrameTemplate[obj.nodeID].properties = {};
+                                    self.errors.diagrameTemplate[obj.nodeID].associations = {};
+                                }
+                                self.errors.diagrameTemplate[obj.nodeID].associations[region.RegionData.Key] = region.RegionData.AssociationTypeScriptName + " => " + cwAPI.mm.getObjectType(region.RegionData.TargetObjectTypeScriptName).name;  
                             }
                         });
                     }
 
-
-                    node.initDraw = true;
                     changeNode.push(self.reSizeNode(node, palette));
 
                     shape.H = palette.Height * 4;
@@ -101,12 +111,17 @@
 
                     if (self.errorOnRegion === undefined) self.errorOnRegion = false;
                     diagC.loadRegionExplosionWithRuleAndRefProp = function() {
-                        if (self.errorOnRegion === false) {
+                        if (self.errors.explosionRegion !== true) {
                             console.log("Explosion Region are not Supported Yet");
-                            self.errorOnRegion = true;
+                            self.errors.explosionRegion = true;
                         }
                     };
-
+                    diagC.getNavigationDiagramsForObject = function() {
+                        if (self.errors.navigationRegion !== true) {
+                            console.log("Navigation Region are not Supported Yet");
+                            self.errors.navigationRegion = true;
+                        }
+                    };
                     diagC.getDiagramPopoutForShape = function() {};
                     var shapeObj = new cwApi.Diagrams.CwDiagramShape(shape, palette, diagC);
                     shapeObj.draw(ctx);
@@ -115,7 +130,7 @@
 
 
         });
-
+        this.errors.init = true;
         this.nodes.update(changeNode);
     };
 

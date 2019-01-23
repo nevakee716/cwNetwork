@@ -197,6 +197,7 @@
               document.execCommand('copy');
               document.body.removeChild(el);
             };
+            $scope.errorsTemplate = self.errors.diagrameTemplate;
 
 
         });
@@ -241,7 +242,8 @@
             self.groupToSelectOnStart.splice(index, 1);
         }
 
-
+        self.errors.diagrameTemplate = {};
+        self.errors.init = false;
 
         this.getFontAwesomeList(output);
         var opt = {};
@@ -571,6 +573,7 @@
 
 
     cwLayoutNetwork.prototype.updateNetworkData = function() {
+        this.errors.init = false;
         this.setExternalFilterToNone(); 
         this.disableGroupClusters();
         this.copyObject = $.extend(true, {}, this.originalObject);
