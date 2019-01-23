@@ -118,7 +118,21 @@
         this.physicsOption = this.options.CustomOptions['physicsOn'];
         this.hidePhysicsButton = this.options.CustomOptions['hidePhysicsButton'];
         this.physicsOptionInitialState = this.options.CustomOptions['physicsInitialState'];
+        
         this.physConfiguration = this.options.CustomOptions['physicsConfiguration'];
+        if(this.physConfiguration !== "") {
+            try{
+                this.physConfiguration = JSON.parse(this.physConfiguration);
+                this.layoutConfiguration = this.physConfiguration.layout;
+                this.physConfiguration = this.physConfiguration.phys;
+            } catch(e) {
+                console.log("Error inside physics JSON : " + e);
+            }           
+        } else {
+            this.physConfiguration = {"barnesHut":{"gravitationalConstant":-26500,"springLength":150},"minVelocity":0.75};
+            this.layoutConfiguration = {};
+        }
+        
 
 
         this.removeLonely = this.options.CustomOptions['removeLonelyOn'];

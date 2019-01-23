@@ -39,9 +39,6 @@
 
             }
         });
-
-
-
     };
 
     // manage Expert Mode
@@ -144,6 +141,8 @@
     };
 
     cwLayoutNetwork.prototype.setExpertModePhysics = function(container) {
+        var self = this;
+
         this.networkUI.options.configure = {
             filter: function(option, path) {
                 if (path.indexOf('physics') !== -1) {
@@ -152,14 +151,30 @@
                 if (path.indexOf('layout') !== -1) {
                     return true;
                 }
-                if (path.indexOf('smooth') !== -1 || option === 'smooth') {
-                    return true;
-                }
                 return false;
             },
             container: container
         };
         this.networkUI.setOptions(this.networkUI.options);
+
+        var buttonPhysicsConfig = document.getElementById("cwLayoutNetworkButtonPhysicsConfig" + this.nodeID);
+        if(buttonPhysicsConfig === null) {
+            buttonPhysicsConfig = document.createElement("button");
+            buttonPhysicsConfig.className = "cwLayoutNetworkButtonPhysicsConfig";
+            buttonPhysicsConfig.id = "cwLayoutNetworkButtonPhysicsConfig" + this.nodeID;   
+            buttonPhysicsConfig.innerText = "Physics Configuration";        
+        }
+
+
+        buttonPhysicsConfig.addEventListener("click", function(event) {
+            let json = {};
+            json.layout = self.networkUI.layoutEngine.options;
+            json.phys = self.networkUI.physics.options;   
+            cwAPI.customLibs.utils.copyToClipboard(JSON.stringify(json));
+        });
+
+
+        container.appendChild(buttonPhysicsConfig);
     };
 
 
@@ -189,18 +204,24 @@
             $scope.checkIfContainObjectType = self.checkIfGroupMatchTemplate.bind(self);
             $scope.diagramTemplate = self.diagramTemplate;
             $scope.addGroup = self.addGroup.bind(self);
-            $scope.copyToClipboard = function(str) {
-              const el = document.createElement('textarea');
-              el.value = str;
-              document.body.appendChild(el);
-              el.select();
-              document.execCommand('copy');
-              document.body.removeChild(el);
-            };
+            $scope.copyToClipboard = cwAPI.customLibs.utils.copyToClipboard;
             $scope.errorsTemplate = self.errors.diagrameTemplate;
 
 
+
+            $scope.checkIfErrorOnProperties = function(nodeID) {
+                if(Object.keys($scope.errorsTemplate[nodeID].properties).length > 0) {
+                    return true;
+                } else return false;
+            };
+
+            $scope.checkIfErrorOnAssociation = function(nodeID) {
+                if(Object.keys($scope.errorsTemplate[nodeID].associations).length > 0) {
+                    return true;
+                } else return false;
+            };
         });
+
     };
 
 
@@ -493,14 +514,7 @@
             };
 
 
-            $scope.copyToClipboard = function(str) {
-              const el = document.createElement('textarea');
-              el.value = str;
-              document.body.appendChild(el);
-              el.select();
-              document.execCommand('copy');
-              document.body.removeChild(el);
-            };
+            $scope.copyToClipboard = cwAPI.customLibs.utils.copyToClipboard;
 
 
 
@@ -555,8 +569,6 @@
                 self.updateNetworkData();
 
             };
-
-
 
 
             $scope.optionString.complementaryNodesString = self.complementaryNode.join(',');

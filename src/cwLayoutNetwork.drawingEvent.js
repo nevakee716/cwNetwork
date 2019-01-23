@@ -47,7 +47,7 @@
         ctx.save();
         var changeNode = [];
         var self = this;
-
+        if (self.errors.init === false) self.errors.diagrameTemplate = {};
         self.nodes.forEach(function(node) {
 
             if (self.groupsArt[node.group] && self.groupsArt[node.group].diagram === true && self.diagramTemplate[self.groupsArt[node.group].diagramTemplateID]) {
@@ -65,24 +65,24 @@
                     let nodePosition = self.networkUI.getPositions(node.id)[node.id];
 
                     var shape = {};
-                    
-                    if(self.errors.init === false) {
+
+                    if (self.errors.init === false) {
                         palette.Regions.forEach(function(region) {
-                            if((region.RegionType >= 3 && region.RegionType < 8) && !obj.properties.hasOwnProperty(region.SourcePropertyTypeScriptName)) {
-                                if(undefined === self.errors.diagrameTemplate[obj.nodeID]) {
+                            if ((region.RegionType >= 3 && region.RegionType < 8) && !obj.properties.hasOwnProperty(region.SourcePropertyTypeScriptName)) {
+                                if (undefined === self.errors.diagrameTemplate[obj.nodeID]) {
                                     self.errors.diagrameTemplate[obj.nodeID] = {};
                                     self.errors.diagrameTemplate[obj.nodeID].properties = {};
                                     self.errors.diagrameTemplate[obj.nodeID].associations = {};
                                 }
-                                self.errors.diagrameTemplate[obj.nodeID].properties[region.SourcePropertyTypeScriptName] = cwAPI.mm.getProperty(obj.objectTypeScriptName,region.SourcePropertyTypeScriptName).name;
+                                self.errors.diagrameTemplate[obj.nodeID].properties[region.SourcePropertyTypeScriptName] = cwAPI.mm.getProperty(obj.objectTypeScriptName, region.SourcePropertyTypeScriptName).name;
                             }
-                            if((region.RegionType < 3) && region.RegionData && !obj.associations.hasOwnProperty(region.RegionData.Key)) {
-                                if(undefined === self.errors.diagrameTemplate[obj.nodeID]) {
+                            if ((region.RegionType < 3) && region.RegionData && !obj.associations.hasOwnProperty(region.RegionData.Key)) {
+                                if (undefined === self.errors.diagrameTemplate[obj.nodeID]) {
                                     self.errors.diagrameTemplate[obj.nodeID] = {};
                                     self.errors.diagrameTemplate[obj.nodeID].properties = {};
                                     self.errors.diagrameTemplate[obj.nodeID].associations = {};
                                 }
-                                self.errors.diagrameTemplate[obj.nodeID].associations[region.RegionData.Key] = region.RegionData.AssociationTypeScriptName + " => " + cwAPI.mm.getObjectType(region.RegionData.TargetObjectTypeScriptName).name;  
+                                self.errors.diagrameTemplate[obj.nodeID].associations[region.RegionData.Key] = region.RegionData.AssociationTypeScriptName + " => " + cwAPI.mm.getObjectType(region.RegionData.TargetObjectTypeScriptName).name;
                             }
                         });
                     }
@@ -130,7 +130,14 @@
 
 
         });
-        this.errors.init = true;
+        if (this.errors.init === false) {
+            this.errors.init = true;
+            if (this.angularScope) {
+                this.angularScope.errorsTemplate = this.errors.diagrameTemplate;
+                this.angularScope.$apply();
+            }
+        }
+
         this.nodes.update(changeNode);
     };
 
@@ -161,8 +168,8 @@
                 }
             });
         } else {
-            for(var group in this.groupsArt){
-                if(this.groupsArt[group] && this.groupsArt[group].diagramTemplateID !== undefined) {
+            for (var group in this.groupsArt) {
+                if (this.groupsArt[group] && this.groupsArt[group].diagramTemplateID !== undefined) {
                     var id = this.groupsArt[group].diagramTemplateID;
                     var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + this.groupsArt[group].diagramTemplateID + '?' + Math.random();
                     $.getJSON(url, function(json) {
@@ -218,8 +225,8 @@
             ctx.lineWidth = 2;
             if (group.shape === "icon" || group.shape === "image" || group.shape === "circularImage") {
                 let color = group.color.background;
-                if(color[0] != "#") color = "#" + color;
-                while (self.getHSL(color) < 150){
+                if (color[0] != "#") color = "#" + color;
+                while (self.getHSL(color) < 150) {
                     color = self.LightenDarkenColor(color, 100);
                 }
                 ctx.fillStyle = color;

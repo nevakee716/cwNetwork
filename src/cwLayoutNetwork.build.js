@@ -78,13 +78,11 @@
             edges: this.edges
         };
 
-        if(this.physConfiguration === undefined || this.physConfiguration === "") {
-            this.physConfiguration = {"barnesHut":{"gravitationalConstant":-26500,"springLength":150},"minVelocity":0.75};
-        }
 
         this.networkOptions = {
             groups: this.groupsArt,
             physics: this.physConfiguration,
+            layout: this.layoutConfiguration,
             interaction: {
                 keyboard: true
             },
