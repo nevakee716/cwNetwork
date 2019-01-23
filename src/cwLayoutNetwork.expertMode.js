@@ -576,6 +576,7 @@
         this.errors.init = false;
         this.setExternalFilterToNone(); 
         this.disableGroupClusters();
+
         this.copyObject = $.extend(true, {}, this.originalObject);
         var sObject = this.manageDataFromEvolve(this.copyObject);
         this.network = new cwApi.customLibs.cwLayoutNetwork.network();
