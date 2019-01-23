@@ -8,7 +8,7 @@
 		<tr><td> Complementary Node : </td><td><input ng-model="config.cnode" ng-change="updateComplementaryNode(data.NodeID)" type="checkbox" ng-checked="isComplementaryNode(data.NodeID)"></td></tr>
 		<tr><td> Duplicate Node : </td><td><input ng-model="config.dnode" ng-change="updateDuplicateNode(data.NodeID)" type="checkbox" ng-checked="isDuplicateNode(data.NodeID)"></td></tr>
 		<tr><td> Hidden Node : </td> <td><input ng-model="config.hnode" ng-change="updateHiddenNode(data.NodeID)" type="checkbox" ng-checked="isHiddenNode(data.NodeID)"></td></tr>
-		<tr><td> External Filter : </td><td> <input type="text" ng-model="config.egroup"></input><button ng-click="updateExtFilters(config.egroup,data.NodeID)"><i class="fa fa-refresh" aria-hidden="true"></i></button></td></tr>
+		<tr><td> Filter Association : </td><td> <input type="text" ng-model="config.egroup"></input><button ng-click="updateExtFilters(config.egroup,data.NodeID)"><i class="fa fa-refresh" aria-hidden="true"></i></button></td></tr>
 		<tr><td> Specific Group : </td><td>
 			<select ng-model="config.sgroup" ng-change="updateSpecificGroups(config.sgroup,data.NodeID)">
     			<option >None</option>
@@ -29,7 +29,7 @@
 <div><button ng-if="optionString.hiddenNodesString != ''" ng-click="copyToClipboard(optionString.hiddenNodesString)">Hidden Nodes</button></div>
 <div><button ng-if="optionString.complementaryNodesString != ''" ng-click="copyToClipboard(optionString.complementaryNodesString)">Complementary Nodes</button></div>
 <div><button ng-if="optionString.duplicateNodesString != ''" ng-click="copyToClipboard(optionString.duplicateNodesString)">Duplicate Nodes</button></div>
-<div><button ng-if="optionString.nodeFilteredString != ''" ng-click="copyToClipboard(optionString.nodeFilteredString)">External Filters</button></div>
+<div><button ng-if="optionString.nodeFilteredString != ''" ng-click="copyToClipboard(optionString.nodeFilteredString)">Filter Association</button></div>
 <div><button ng-if="optionString.directionListString != ''" ng-click="copyToClipboard(optionString.directionListString)">Arrow Direction</button></div>
 <div><button ng-if="optionString.specificGroupString != ''" ng-click="copyToClipboard(optionString.specificGroupString)">Specific Group String</button></div>
 
