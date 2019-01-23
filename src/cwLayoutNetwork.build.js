@@ -202,17 +202,15 @@
 
         // Interaction Click
         this.networkUI.on("click", function(params) {
-            if (params.hasOwnProperty('nodes') && params.nodes.length === 1) {
-                if (self.networkUI.isCluster(params.nodes[0]) == true) {
-                    self.networkUI.openCluster(params.nodes[0]);
-                } else {
+            if(self.expertMode !== true) {
+                if (params.hasOwnProperty('nodes') && params.nodes.length === 1) {
                     let node = self.nodes.get(params.nodes[0]);
                     self.openPopOut(node.object_id, node.objectTypeScriptName);
-                }
-            } else if (params.hasOwnProperty('edges') && params.edges.length === 1) {
-                var edge = self.edges.get(params.edges[0]);
-                self.openPopOutFromEdge(edge);
-            };
+                } else if (params.hasOwnProperty('edges') && params.edges.length === 1) {
+                    var edge = self.edges.get(params.edges[0]);
+                    self.openPopOutFromEdge(edge);
+                };               
+            }
         });
 
         this.networkUI.on("dragStart", function(params) {

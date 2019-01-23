@@ -73,7 +73,7 @@
             if (child.associations.hasOwnProperty(associationNode)) {
                 for (var i = 0; i < child.associations[associationNode].length; i += 1) {
                     nextChild = child.associations[associationNode][i];
-                    if (associationNode.includes("|0|")) {
+                    if (associationNode.includes("|0|")) {  // do not process node for region association
 
                     } else if (this.nodeFiltered.hasOwnProperty(associationNode)) { // external Filter Node
                         filterElement = {};
