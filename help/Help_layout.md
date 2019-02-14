@@ -2,7 +2,6 @@
 | --- | --- | --- |
 | **Updated by** | Mathias PFAUWADEL | 7.0 |
 
-7.0 will be released at the end of the month
 
 ## Patch Notes
 
