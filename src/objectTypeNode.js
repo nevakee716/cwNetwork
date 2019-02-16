@@ -119,7 +119,7 @@
 
         filterObject = document.createElement("select");
         filterObject.setAttribute('multiple','');
-        filterObject.setAttribute('title',this.label + " " + this.getLegendElement(groups[this.label]));
+        filterObject.setAttribute('title',this.getLegendElement(groups[this.label]) + " " + this.label);
         filterObject.setAttribute('data-live-search','true');
         filterObject.setAttribute('data-selected-text-format','static');
         filterObject.setAttribute('data-actions-box','true');
@@ -135,6 +135,7 @@
                 var element = {};
                 element.id = this.nodes[node].getId();
                 element.label = this.nodes[node].getLabel().replaceAll("\n"," ");
+                element.image = this.nodes[node].dataImage;
                 array.push(element);
             }                                                                                                                                                                                                                                                                                                                                                                                                            
         }
@@ -150,6 +151,9 @@
         array.forEach(function(element) {
             object = document.createElement("option");
             object.setAttribute('id',element.id);
+            if(element.image) {
+                object.setAttribute('data-content',"<img class='networkLegendImage' src='" + element.image + "'/> "  + element.label + "  ");
+            }
             object.textContent = element.label; 
             filterObject.appendChild(object);
         });
@@ -177,6 +181,11 @@
             else htmltxt += 'style="color : ' + group.color.border + '">';        
             htmltxt += unescape('%u' + this.shapeToFontAwesome(group.shape));
             htmltxt += '</i>';  
+            return htmltxt; 
+        } else if(group && group.diagram === true && Object.keys(this.nodes) && Object.keys(this.nodes).length > 0 && this.nodes[Object.keys(this.nodes)[0]].dataImage) {
+
+            var htmltxt = "";
+            htmltxt += '<img class="networkLegendImage" src="' + this.nodes[Object.keys(this.nodes)[0]].dataImage + '"></img>';
             return htmltxt; 
         }
         return "";
