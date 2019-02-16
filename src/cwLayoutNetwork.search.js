@@ -25,7 +25,7 @@
             label = node.name;
 
             if (self.groupsArt && self.groupsArt[node.group]) {
-                htmltxt += cwApi.customLibs.cwLayoutNetwork.objectTypeNode.prototype.getLegendElement(self.groupsArt[node.group]);
+                //htmltxt += cwApi.customLibs.cwLayoutNetwork.objectTypeNode.prototype.getLegendElement(self.groupsArt[node.group]);
 
                 group = self.groupsArt[node.group];
                 if (group && group.shape == "icon") {
