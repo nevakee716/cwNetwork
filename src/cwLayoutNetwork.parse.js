@@ -133,6 +133,10 @@
                             if (o !== "") o = "||" + o;
                             this.options.CustomOptions['iconGroup'] = element.group + "," + "ellipse" + ",#" + Math.floor(Math.random() * 16777215).toString(16) + o;
                             this.getFontAwesomeList(this.options.CustomOptions['iconGroup']);
+                        } else {
+                            if(this.groupsArt[element.group].diagram === true && this.diagramTemplate[this.groupsArt[element.group].diagramTemplateID]) {
+                                element.image = this.shapeToImage(element);
+                            }
                         }
 
                         // add objectType ScriptName to group
@@ -279,15 +283,7 @@
             this.copyObject = $.extend(true, {}, object);
             this.originalObject = object;
 
-            var simplifyObject = this.manageDataFromEvolve(this.copyObject);
-            var isData = false;
-            this.network = new cwApi.customLibs.cwLayoutNetwork.network();
-            this.network.searchForNodesAndEdges(simplifyObject, this.nodeOptions);
 
-
-            if (simplifyObject.length > 0) isData = true;
-            if (isData) output.push('<div class="cw-visible cwLayoutNetwork" id="cwLayoutNetwork' + this.nodeID + '">');
-            else output.push('<div id="cwLayoutNetwork' + this.nodeID + '">');
 
             output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');
             output.push('<div class="bootstrap-iso" id="cwLayoutNetworkAction' + this.nodeID + '">');
@@ -297,12 +293,12 @@
             if (this.edgeOption && this.hideEdgeButton === false) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '">' + $.i18n.prop('unzip_edge') + '</button>');
             if (this.removeLonely) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '">' + $.i18n.prop('remove_lonely_node') + '</button>');
             output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsBehaviour' + this.nodeID + '">' + $.i18n.prop('behaviour_highlight') + '</button>');
-
             output.push('<button id="cwLayoutNetworkButtonsDownload' + this.nodeID + '"><i class="fa fa-download" aria-hidden="true"></i></button>');
             if(this.expertModeAvailable) output.push('<button id="cwLayoutNetworkExpertModeButton' + this.nodeID + '">Expert Mode</button>');
-            
             output.push('</div>');
-            output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
+
+            output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div>');
+
 
         } catch (e) {
             console.log(e);

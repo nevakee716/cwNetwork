@@ -5,10 +5,14 @@
 
     "use strict";
     // constructor
-    var network = function() {
+    var network = function(groupArt,diagramTemplate,cwObjects) {
         this.objectTypeNodes = {};
         this.edges = {};
         this.option = {};
+        this.diagrammingInformation = {};
+        this.diagrammingInformation.groupsArt = groupArt;
+        this.diagrammingInformation.diagramTemplate = diagramTemplate;
+        this.diagrammingInformation.cwObjects = cwObjects;
     };
 
     network.prototype.getObjectTypeNodes = function(object) {
@@ -36,7 +40,7 @@
         if (!this.objectTypeNodes.hasOwnProperty(object.group)) {
             this.objectTypeNodes[object.group] = new cwApi.customLibs.cwLayoutNetwork.objectTypeNode(object.group, object.objectTypeScriptName);
         }
-        this.objectTypeNodes[object.group].addNode(object, nodeOptions);
+        this.objectTypeNodes[object.group].addNode(object, nodeOptions,this.diagrammingInformation);
 
     };
 

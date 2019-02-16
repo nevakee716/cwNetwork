@@ -147,7 +147,7 @@
         }
 
         this.originalObjects = {};
-        this.wiggle = true;
+        this.wiggle = false;
         this.CDSNodesOption = true;
         this.CDSFilterOption = true;
         this.physics = true;
@@ -155,11 +155,6 @@
             "CDSFilterOption": this.CDSFilterOption,
             "CDSNodesOption": this.CDSNodesOption
         };
-
-
-
-        this.loadDiagramTemplate("z_diagram_template");
-  
 
 
     };

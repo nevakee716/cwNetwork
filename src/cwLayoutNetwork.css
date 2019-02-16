@@ -1,50 +1,50 @@
 .bootstrap-select.btn-group:not(.input-group-btn),
 .bootstrap-select.btn-group[class*="span"] {
-  margin: 0 !important;
+    margin: 0 !important;
 }
 .cwLayoutNetwork {
-  display: block;
-  width: 100%;
+    display: block;
+    width: 100%;
 }
 
 div.cwLayoutNetworkLegend {
-	display:flex;
-	width:80%
+    display: flex;
+    width: 80%;
 }
 div.LayoutNetork_filterSection {
-	display:flex;
+    display: flex;
 }
 
 div.LayoutNetork_filterGroup {
-	display:block;
+    display: block;
 }
 
-div.LayoutNetork_filterGroup div{
-	display:flex;
-	flex-wrap: wrap;
+div.LayoutNetork_filterGroup div {
+    display: flex;
+    flex-wrap: wrap;
 }
 
-div.cwLayoutNetworkLegend i{
-	font-size: 1rem;
+div.cwLayoutNetworkLegend i {
+    font-size: 1rem;
 }
 
 .cwLayoutNetwork img.networkLegendImage {
-	    height: 25px;
+    height: 25px;
     top: 3px;
     position: absolute;
     right: 25px;
 }
 
 div.bootstrap-select > div.dropdown-menu {
-	overflow : inherit !important;
+    overflow: inherit !important;
 }
 
 div.cwLayoutNetworkExpertModeConfig {
     width: 481px;
 }
 
-div.cwLayoutNetworkExpertModeConfig div.vis-configuration-wrapper{
-	width: 481px;
+div.cwLayoutNetworkExpertModeConfig div.vis-configuration-wrapper {
+    width: 481px;
 }
 
 div.cwLayoutNetworkExpertModeConfig.selected {
@@ -52,11 +52,10 @@ div.cwLayoutNetworkExpertModeConfig.selected {
 }
 
 div.cwLayoutNetworkExpertModeContainerTab {
-	display: flex;
+    display: flex;
 }
 
-
-div.cwLayoutNetworkExpertModeTabs{
+div.cwLayoutNetworkExpertModeTabs {
     margin: 5px;
     transition: box-shadow 0.3s;
     color: rgba(0, 0, 0, 0.8);
@@ -69,18 +68,16 @@ div.cwLayoutNetworkExpertModeTabs{
 }
 
 div.cwLayoutNetworkExpertModeTabs.selected {
-    box-shadow: inset 0 -2px #03a0ce;	
+    box-shadow: inset 0 -2px #03a0ce;
 }
-
 
 div.cwLayoutNetworkPhysicsConfig {
     -ms-transform: scale(0.9, 0.9); /* IE 9 */
     -webkit-transform: scale(0.9, 0.9); /* Safari */
-    transform: scale(0.9, 0.9);	
+    transform: scale(0.9, 0.9);
 }
 
 div.vis-configuration-wrapper {
-
 }
 
 div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
@@ -88,5 +85,18 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
 }
 
 .vis-configuration.vis-config-select {
-	    width: auto;
-};
+    width: auto;
+}
+
+.networkLegendImage {
+    height: 11px;
+    vertical-align: middle;
+}
+
+.cwLayoutNetworkLoadingBartext {
+    top: 17px;
+    left: 11px;
+    position: absolute;
+
+}
+

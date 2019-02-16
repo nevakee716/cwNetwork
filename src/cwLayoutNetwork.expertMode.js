@@ -263,8 +263,8 @@
             self.groupToSelectOnStart.splice(index, 1);
         }
 
-        self.errors.diagrameTemplate = {};
-        self.errors.init = false;
+        this.errors.diagrameTemplate = {};
+        this.errors.init = false;
 
         this.getFontAwesomeList(output);
         var opt = {};
@@ -279,11 +279,13 @@
 
         var nu = [];
         var positions = this.networkUI.getPositions();
+
         this.nodes.forEach(function(node) {
-            node.resized = undefined;
-            node.widthConstraint = undefined;
-            node.heightConstraint = undefined;
-            node.color = undefined;
+            let img = self.shapeToImage(node);
+            if(img) {
+                self.network.objectTypeNodes[node.group].nodes[node.id].dataImage = img;
+                node.image = img;
+            }
             nu.push(node);
         });
 

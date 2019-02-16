@@ -75,20 +75,18 @@
                     groups[optionSplit[0]].font.size = fontSize;
                     groups[optionSplit[0]].diagram = false;
                     if (optionSplit[1] === "diagram") {
-                        groups[optionSplit[0]].shape = 'box';
+
                         groups[optionSplit[0]].color = {};
 
                         groups[optionSplit[0]].color.border = this.LightenDarkenColor(optionSplit[2], 50);
-                        groups[optionSplit[0]].color.highlight = {};
-                        groups[optionSplit[0]].color.highlight.border = this.LightenDarkenColor(optionSplit[2], -50);
-                        groups[optionSplit[0]].color.highlight.background = this.LightenDarkenColor(optionSplit[2], -50);
 
                         groups[optionSplit[0]].borderWidthSelected = 50;
-                        groups[optionSplit[0]].diagram = true;
+                        
                         groups[optionSplit[0]].font = {};
-                        groups[optionSplit[0]].font.size = 2;
+                        groups[optionSplit[0]].font.size = 0;
                         groups[optionSplit[0]].diagramTemplateID = optionSplit[3];
                         
+                        groups[optionSplit[0]].diagram = true;
 
                     } else if (optionSplit[1] === "icon") {
                         let color,icon;
