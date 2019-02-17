@@ -58,7 +58,7 @@
 
         this.network = new cwApi.customLibs.cwLayoutNetwork.network(this.groupsArt, this.diagramTemplate, this.originalObjects);
         this.network.searchForNodesAndEdges(this.simplifyObject, this.nodeOptions);
-
+        if(Object.keys(this.originalObjects).length > 500) this.hugeNetwork = true;
         this.createNetwork();
     };
 
@@ -279,8 +279,11 @@
             });
         }
 
-        this.networkUI.setOptions({edges:{smooth:{type:'continuous'}}});
-        this.networkUI.setOptions({interaction: {tooltipDelay: 200,hideEdgesOnDrag: true}});
+        if(this.hugeNetwork) {
+            this.networkUI.setOptions({edges:{smooth:{type:'continuous'}}});
+            this.networkUI.setOptions({interaction: {tooltipDelay: 200,hideEdgesOnDrag: true}});           
+        }
+
 
         this.fillFilter(nodes);
 
