@@ -278,6 +278,7 @@
                             }
                         }
                     }
+                    if (idToLoad.length === 0) callback();
                     idToLoad.forEach(function(id) {
                         var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + Math.random();
                         $.getJSON(url, function(json) {
@@ -294,16 +295,20 @@
             for (var group in this.groupsArt) {
                 if (this.groupsArt[group] && this.groupsArt[group].diagramTemplateID !== undefined) {
                     var id = this.groupsArt[group].diagramTemplateID;
-                    var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + this.groupsArt[group].diagramTemplateID + "?" + Math.random();
-                    $.getJSON(url, function(json) {
-                        if (json.status === "Ok") {
-                            self.diagramTemplate[id] = json.result;
-                            idLoaded = idLoaded + 1;
-                            if (idLoaded === idToLoad.length) callback();
-                        }
-                    });
+                    idToLoad.push(id);
                 }
             }
+            if (idToLoad.length === 0) callback();
+            idToLoad.forEach(function(id) {
+                var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + Math.random();
+                $.getJSON(url, function(json) {
+                    if (json.status === "Ok") {
+                        self.diagramTemplate[id] = json.result;
+                        idLoaded = idLoaded + 1;
+                        if (idLoaded === idToLoad.length) callback();
+                    }
+                });
+            });
         }
     };
 

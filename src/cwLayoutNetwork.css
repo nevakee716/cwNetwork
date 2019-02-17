@@ -11,9 +11,7 @@ div.cwLayoutNetworkLegend {
     display: flex;
     width: 80%;
 }
-div.LayoutNetork_filterSection {
-    display: flex;
-}
+
 
 div.LayoutNetork_filterGroup {
     display: block;
@@ -31,12 +29,15 @@ div.cwLayoutNetworkLegend i {
 .cwLayoutNetwork img.networkLegendImage {
     height: 25px;
     top: 3px;
-    position: absolute;
     right: 25px;
 }
 
 div.bootstrap-select > div.dropdown-menu {
     overflow: inherit !important;
+}
+
+.dropdown-menu.open {
+    width:400px;
 }
 
 div.cwLayoutNetworkExpertModeConfig {
@@ -97,6 +98,43 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
     top: 17px;
     left: 11px;
     position: absolute;
-
 }
 
+.cwLayoutNetworkOption {
+    right: -17px;
+    position: absolute;
+    width: 400px;
+    display: block;
+    top: 0px;
+    z-index: 100;
+}
+
+.cwLayoutNetworkOption .k-button{ 
+    margin: .16em .16em;
+}
+
+.cwLayoutNetworkSearchBox {
+    margin-right : 15px;
+}
+
+.cwLayoutNetworkOptionWrapper { 
+    display: flex;
+}
+
+.cwLayoutNetworkButtons { 
+    margin-top : 20px;
+}
+
+.cwLayoutNetork_filterSection{
+    margin-top: 50px;
+    display: block;
+}
+
+
+.cwLayoutNetworkToolBox .btn.selected{
+    background-color: #00b09f;
+}
+
+.cwLayoutNetworkButtons .k-button.selected{
+    background-color: #00b09f;
+}

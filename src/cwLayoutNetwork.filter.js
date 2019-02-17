@@ -37,7 +37,7 @@
     // Create Filter selector
     cwLayoutNetwork.prototype.createFilterObjects = function (filterContainer) {
 
-        filterContainer.className += " LayoutNetork_filterSection";
+        filterContainer.className += " cwLayoutNetork_filterSection";
         filterContainer.innerHTML = "";
         var externalfilter,objectTypeNode,objectTypeNodes = this.network.getObjectTypeNodes();
 

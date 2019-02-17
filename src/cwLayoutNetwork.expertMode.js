@@ -24,11 +24,12 @@
             if (self.expertMode === true) {
                 self.expertMode = false;
                 event.target.innerText = $.i18n.prop('activate_expert_mode');
+                event.target.className = event.target.className.replace(" selected","");
                 cwAPI.CwPopout.hide();
             } else {
                 self.expertMode = true;
                 event.target.innerText = $.i18n.prop('deactivate_expert_mode');
-
+                event.target.className += " selected";
                 cwApi.CwPopout.showPopout($.i18n.prop('expert_mode'));
 
                 cwApi.CwPopout.setContent(self.createExpertModeElement());

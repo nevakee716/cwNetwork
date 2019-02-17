@@ -19,7 +19,7 @@
             this.init = false;
             var self = this;
             var libToLoad = [];
-
+            cwAPI.siteLoadingPageStart();
             if (cwAPI.isDebugMode() === true) {
                 self.loadDiagramTemplate("z_diagram_template", self.createNetworkData.bind(self));
             } else {
@@ -50,6 +50,7 @@
     };
     // Building network
     cwLayoutNetwork.prototype.createNetworkData = function() {
+
         this.simplifyObject = this.manageDataFromEvolve(this.copyObject);
         var isData = false;
 
@@ -92,8 +93,9 @@
             nodes: this.nodes,
             edges: this.edges
         };
-
-        this.layoutConfiguration.improvedLayout = false;
+        if(this.layoutConfiguration === undefined) this.layoutConfiguration = {};
+        if(this.hugeNetwork) this.layoutConfiguration.improvedLayout = false;
+        
         this.networkOptions = {
             groups: this.groupsArt,
             physics: this.physConfiguration,
@@ -103,8 +105,8 @@
             }
         };
 
-        // Adding filter search
-        var actionContainer = document.getElementById("cwLayoutNetworkAction" + this.nodeID);
+        // filter search
+        var actionContainer = document.getElementById("cwLayoutNetworkSearchBox" + this.nodeID);
         actionContainer.insertBefore(this.network.getSearchFilterObject(this.nodeID), actionContainer.firstChild);
         $(".selectNetworkSearch_" + this.nodeID).selectpicker();
 
@@ -159,6 +161,14 @@
         var downloadButton = document.getElementById("cwLayoutNetworkButtonsDownload" + this.nodeID);
         downloadButton.addEventListener("click", this.downloadImage.bind(this));
 
+        var filterButton = document.getElementById("cwLayoutNetworkButtonsFilters" + this.nodeID);
+        filterButton.addEventListener("click", this.manageFilterButton.bind(this));
+
+        var optionButton = document.getElementById("cwLayoutNetworkButtonsOptions" + this.nodeID);
+        optionButton.addEventListener("click", this.manageOptionButton.bind(this));
+        
+
+
         var deSelectAllButton = document.getElementById("cwLayoutNetworkDeselectAll" + this.nodeID);
         deSelectAllButton.addEventListener("click", this.deActivateAllGroup.bind(this));
 
@@ -181,6 +191,12 @@
         this.activateStartingEdgeType();
         // initialize your network
         this.networkUI = new vis.Network(networkContainer, data, this.networkOptions);
+
+
+        var fitButton = document.getElementById("cwLayoutNetworkButtonsFit" + this.nodeID);
+        fitButton.addEventListener("click", function(){
+            self.networkUI.fit();
+        });
 
         if (this.wiggle) {
             // Activate Starting element
@@ -333,9 +349,7 @@
         // set height
         var titleReact = document.querySelector("#cw-top-bar").getBoundingClientRect();
         var topBarReact = document.querySelector(".page-top").getBoundingClientRect();
-        var actionReact = actionContainer.getBoundingClientRect();
-        var filterReact = filterContainer.getBoundingClientRect();
-        var canvaHeight = window.innerHeight - titleReact.height - actionReact.height - filterReact.height - topBarReact.height;
+        var canvaHeight = window.innerHeight - titleReact.height - topBarReact.height;
         networkContainer.setAttribute("style", "height:" + canvaHeight + "px");
 
         // Event for filter

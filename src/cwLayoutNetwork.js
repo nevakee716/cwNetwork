@@ -156,7 +156,8 @@
             "CDSNodesOption": this.CDSNodesOption
         };
 
-
+        this.filterBoxShowed = false;
+        this.optionBoxShowed = false;
     };
 
 
