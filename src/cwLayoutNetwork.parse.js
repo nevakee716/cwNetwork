@@ -287,14 +287,14 @@
 
             output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="bootstrap-iso"></div>');
             output.push('<div class="bootstrap-iso" id="cwLayoutNetworkAction' + this.nodeID + '">');
-            if (this.physicsOption && this.hidePhysicsButton === false) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '">' + $.i18n.prop('disablephysics') + '</button>');
-            output.push('<button class="bootstrap-iso" id="cwLayoutNetworkDeselectAll' + this.nodeID + '">' + $.i18n.prop('deselectall') + '</button>');
-            output.push('<button class="bootstrap-iso" id="cwLayoutNetworkSelectAll' + this.nodeID + '">' + $.i18n.prop('selectall') + '</button>');
-            if (this.edgeOption && this.hideEdgeButton === false) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '">' + $.i18n.prop('unzip_edge') + '</button>');
-            if (this.removeLonely) output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '">' + $.i18n.prop('remove_lonely_node') + '</button>');
-            output.push('<button class="bootstrap-iso" id="cwLayoutNetworkButtonsBehaviour' + this.nodeID + '">' + $.i18n.prop('behaviour_highlight') + '</button>');
-            output.push('<button id="cwLayoutNetworkButtonsDownload' + this.nodeID + '"><i class="fa fa-download" aria-hidden="true"></i></button>');
-            if(this.expertModeAvailable) output.push('<button id="cwLayoutNetworkExpertModeButton' + this.nodeID + '">Expert Mode</button>');
+            if (this.physicsOption && this.hidePhysicsButton === false) output.push('<button class="k-button" id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '">' + $.i18n.prop('disablephysics') + '</button>');
+            output.push('<button class="k-button" id="cwLayoutNetworkDeselectAll' + this.nodeID + '">' + $.i18n.prop('deselectall') + '</button>');
+            output.push('<button class="k-button" id="cwLayoutNetworkSelectAll' + this.nodeID + '">' + $.i18n.prop('selectall') + '</button>');
+            if (this.edgeOption && this.hideEdgeButton === false) output.push('<button class="k-button" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '">' + $.i18n.prop('unzip_edge') + '</button>');
+            if (this.removeLonely) output.push('<button class="k-button" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '">' + $.i18n.prop('remove_lonely_node') + '</button>');
+            output.push('<button class="k-button" id="cwLayoutNetworkButtonsBehaviour' + this.nodeID + '">' + $.i18n.prop('behaviour_highlight') + '</button>');
+            output.push('<button class="k-button" id="cwLayoutNetworkButtonsDownload' + this.nodeID + '"><i class="fa fa-download" aria-hidden="true"></i></button>');
+            if(this.expertModeAvailable) output.push('<button class="k-button" id="cwLayoutNetworkExpertModeButton' + this.nodeID + '">Expert Mode</button>');
             output.push('</div>');
 
             output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div>');
