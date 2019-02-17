@@ -37,6 +37,8 @@
                 var blob = canvas.msToBlob();
                 window.navigator.msSaveBlob(blob, name);
             } else {
+    
+
 
                 canvas.toBlob(function(blob) {
                     link.href = URL.createObjectURL(blob);
@@ -71,6 +73,7 @@
             var container = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
             var oldheight = container.offsetHeight;
             var scale = this.networkUI.getScale(); // change size of the canva to have element in good resolution
+            if(container.offsetWidth * 2 / scale > 10000) scale= container.offsetWidth / 5000;
             container.style.width = (container.offsetWidth * 2 / scale).toString() + "px";
             container.style.height = (container.offsetHeight * 2 / scale).toString() + "px";
             this.networkUI.redraw();
