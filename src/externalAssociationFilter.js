@@ -200,7 +200,7 @@
         filterObject.setAttribute('data-selected-text-format','static');
         filterObject.setAttribute('data-actions-box','true');
         filterObject.setAttribute('data-size','5');
-       //filterObject.setAttribute('data-width','fit');
+        //filterObject.setAttribute('data-width','400px');
         
         filterObject.className = classname + " " + this.label.replaceAll(" ","_");
         filterObject.setAttribute('filterName',this.label);

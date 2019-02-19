@@ -23,13 +23,7 @@
             if (cwAPI.isDebugMode() === true) {
                 self.loadDiagramTemplate("z_diagram_template", self.createNetworkData.bind(self));
             } else {
-                libToLoad = [
-                    "modules/bootstrap/bootstrap.min.js",
-                    "modules/bootstrap-select/bootstrap-select.min.js",
-                    "modules/vis/vis.min.js",
-                    "modules/d3/d3.min.js",
-                    "modules/jsTree/jstree.min.js"
-                ];
+                libToLoad = ["modules/bootstrap/bootstrap.min.js", "modules/bootstrap-select/bootstrap-select.min.js", "modules/vis/vis.min.js", "modules/d3/d3.min.js", "modules/jsTree/jstree.min.js"];
                 // AsyncLoad
                 cwApi.customLibs.aSyncLayoutLoader.loadUrls(libToLoad, function(error) {
                     if (error === null) {
@@ -50,7 +44,6 @@
     };
     // Building network
     cwLayoutNetwork.prototype.createNetworkData = function() {
-
         this.simplifyObject = this.manageDataFromEvolve(this.copyObject);
         var isData = false;
 
@@ -59,7 +52,7 @@
 
         this.network = new cwApi.customLibs.cwLayoutNetwork.network(this.groupsArt, this.diagramTemplate, this.originalObjects);
         this.network.searchForNodesAndEdges(this.simplifyObject, this.nodeOptions);
-        if(Object.keys(this.originalObjects).length > 500) this.hugeNetwork = true;
+        this.networkSize = Object.keys(this.originalObjects).length;
         this.createNetwork();
     };
 
@@ -93,9 +86,9 @@
             nodes: this.nodes,
             edges: this.edges
         };
-        if(this.layoutConfiguration === undefined) this.layoutConfiguration = {};
-        if(this.hugeNetwork) this.layoutConfiguration.improvedLayout = false;
-        
+        if (this.layoutConfiguration === undefined) this.layoutConfiguration = {};
+        if (this.networkSize > 100) this.layoutConfiguration.improvedLayout = false;
+
         this.networkOptions = {
             groups: this.groupsArt,
             physics: this.physConfiguration,
@@ -166,8 +159,6 @@
 
         var optionButton = document.getElementById("cwLayoutNetworkButtonsOptions" + this.nodeID);
         optionButton.addEventListener("click", this.manageOptionButton.bind(this));
-        
-
 
         var deSelectAllButton = document.getElementById("cwLayoutNetworkDeselectAll" + this.nodeID);
         deSelectAllButton.addEventListener("click", this.deActivateAllGroup.bind(this));
@@ -192,9 +183,8 @@
         // initialize your network
         this.networkUI = new vis.Network(networkContainer, data, this.networkOptions);
 
-
         var fitButton = document.getElementById("cwLayoutNetworkButtonsFit" + this.nodeID);
-        fitButton.addEventListener("click", function(){
+        fitButton.addEventListener("click", function() {
             self.networkUI.fit();
         });
 
@@ -256,11 +246,8 @@
             }
         });
 
-        this.networkUI.on("startStabilizing", function(params) {
+        this.networkUI.on("startStabilizing", function(params) {});
 
-        });
-        
-        cwAPI.siteLoadingPageStart();
         var loading = document.getElementsByClassName("cwloading");
         if (loading[0]) loading = loading[0];
         else return;
@@ -269,8 +256,9 @@
         span.id = "cwLayoutNetwork_text" + self.nodeID;
 
         loading.insertBefore(span, loading.firstChild);
-
+        cwAPI.siteLoadingPageFinish();
         this.networkUI.on("stabilizationProgress", function(params) {
+            cwAPI.siteLoadingPageStart();
             var widthFactor = params.iterations / params.total;
             document.getElementById("cwLayoutNetwork_text" + self.nodeID).innerHTML = Math.round(widthFactor * 100) + "%";
         });
@@ -295,11 +283,10 @@
             });
         }
 
-        if(this.hugeNetwork) {
-            this.networkUI.setOptions({edges:{smooth:{type:'continuous'}}});
-            this.networkUI.setOptions({interaction: {tooltipDelay: 200,hideEdgesOnDrag: true}});           
+        if (this.networkSize > 500) {
+            this.networkUI.setOptions({ edges: { smooth: { type: "continuous" } } });
+            this.networkUI.setOptions({ interaction: { tooltipDelay: 200, hideEdgesOnDrag: true } });
         }
-
 
         this.fillFilter(nodes);
 

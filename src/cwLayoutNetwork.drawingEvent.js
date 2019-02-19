@@ -100,6 +100,7 @@
         let palette;
         let diagramTemplate = this.diagramTemplate[this.groupsArt[node.group].diagramTemplateID];
 
+        if(this.imageTemplate.hasOwnProperty(node.id)) return this.imageTemplate[node.id];
         if (this.groupsArt[node.group] && this.groupsArt[node.group].diagram === true && this.diagramTemplate[this.groupsArt[node.group].diagramTemplateID]) {
             let obj = this.originalObjects[node.object_id + "#" + node.objectTypeScriptName];
             let palette;
@@ -112,6 +113,27 @@
             }
             if (palette) {
                 var shape = {};
+
+                if (self.errors.init === false) {
+                    palette.Regions.forEach(function(region) {
+                        if (region.RegionType >= 3 && region.RegionType < 8 && !obj.properties.hasOwnProperty(region.SourcePropertyTypeScriptName)) {
+                            if (undefined === self.errors.diagrameTemplate[obj.nodeID]) {
+                                self.errors.diagrameTemplate[obj.nodeID] = {};
+                                self.errors.diagrameTemplate[obj.nodeID].properties = {};
+                                self.errors.diagrameTemplate[obj.nodeID].associations = {};
+                            }
+                            self.errors.diagrameTemplate[obj.nodeID].properties[region.SourcePropertyTypeScriptName] = cwAPI.mm.getProperty(obj.objectTypeScriptName, region.SourcePropertyTypeScriptName).name;
+                        }
+                        if (region.RegionType < 3 && region.RegionData && !obj.associations.hasOwnProperty(region.RegionData.Key)) {
+                            if (undefined === self.errors.diagrameTemplate[obj.nodeID]) {
+                                self.errors.diagrameTemplate[obj.nodeID] = {};
+                                self.errors.diagrameTemplate[obj.nodeID].properties = {};
+                                self.errors.diagrameTemplate[obj.nodeID].associations = {};
+                            }
+                            self.errors.diagrameTemplate[obj.nodeID].associations[region.RegionData.Key] = region.RegionData.AssociationTypeScriptName + " => " + cwAPI.mm.getObjectType(region.RegionData.TargetObjectTypeScriptName).name;
+                        }
+                    });
+                }
 
                 shape.H = palette.Height * 4;
                 shape.W = palette.Width * 4;
@@ -159,8 +181,10 @@
                 diagC.getDiagramPopoutForShape = function() {};
                 var shapeObj = new cwApi.Diagrams.CwDiagramShape(shape, palette, diagC);
 
-                shapeObj.draw(ctx);
-                return trimCanvas(canvas).toDataURL();
+                shapeObj.draw(ctx); 
+                let img = trimCanvas(canvas).toDataURL();
+                this.imageTemplate[node.id]= img;
+                return img;
             }
         }
     };
@@ -194,10 +218,7 @@
                                     self.errors.diagrameTemplate[obj.nodeID].properties = {};
                                     self.errors.diagrameTemplate[obj.nodeID].associations = {};
                                 }
-                                self.errors.diagrameTemplate[obj.nodeID].properties[region.SourcePropertyTypeScriptName] = cwAPI.mm.getProperty(
-                                    obj.objectTypeScriptName,
-                                    region.SourcePropertyTypeScriptName
-                                ).name;
+                                self.errors.diagrameTemplate[obj.nodeID].properties[region.SourcePropertyTypeScriptName] = cwAPI.mm.getProperty(obj.objectTypeScriptName, region.SourcePropertyTypeScriptName).name;
                             }
                             if (region.RegionType < 3 && region.RegionData && !obj.associations.hasOwnProperty(region.RegionData.Key)) {
                                 if (undefined === self.errors.diagrameTemplate[obj.nodeID]) {
@@ -205,8 +226,7 @@
                                     self.errors.diagrameTemplate[obj.nodeID].properties = {};
                                     self.errors.diagrameTemplate[obj.nodeID].associations = {};
                                 }
-                                self.errors.diagrameTemplate[obj.nodeID].associations[region.RegionData.Key] =
-                                    region.RegionData.AssociationTypeScriptName + " => " + cwAPI.mm.getObjectType(region.RegionData.TargetObjectTypeScriptName).name;
+                                self.errors.diagrameTemplate[obj.nodeID].associations[region.RegionData.Key] = region.RegionData.AssociationTypeScriptName + " => " + cwAPI.mm.getObjectType(region.RegionData.TargetObjectTypeScriptName).name;
                             }
                         });
                     }
@@ -284,12 +304,16 @@
                         $.getJSON(url, function(json) {
                             if (json.status === "Ok") {
                                 self.diagramTemplate[id] = json.result;
-                                idLoaded = idLoaded + 1;
-                                if (idLoaded === idToLoad.length) callback();
+                            } else {
+                                console.log("Failed to Load Diagram Template ID : " + id);
                             }
+                            idLoaded = idLoaded + 1;
+                            if (idLoaded === idToLoad.length) callback();
                         });
                     });
-                }
+                } else callback();
+
+                
             });
         } else {
             for (var group in this.groupsArt) {

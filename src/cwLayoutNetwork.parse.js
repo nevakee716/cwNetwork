@@ -129,6 +129,14 @@
                             element.group = this.objects[element.object_id + "#" + element.objectTypeScriptName + fatherID];
                         }
 
+                        // add objectType ScriptName to group
+                        if (element.group && element.objectTypeScriptName && this.groupsArt[element.group] && this.groupsArt[element.group].objectTypes && this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1) {
+                            this.groupsArt[element.group].objectTypes.push(element.objectTypeScriptName);
+                        }
+
+                        //attribute id, will have the father name in case of duplicate node
+                        element.id = element.object_id + "#" + element.group + fatherID;
+
                         if (this.groupsArt.hasOwnProperty(element.group) === false) {
                             let o = this.options.CustomOptions["iconGroup"];
                             if (o !== "") o = "||" + o;
@@ -139,20 +147,6 @@
                                 element.image = this.shapeToImage(element);
                             }
                         }
-
-                        // add objectType ScriptName to group
-                        if (
-                            element.group &&
-                            element.objectTypeScriptName &&
-                            this.groupsArt[element.group] &&
-                            this.groupsArt[element.group].objectTypes &&
-                            this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1
-                        ) {
-                            this.groupsArt[element.group].objectTypes.push(element.objectTypeScriptName);
-                        }
-
-                        //attribute id, will have the father name in case of duplicate node
-                        element.id = element.object_id + "#" + element.group + fatherID;
 
                         if (hiddenNode) {
                             //lorsqu'un node est hidden ajouter les elements en edges
@@ -287,42 +281,37 @@
             this.copyObject = $.extend(true, {}, object);
             this.originalObject = object;
 
-            output.push('<div class="cwLayoutNetwork" id="cwLayoutNetwork' + this.nodeID + '">');
-            
+            output.push('<div class="cwLayoutNetwork cw-visible" id="cwLayoutNetwork' + this.nodeID + '">');
+
             output.push('<div class="cwLayoutNetworkOption" id="cwLayoutNetworkOption' + this.nodeID + '">');
 
             output.push('<div class="cwLayoutNetworkOptionWrapper">');
             output.push('<div class="bootstrap-iso cwLayoutNetworkSearchBox" id="cwLayoutNetworkSearchBox' + this.nodeID + '"></div>');
-            
+
             output.push('<div class="cwLayoutNetworkToolBox" id="cwLayoutNetworkToolBox' + this.nodeID + '">');
             output.push('<a class="btn page-action no-text fa fa-filter" id="cwLayoutNetworkButtonsFilters' + this.nodeID + '" title="' + $.i18n.prop("filter") + '"></a>');
             output.push('<a class="btn page-action no-text fa fa-cogs" id="cwLayoutNetworkButtonsOptions' + this.nodeID + '" title="' + $.i18n.prop("option") + '"></i></a>');
-            output.push('<a class="btn page-action no-text fa fa-arrows-alt" id="cwLayoutNetworkButtonsFit' + this.nodeID + '" title="' + $.i18n.prop('deDiagramOptionsButtonFitToScreen') + '"></a>');
+            output.push('<a class="btn page-action no-text fa fa-arrows-alt" id="cwLayoutNetworkButtonsFit' + this.nodeID + '" title="' + $.i18n.prop("deDiagramOptionsButtonFitToScreen") + '"></a>');
             output.push('<a class="btn page-action no-text fa fa-download" id="cwLayoutNetworkButtonsDownload' + this.nodeID + '" title="' + $.i18n.prop("download") + '"></a>');
-            output.push("</div>");  
-            output.push('</div>');
+            output.push("</div>");
+            output.push("</div>");
 
             output.push('<div class="cwLayoutNetworkButtons cw-hidden" id="cwLayoutNetworkAction' + this.nodeID + '">');
-            if (this.physicsOption && this.hidePhysicsButton === false)
-                output.push('<button class="k-grid k-button" id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '">' + $.i18n.prop("disablephysics") + "</button>");
+            if (this.physicsOption && this.hidePhysicsButton === false) output.push('<button class="k-grid k-button" id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '">' + $.i18n.prop("disablephysics") + "</button>");
             output.push('<button class="k-grid k-button" id="cwLayoutNetworkDeselectAll' + this.nodeID + '">' + $.i18n.prop("deselectall") + "</button>");
             output.push('<button class="k-grid k-button" id="cwLayoutNetworkSelectAll' + this.nodeID + '">' + $.i18n.prop("selectall") + "</button>");
-            if (this.edgeOption && this.hideEdgeButton === false)
-                output.push('<button class="k-grid k-button" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '">' + $.i18n.prop("unzip_edge") + "</button>");
+            if (this.edgeOption && this.hideEdgeButton === false) output.push('<button class="k-grid k-button" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '">' + $.i18n.prop("unzip_edge") + "</button>");
             if (this.removeLonely) output.push('<button class="k-button" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '">' + $.i18n.prop("remove_lonely_node") + "</button>");
             output.push('<button class="k-grid k-button" id="cwLayoutNetworkButtonsBehaviour' + this.nodeID + '">' + $.i18n.prop("behaviour_highlight") + "</button>");
 
             if (this.expertModeAvailable) output.push('<button class="k-grid k-button" id="cwLayoutNetworkExpertModeButton' + this.nodeID + '">Expert Mode</button>');
             output.push("</div>");
 
-            output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="cw-hidden bootstrap-iso"></div>');    
+            output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="cw-hidden bootstrap-iso"></div>');
             output.push("</div>");
 
             output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div>');
 
-                    
-
-            
             output.push("</div>");
         } catch (e) {
             console.log(e);
@@ -365,13 +354,7 @@
         this.originalObjects[element.object_id + "#" + element.objectTypeScriptName] = object;
 
         // add objectType ScriptName to group
-        if (
-            element.group &&
-            element.objectTypeScriptName &&
-            this.groupsArt[element.group] &&
-            this.groupsArt[element.group].objectTypes &&
-            this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1
-        ) {
+        if (element.group && element.objectTypeScriptName && this.groupsArt[element.group] && this.groupsArt[element.group].objectTypes && this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1) {
             this.groupsArt[element.group].objectTypes.push(element.objectTypeScriptName);
         }
 
