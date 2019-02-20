@@ -1,50 +1,54 @@
+@import "../../_mixins";
+@import "../../_variables";
+
 .bootstrap-select.btn-group:not(.input-group-btn),
 .bootstrap-select.btn-group[class*="span"] {
-  margin: 0 !important;
+    margin: 0 !important;
 }
 .cwLayoutNetwork {
-  display: block;
-  width: 100%;
+    display: block;
+    width: 100%;
 }
 
 div.cwLayoutNetworkLegend {
-	display:flex;
-	width:80%
+    display: flex;
+    width: 80%;
 }
-div.LayoutNetork_filterSection {
-	display:flex;
-}
+
 
 div.LayoutNetork_filterGroup {
-	display:block;
+    display: block;
 }
 
-div.LayoutNetork_filterGroup div{
-	display:flex;
-	flex-wrap: wrap;
+div.LayoutNetork_filterGroup div {
+    display: flex;
+    flex-wrap: wrap;
 }
 
-div.cwLayoutNetworkLegend i{
-	font-size: 1rem;
+div.cwLayoutNetworkLegend i {
+    font-size: 1rem;
 }
 
 .cwLayoutNetwork img.networkLegendImage {
-	    height: 25px;
+    height: 25px;
     top: 3px;
-    position: absolute;
     right: 25px;
 }
 
 div.bootstrap-select > div.dropdown-menu {
-	overflow : inherit !important;
+    overflow: inherit !important;
+}
+
+.dropdown-menu.open {
+    width:400px;
 }
 
 div.cwLayoutNetworkExpertModeConfig {
     width: 481px;
 }
 
-div.cwLayoutNetworkExpertModeConfig div.vis-configuration-wrapper{
-	width: 481px;
+div.cwLayoutNetworkExpertModeConfig div.vis-configuration-wrapper {
+    width: 481px;
 }
 
 div.cwLayoutNetworkExpertModeConfig.selected {
@@ -52,11 +56,10 @@ div.cwLayoutNetworkExpertModeConfig.selected {
 }
 
 div.cwLayoutNetworkExpertModeContainerTab {
-	display: flex;
+    display: flex;
 }
 
-
-div.cwLayoutNetworkExpertModeTabs{
+div.cwLayoutNetworkExpertModeTabs {
     margin: 5px;
     transition: box-shadow 0.3s;
     color: rgba(0, 0, 0, 0.8);
@@ -69,18 +72,16 @@ div.cwLayoutNetworkExpertModeTabs{
 }
 
 div.cwLayoutNetworkExpertModeTabs.selected {
-    box-shadow: inset 0 -2px #03a0ce;	
+    box-shadow: inset 0 -2px #03a0ce;
 }
-
 
 div.cwLayoutNetworkPhysicsConfig {
     -ms-transform: scale(0.9, 0.9); /* IE 9 */
     -webkit-transform: scale(0.9, 0.9); /* Safari */
-    transform: scale(0.9, 0.9);	
+    transform: scale(0.9, 0.9);
 }
 
 div.vis-configuration-wrapper {
-
 }
 
 div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
@@ -90,3 +91,59 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
 .vis-configuration.vis-config-select {
     width: auto;
 }
+
+.networkLegendImage {
+    height: 11px;
+    vertical-align: middle;
+}
+
+.cwLayoutNetworkLoadingBartext {
+    top: 17px;
+    left: 11px;
+    position: absolute;
+}
+
+.cwLayoutNetworkOption {
+    right: -17px;
+    position: absolute;
+    width: 400px;
+    display: block;
+    top: 0px;
+    z-index: 100;
+}
+
+.cwLayoutNetworkOption .k-button{ 
+    margin: .16em .16em;
+}
+
+.cwLayoutNetworkSearchBox {
+    margin-right : 15px;
+    background-color: #ffffff;
+}
+
+.cwLayoutNetworkOptionWrapper { 
+    display: flex;
+    background-color: #ffffff;
+}
+
+.cwLayoutNetworkButtons { 
+    margin-top : 20px;
+    background-color: #ffffff;
+}
+
+.cwLayoutNetork_filterSection{
+    margin-top: 50px;
+    display: block;
+    background-color: #ffffff;
+}
+
+
+.cwLayoutNetworkToolBox .btn.selected{
+    background-color: @cwTopBarProfileLinkHoverColor;
+}
+
+.cwLayoutNetworkButtons .k-button.selected{
+    background-color: @cwTopBarProfileLinkHoverColor;
+}
+
+

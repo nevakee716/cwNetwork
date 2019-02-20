@@ -111,23 +111,28 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
 
 .cwLayoutNetworkOption .k-button{ 
     margin: .16em .16em;
+    background-color: #ffffff;
 }
 
 .cwLayoutNetworkSearchBox {
     margin-right : 15px;
+    background-color: #ffffff;
 }
 
 .cwLayoutNetworkOptionWrapper { 
     display: flex;
+    background-color: #ffffff;
 }
 
 .cwLayoutNetworkButtons { 
     margin-top : 20px;
+    background-color: #ffffff;
 }
 
 .cwLayoutNetork_filterSection{
     margin-top: 50px;
     display: block;
+    background-color: #ffffff;
 }
 
 
