@@ -273,8 +273,8 @@
     // obligatoire appeler par le system
     cwLayoutNetwork.prototype.drawAssociations = function(output, associationTitleText, object) {
         try {
-            if (cwApi.customLibs.utils === undefined || cwAPI.customLibs.utils.version === undefined || cwAPI.customLibs.utils.version < 1.1) {
-                output.push("<h2> Please Install Utils library 1.1 or higher</h2>");
+            if (cwApi.customLibs.utils === undefined || cwAPI.customLibs.utils.version === undefined || cwAPI.customLibs.utils.version < 1.2) {
+                output.push("<h2> Please Install Utils library 1.2 or higher</h2>");
                 return;
             }
 

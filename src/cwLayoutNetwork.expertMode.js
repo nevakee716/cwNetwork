@@ -265,7 +265,6 @@
         }
 
         this.errors.diagrameTemplate = {};
-        this.errors.init = false;
 
         this.getFontAwesomeList(output);
         var opt = {};
@@ -280,7 +279,7 @@
 
         var nu = [];
         var positions = this.networkUI.getPositions();
-
+        this.imageTemplate = {};
         this.nodes.forEach(function(node) {
             let img = self.shapeToImage(node);
             if(img) {
@@ -291,7 +290,10 @@
         });
 
         self.nodes.update(nu);
-
+        if (this.angularScope) {
+            this.angularScope.errorsTemplate = this.errors.diagrameTemplate;
+            //this.angularScope.$apply();
+        }
 
     };
 
@@ -588,7 +590,7 @@
 
 
     cwLayoutNetwork.prototype.updateNetworkData = function() {
-        this.errors.init = false;
+
         this.setExternalFilterToNone(); 
         this.disableGroupClusters();
 
