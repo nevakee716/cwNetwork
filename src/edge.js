@@ -60,7 +60,8 @@
         //else if(newDirection === undefined ) newDirection = "to";
 
         this.labels.push({"label" : edgeInfo.label,"direction" : newDirection,"id":edgeInfo.id,"scriptname":edgeInfo.objectTypeScriptName,"uuid":this.labels.length}); 
-        this.size = this.size + 3;
+        this.size = this.size + 1;
+        if(this.size > 5) this.size = 5;
       }
 
       if(direction === 'to' && reverse || direction === 'from' && !reverse) this.direction.from = true;
