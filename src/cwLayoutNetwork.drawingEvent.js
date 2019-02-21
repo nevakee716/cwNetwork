@@ -48,20 +48,20 @@
             let obj = this.originalObjects[node.object_id + "#" + node.objectTypeScriptName];
             let palette;
             let diagramTemplate = this.diagramTemplate[this.groupsArt[node.group].diagramTemplateID];
-            if (obj && obj.properties.type === undefined) {
-                if (undefined === this.errors.diagrameTemplate[obj.nodeID]) {
-                    this.errors.diagrameTemplate[obj.nodeID] = {};
-                    this.errors.diagrameTemplate[obj.nodeID].properties = {};
-                    this.errors.diagrameTemplate[obj.nodeID].associations = {};
-                }
-                this.errors.diagrameTemplate[obj.nodeID].properties.type = cwAPI.mm.getProperty(obj.objectTypeScriptName, "type").name;
-                
 
-            };
             if (obj && obj.properties.type_id && diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id]) {
                 palette = diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id];
             } else if (obj && diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"]) {
                 palette = diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"];
+            } else {
+                if (obj && obj.properties.type === undefined) {
+                    if (undefined === this.errors.diagrameTemplate[obj.nodeID]) {
+                        this.errors.diagrameTemplate[obj.nodeID] = {};
+                        this.errors.diagrameTemplate[obj.nodeID].properties = {};
+                        this.errors.diagrameTemplate[obj.nodeID].associations = {};
+                    }
+                    this.errors.diagrameTemplate[obj.nodeID].properties.type = cwAPI.mm.getProperty(obj.objectTypeScriptName, "type").name;
+                };
             }
             if (palette) {
                 var shape = {};
