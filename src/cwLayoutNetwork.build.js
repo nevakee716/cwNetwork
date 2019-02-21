@@ -174,14 +174,34 @@
         this.nodes.on("add", this.addSearchFilterElement.bind(this));
         this.nodes.on("remove", this.removeSearchFilterElement.bind(this));
 
-        if (!this.wiggle) {
-            // Activate Starting element
-            this.activateStartingGroup();
-        }
+
 
         this.activateStartingEdgeType();
-        // initialize your network
-        this.networkUI = new vis.Network(networkContainer, data, this.networkOptions);
+
+
+        if (this.startingNetwork && this.networkConfiguration && this.networkConfiguration.nodes) {
+            let startCwApiNetwork = this.networkConfiguration.nodes[Object.keys(this.networkConfiguration.nodes)[0]];
+            if (startCwApiNetwork && startCwApiNetwork.configuration) {
+                this.networkUI = new vis.Network(networkContainer, data, this.networkOptions);
+                this.loadCwApiNetwork(startCwApiNetwork.configuration);
+
+                self.networkConfiguration.selected = startCwApiNetwork;
+                $("select.selectNetworkConfiguration_" + this.nodeID).each(function(index) {
+                    // put values into filters
+                    $(this).selectpicker("val", startCwApiNetwork.label); //init cwAPInetworkfilter
+                });
+            } else if (!this.wiggle) {
+                // Activate Starting element
+                this.activateStartingGroup();
+                this.networkUI = new vis.Network(networkContainer, data, this.networkOptions);
+            }
+        } else if (!this.wiggle) {
+            // Activate Starting element
+            this.activateStartingGroup();
+            this.networkUI = new vis.Network(networkContainer, data, this.networkOptions);
+        }
+
+
 
         var fitButton = document.getElementById("cwLayoutNetworkButtonsFit" + this.nodeID);
         fitButton.addEventListener("click", function() {
@@ -299,17 +319,7 @@
         this.saveEvent = false;
         this.addEventOnSave();
 
-        if (this.startingNetwork && this.networkConfiguration && this.networkConfiguration.nodes) {
-            let startCwApiNetwork = this.networkConfiguration.nodes[Object.keys(this.networkConfiguration.nodes)[0]];
-            if (startCwApiNetwork && startCwApiNetwork.configuration) {
-                this.loadCwApiNetwork(startCwApiNetwork.configuration);
-                self.networkConfiguration.selected = startCwApiNetwork;
-                $("select.selectNetworkConfiguration_" + this.nodeID).each(function(index) {
-                    // put values into filters
-                    $(this).selectpicker("val", startCwApiNetwork.label); //init cwAPInetworkfilter
-                });
-            }
-        }
+
     };
 
     // Building network
