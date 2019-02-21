@@ -71,7 +71,11 @@
                     groups[optionSplit[0]].font = {};
                     groups[optionSplit[0]].font.size = fontSize;
                     groups[optionSplit[0]].diagram = false;
+                    var ots = groups[optionSplit[0]].objectTypes;
+
                     if (optionSplit[1] === "diagram") {
+                        
+                        groups[optionSplit[0]] = {}; 
                         groups[optionSplit[0]].color = {};
 
                         groups[optionSplit[0]].color.border = this.LightenDarkenColor(optionSplit[2], 50);
@@ -81,6 +85,7 @@
                         groups[optionSplit[0]].font = {};
                         groups[optionSplit[0]].font.size = 0;
                         groups[optionSplit[0]].diagramTemplateID = optionSplit[3];
+
 
                         groups[optionSplit[0]].diagram = true;
                     } else if (optionSplit[1] === "icon") {
@@ -130,6 +135,7 @@
                             groups[optionSplit[0]].color.background = optionSplit[2];
                         }
                     }
+                    groups[optionSplit[0]].objectTypes = ots;
                     groups[optionSplit[0]].size = 35;
                 }
             }

@@ -285,6 +285,7 @@
             if(img) {
                 self.network.objectTypeNodes[node.group].nodes[node.id].dataImage = img;
                 node.image = img;
+                node.shape = "image";
             }
             nu.push(node);
         });
