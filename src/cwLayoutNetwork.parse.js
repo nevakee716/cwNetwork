@@ -349,7 +349,13 @@
             if (o !== "") o = "||" + o;
             this.options.CustomOptions["iconGroup"] = element.group + "," + "ellipse" + ",#" + Math.floor(Math.random() * 16777215).toString(16) + o;
             this.getFontAwesomeList(this.options.CustomOptions["iconGroup"]);
+        } else {
+            if (this.groupsArt[element.group].diagram === true && this.diagramTemplate[this.groupsArt[element.group].diagramTemplateID]) {
+                element.image = this.shapeToImage(element);
+            }
         }
+
+                   
 
         this.originalObjects[element.object_id + "#" + element.objectTypeScriptName] = object;
 
