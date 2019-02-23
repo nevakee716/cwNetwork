@@ -89,7 +89,8 @@
                 shape.H = palette.Height * 4;
                 shape.W = palette.Width * 4;
 
-                var qualityFactor = 5;
+                node.size = 2*35 *  palette.Height / 32
+                var qualityFactor = 4;
 
                 var canvas = document.createElement("canvas");
                 var ctx = canvas.getContext("2d");

@@ -29,6 +29,11 @@
             this.dataImage = object.image;
         }
 
+        if(object.size) {
+            this.size = object.size;
+        }
+ 
+
 
 
     };
@@ -91,6 +96,12 @@
             obj.shape = "image";
             obj.image = this.dataImage;
         }
+        
+        if(this.size) {
+            obj.size = this.size;
+        }
+ 
+
 
         if (this.icon) {
             obj.shape = "icon";

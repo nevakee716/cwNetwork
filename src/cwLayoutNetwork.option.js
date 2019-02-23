@@ -88,6 +88,7 @@
 
 
                         groups[optionSplit[0]].diagram = true;
+
                     } else if (optionSplit[1] === "icon") {
                         let color, icon;
                         if (optionSplit[2].indexOf("#") === 0) {
@@ -116,6 +117,7 @@
                         groups[optionSplit[0]].shape = optionSplit[1];
                         groups[optionSplit[0]].image = optionSplit[3];
                         groups[optionSplit[0]].color = getColorForNode(optionSplit[2]);
+                        groups[optionSplit[0]].size = 35;
                     } else {
                         //shape
                         groups[optionSplit[0]].shape = optionSplit[1];
@@ -134,9 +136,10 @@
                             }
                             groups[optionSplit[0]].color.background = optionSplit[2];
                         }
+                        groups[optionSplit[0]].size = 35;
                     }
                     groups[optionSplit[0]].objectTypes = ots;
-                    groups[optionSplit[0]].size = 35;
+
                 }
             }
         }
