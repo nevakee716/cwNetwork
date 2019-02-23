@@ -298,7 +298,7 @@
         var positions = this.networkUI.getPositions();
         this.imageTemplate = {};
         this.nodes.forEach(function(node) {
-            if (node.group === changeGroup) {
+            if (changeGroup && node.group === changeGroup[0]) {
                 let img = self.shapeToImage(node);
                 if (img) {
                     self.network.objectTypeNodes[node.group].nodes[
