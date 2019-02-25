@@ -88,13 +88,14 @@
                 shape.W = palette.Width * 4;
 
                 node.size = (2 * 35 * palette.Height) / 32;
-                var qualityFactor = 4;
+                var qualityFactor = 3;
 
                 var canvas = document.createElement("canvas");
                 var ctx = canvas.getContext("2d");
                 canvas.id = "gImage";
-                canvas.width = qualityFactor * shape.W * 1.5;
-                canvas.height = qualityFactor * shape.H * 1.5;
+                // taking margin for region outside of the shape
+                canvas.width = qualityFactor * shape.W * 3;
+                canvas.height = qualityFactor * shape.H * 3;
 
                 shape.X = canvas.width / 2 / qualityFactor - shape.W / 2;
                 shape.Y = canvas.height / 2 / qualityFactor - shape.H / 2;
@@ -111,6 +112,7 @@
                 diagC.camera = {};
                 diagC.camera.scale = 1;
                 diagC.ctx = ctx;
+                diagC.ctx.font = "10px sans-serif";
                 diagC.CorporateModelerDiagramScale = 1;
                 diagC.loop = 0;
                 diagC.pictureGalleryLoader = new cwApi.CwPictureGalleryLoader.Loader(diagC);
