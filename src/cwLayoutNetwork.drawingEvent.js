@@ -231,6 +231,7 @@
         imageToLoad.forEach(function(uuid) {
             var image = new Image();
             image.src = picturesPath + uuid + ".png";
+            cwApi.CwPictureGalleryLoader.images[uuid] = image;
             image.onload = checkAllImagesLoaded;
         });
     };
