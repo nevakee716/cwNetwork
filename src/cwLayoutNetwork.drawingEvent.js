@@ -37,13 +37,12 @@
     };
 
     cwLayoutNetwork.prototype.shapeToImage = function(node) {
-
         var self = this;
         let obj = this.originalObjects[node.object_id + "#" + node.objectTypeScriptName];
         let palette;
         let diagramTemplate = this.diagramTemplate[this.groupsArt[node.group].diagramTemplateID];
 
-        if(this.imageTemplate.hasOwnProperty(node.id)) return this.imageTemplate[node.id];
+        if (this.imageTemplate.hasOwnProperty(node.id)) return this.imageTemplate[node.id];
         if (this.groupsArt[node.group] && this.groupsArt[node.group].diagram === true && this.diagramTemplate[this.groupsArt[node.group].diagramTemplateID]) {
             let obj = this.originalObjects[node.object_id + "#" + node.objectTypeScriptName];
             let palette;
@@ -61,7 +60,7 @@
                         this.errors.diagrameTemplate[obj.nodeID].associations = {};
                     }
                     this.errors.diagrameTemplate[obj.nodeID].properties.type = cwAPI.mm.getProperty(obj.objectTypeScriptName, "type").name;
-                };
+                }
             }
             if (palette) {
                 var shape = {};
@@ -84,12 +83,11 @@
                         self.errors.diagrameTemplate[obj.nodeID].associations[region.RegionData.Key] = region.RegionData.AssociationTypeScriptName + " => " + cwAPI.mm.getObjectType(region.RegionData.TargetObjectTypeScriptName).name;
                     }
                 });
-        
 
                 shape.H = palette.Height * 4;
                 shape.W = palette.Width * 4;
 
-                node.size = 2*35 *  palette.Height / 32
+                node.size = (2 * 35 * palette.Height) / 32;
                 var qualityFactor = 4;
 
                 var canvas = document.createElement("canvas");
@@ -133,18 +131,14 @@
                 diagC.getDiagramPopoutForShape = function() {};
                 var shapeObj = new cwApi.Diagrams.CwDiagramShape(shape, palette, diagC);
 
-                shapeObj.draw(ctx); 
+                shapeObj.draw(ctx);
                 let img = cwAPI.customLibs.utils.trimCanvas(canvas).toDataURL();
-                this.imageTemplate[node.id]= img;
+                this.imageTemplate[node.id] = img;
                 return img;
             }
         }
-
-
-        
     };
 
-   
     cwLayoutNetwork.prototype.loadDiagramTemplate = function(templateListUrl, callback) {
         var self = this;
         this.diagramTemplate = {};
@@ -160,7 +154,7 @@
                             }
                         }
                     }
-                    if (idToLoad.length === 0) callback();
+                    if (idToLoad.length === 0) self.loadDiagramImage(callback);
                     idToLoad.forEach(function(id) {
                         var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + Math.random();
                         $.getJSON(url, function(json) {
@@ -170,12 +164,10 @@
                                 console.log("Failed to Load Diagram Template ID : " + id);
                             }
                             idLoaded = idLoaded + 1;
-                            if (idLoaded === idToLoad.length) callback();
+                            if (idLoaded === idToLoad.length) self.loadDiagramImage(callback);
                         });
                     });
-                } else callback();
-
-                
+                } else self.loadDiagramImage(callback);
             });
         } else {
             for (var group in this.groupsArt) {
@@ -184,18 +176,63 @@
                     idToLoad.push(id);
                 }
             }
-            if (idToLoad.length === 0) callback();
+            if (idToLoad.length === 0) self.loadDiagramImage(callback);
             idToLoad.forEach(function(id) {
                 var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + Math.random();
                 $.getJSON(url, function(json) {
                     if (json.status === "Ok") {
                         self.diagramTemplate[id] = json.result;
                         idLoaded = idLoaded + 1;
-                        if (idLoaded === idToLoad.length) callback();
+                        if (idLoaded === idToLoad.length) self.loadDiagramImage(callback);
                     }
                 });
             });
         }
+    };
+
+    cwLayoutNetwork.prototype.loadDiagramImage = function(callback) {
+        var self = this;
+        let imageToLoad = [];
+        let imageLoaded = 0;
+        Object.keys(this.diagramTemplate).forEach(function(key) {
+            let template = self.diagramTemplate[key];
+            Object.keys(template.diagram.paletteEntries).forEach(function(p) {
+                let palette = template.diagram.paletteEntries[p];
+                if (palette.PictureUuid && imageToLoad.indexOf(palette.PictureUuid) === -1) {
+                    imageToLoad.push(palette.PictureUuid);
+                }
+                palette.Regions.forEach(function(region) {
+                    if (region.PictureUuid && imageToLoad.indexOf(region.PictureUuid) === -1) {
+                        imageToLoad.push(region.PictureUuid);
+                    }
+                    if (region.BandingRows && region.BandingRows.length > 0) {
+                        region.BandingRows.forEach(function(b) {
+                            if (b.PictureUuid && imageToLoad.indexOf(b.PictureUuid) === -1) {
+                                imageToLoad.push(b.PictureUuid);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+        let picturesPath = cwAPI.getSiteMediaPath() + "images/gallerypictures/";
+        if (cwAPI.isLive()) {
+            picturesPath = cwAPI.getLiveServerURL() + "pictures/gallerypictures/uuid/";
+        }
+
+        function checkAllImagesLoaded() {
+            imageLoaded += 1;
+            if (imageLoaded === imageToLoad.length) {
+                callback();
+            }
+        }
+
+        imageToLoad.forEach(function(uuid) {
+            var image = new Image();
+            image.src = picturesPath + uuid + ".png";
+            image.onload = checkAllImagesLoaded;
+        });
     };
 
     cwLayoutNetwork.prototype.positionClusters = function(ctx) {
