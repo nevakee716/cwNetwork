@@ -159,7 +159,7 @@
               }
             }
           }
-          if (idToLoad.length === 0) self.loadDiagramImage(callback);
+          if (idToLoad.length === 0) callback();
           idToLoad.forEach(function(id) {
             var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + Math.random();
             $.getJSON(url, function(json) {
@@ -181,7 +181,7 @@
           idToLoad.push(id);
         }
       }
-      if (idToLoad.length === 0) self.loadDiagramImage(callback);
+      if (idToLoad.length === 0) callback();
       idToLoad.forEach(function(id) {
         var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + Math.random();
         $.getJSON(url, function(json) {
