@@ -60,7 +60,7 @@
         var self = this;
         properties.oldData.forEach(function(elem) {
             $("select.selectNetworkSearch_" + self.nodeID)
-                .find('[id="' + elem.id + '"]')
+                .find('[id="' + elem.id.replaceAll(" ", "¤") + '"]')
                 .remove();
         });
         $("select.selectNetworkSearch_" + self.nodeID).selectpicker("refresh");
