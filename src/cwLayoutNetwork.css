@@ -130,6 +130,9 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
     background-color: #ffffff;
 }
 
+.nodeConfigurationSaveButton{
+    margin-left: 5px;
+}
 .cwLayoutNetork_filterSection{
     margin-top: 50px;
     display: block;

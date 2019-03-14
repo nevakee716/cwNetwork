@@ -307,7 +307,7 @@
             if (this.expertModeAvailable) output.push('<button class="k-grid k-button" id="cwLayoutNetworkExpertModeButton' + this.nodeID + '">Expert Mode</button>');
             output.push("</div>");
 
-            output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="cw-hidden bootstrap-iso"></div>');
+            output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="cw-hidden"></div>');
             output.push("</div>");
 
             output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div>');
