@@ -117,13 +117,13 @@
     };
 
     cwLayoutNetwork.prototype.createAddButton = function() {
-        var buttonAdd = document.createElement("button");
+        var buttonAdd = document.createElement("a");
+        buttonAdd.className = "networkAddButton fa fa-2x fa-plus-circle"
         buttonAdd.addEventListener(
             "click",
             this.createChangesetWithCreation.bind(this),
             false
         );
-        buttonAdd.innerHTML = '<i class="fa fa-plus" aria-hidden="true"></i>';
         return buttonAdd;
     };
 

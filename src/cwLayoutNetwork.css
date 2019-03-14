@@ -133,6 +133,14 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
 .nodeConfigurationSaveButton{
     margin-left: 5px;
 }
+
+.networkAddButton {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    color: #76cf76 !important;
+}
+
 .cwLayoutNetork_filterSection{
     margin-top: 50px;
     display: block;
