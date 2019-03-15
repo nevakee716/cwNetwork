@@ -25,3 +25,7 @@ add_all_connected_nodes = Add All Connected Nodes
 activate_expert_mode = Enable Expert Mode
 deactivate_expert_mode = Disable Expert Mode
 expert_mode = Expert Mode
+filter = Show Filters
+option = Show Options
+download = Download the analysis as a picture
+

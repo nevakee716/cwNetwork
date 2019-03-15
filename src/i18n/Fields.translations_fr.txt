@@ -1,7 +1,7 @@
 ﻿objects_filters = Filtre par Objets
 link_type = Type de Lien
 external_association = Exposer les objets associés 
-cluster_by_groups = Imbrication d'objets
+cluster_by_groups = Imbrication d''objets
 head_group = Objets Englobants
 child_group = Objets Englobés
 network = Analyses Sauvegardées
@@ -25,3 +25,6 @@ add_all_connected_nodes = Afficher tous les objets connexes (n niveaux)
 activate_expert_mode = Activer le Mode Expert
 deactivate_expert_mode = Déactiver le Mode Expert
 expert_mode = Mode Expert
+filter = Afficher les Filtres
+option = Afficher les Options
+download = Télécharger l''analyse en tant qu''image

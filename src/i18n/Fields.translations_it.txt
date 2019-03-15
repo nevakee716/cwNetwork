@@ -1,4 +1,4 @@
-objects_filters = Filtri sugli Oggetti 				
+﻿objects_filters = Filtri sugli Oggetti 				
 link_type = Tipo di legame					
 external_association = Associazioni esterne			  
 cluster_by_groups = Cluster per gruppi				
@@ -25,5 +25,8 @@ add_all_connected_nodes = Inserisci tutti i nodi collegati
 activate_expert_mode = Abilita Modalità Esperto
 deactivate_expert_mode = Disabilita la Modalità Esperto
 expert_mode = Modalità Esperto
+filter = Mostra filtri
+option = Mostra opzioni
+download = Scarica l'analisi come immagine
 
 
