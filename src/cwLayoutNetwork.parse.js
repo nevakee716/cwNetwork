@@ -72,9 +72,7 @@
             if (child.associations.hasOwnProperty(associationNode)) {
                 for (var i = 0; i < child.associations[associationNode].length; i += 1) {
                     nextChild = child.associations[associationNode][i];
-                    if (associationNode.indexOf("|0|") !== -1) {
-                        // do not process node for region association
-                    } else if (this.nodeFiltered.hasOwnProperty(associationNode)) {
+                    if (this.nodeFiltered.hasOwnProperty(associationNode)) {
                         // external Filter Node
                         filterElement = {};
                         filterElement.name = child.associations[associationNode][i].name;
@@ -89,6 +87,9 @@
                             }
                             filtersGroup.push(groupFilter);
                         });
+
+                    } else if (associationNode.indexOf("|0|") !== -1) {
+                        // do not process node for region association
                     } else if (this.hiddenNodes.indexOf(associationNode) !== -1) {
                         // jumpAndMerge when hidden
                         childrenArray = childrenArray.concat(this.simplify(nextChild, father, true));
