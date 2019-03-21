@@ -75,8 +75,12 @@
       var edgeFilterObjectTitle = document.createElement("div");
       edgeFilterObjectTitle.innerHTML = $.i18n.prop("link_type") + " : ";
 
+      var edgeFilterObjectFilters = document.createElement("div");
+      edgeFilterObjectFilters.className = "bootstrap-iso";
+      edgeFilterObjectFilters.appendChild(this.getEdgeFilterObject("selectNetworkEdge_" + this.nodeID));
+
       edgeFilterObject.appendChild(edgeFilterObjectTitle);
-      edgeFilterObject.appendChild(this.getEdgeFilterObject("selectNetworkEdge_" + this.nodeID));
+      edgeFilterObject.appendChild(edgeFilterObjectFilters);
 
       filterContainer.appendChild(edgeFilterObject);
     }

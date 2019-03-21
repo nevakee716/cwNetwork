@@ -285,6 +285,8 @@
 
     var stop = false;
     this.networkUI.on("stabilizationIterationsDone", function() {
+      self.colorAllNodes();
+      self.colorAllEdges();
       var span = document.getElementById("cwLayoutNetwork_text" + self.nodeID);
 
       span.parentNode.removeChild(span);
