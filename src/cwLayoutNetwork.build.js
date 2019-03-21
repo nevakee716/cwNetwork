@@ -221,6 +221,8 @@
     this.networkUI.on("afterDrawing", this.afterDrawing.bind(this));
     this.networkUI.on("beforeDrawing", this.beforeDrawing.bind(this));
 
+    if(this.nodes.length === 0) this.hideLoading();
+
     // Activate Cluster
     if (!this.startingNetwork) this.activateStartingCluster();
 
