@@ -210,7 +210,7 @@ Contributor only can save or create a capinetwork .
 When you create a new network, it will create a new object and associate it with the object of your objectPage.
 
 To use this option you need to have your metamodel ready : 
-Create a new objectType : CW API NETWORK with 3 properties : Configuration (memoText), Label (string) and Create On View (string)
+Create a new objectType : CW API NETWORK with 3 properties : Configuration (memoText), Label (string) and Create On cwView (string)
 Create also an association between CW API NETWORK and Any Objects
 Inside C:\Casewise\Evolve\Site\bin\webDesigner\custom\Marketplace\libs\Network\src\cwLayoutNetwork.js
 Fill theses variable with the scriptname of your model 
