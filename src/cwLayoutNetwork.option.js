@@ -78,8 +78,8 @@
                         groups[optionSplit[0]] = {}; 
                         groups[optionSplit[0]].color = {};
 
-                        groups[optionSplit[0]].color.border = this.LightenDarkenColor(optionSplit[2], 50);
-
+                        groups[optionSplit[0]].color.border = optionSplit[2];
+                        groups[optionSplit[0]].color.background = this.LightenDarkenColor(optionSplit[2], 50);
                         groups[optionSplit[0]].borderWidthSelected = 50;
 
                         groups[optionSplit[0]].font = {};
@@ -114,9 +114,17 @@
                             background: "#FFFFFF"
                         };
                     } else if (optionSplit[1] === "image" || optionSplit[1] === "circularImage") {
+                        let color,image;
+                        if (optionSplit[2].indexOf("#") === 0) {
+                            color = getColorForNode(optionSplit[2]);
+                            image = optionSplit[3];
+                        } else {
+                            color = getColorForNode(optionSplit[3]);
+                            image = optionSplit[2];
+                        }
                         groups[optionSplit[0]].shape = optionSplit[1];
-                        groups[optionSplit[0]].image = optionSplit[3];
-                        groups[optionSplit[0]].color = getColorForNode(optionSplit[2]);
+                        groups[optionSplit[0]].image = image;
+                        groups[optionSplit[0]].color = color;
                         groups[optionSplit[0]].size = 35;
                     } else {
                         //shape

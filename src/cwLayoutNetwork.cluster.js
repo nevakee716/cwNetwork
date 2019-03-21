@@ -118,7 +118,7 @@
 
     cwLayoutNetwork.prototype.clusterByGroup = function() {
         this.disableGroupClusters();
-        if(this.clusterByGroupOption.head == "" || this.clusterByGroupOption.child.length < 1) {
+        if(this.clusterByGroupOption.head == "" || this.clusterByGroupOption.child === null || this.clusterByGroupOption.child.length < 1) {
             return;
         }
 
@@ -245,10 +245,10 @@
                 head = self.nodes.get(cluster.head);
                 head.physics = false;
                 var group = self.networkUI.groups.get(head.group);
-                if(!group || (group.shape != "icon" && group.shape != "image" && group.shape != "circularImage")) {
+                if(!group || (group.shape != "icon" && group.shape != "image" && group.shape != "circularImage" && group.diagram != true)) {
                     head.shape = "square";
                 }
-                if(group.shape !== "image" && group.shape !== "circularImage") {
+                if(group.shape !== "image" && group.shape !== "circularImage" && group.diagram != true) {
                     head.size = 0;
                 }
                 

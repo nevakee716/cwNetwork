@@ -280,7 +280,7 @@
       if (group.shape === "icon" || group.shape === "image" || group.shape === "circularImage" || group.diagram === true) {
         let color = group.color.background;
         if (color[0] != "#") color = "#" + color;
-        while (self.getHSL(color) < 150) {
+        while (self.getHSL(color) < 200) {
           color = self.LightenDarkenColor(color, 100);
         }
         ctx.fillStyle = color;
