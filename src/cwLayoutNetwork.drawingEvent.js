@@ -240,6 +240,7 @@
       image.src = picturesPath + uuid + ".png";
       cwApi.CwPictureGalleryLoader.images[uuid] = image;
       image.onload = checkAllImagesLoaded;
+      image.onerror = checkAllImagesLoaded;
     });
   };
 
