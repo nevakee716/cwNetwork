@@ -221,6 +221,8 @@
       });
     });
 
+    if(imageToLoad.length === 0) callback();
+
     let picturesPath = cwAPI.getSiteMediaPath() + "images/gallerypictures/";
     if (cwAPI.isLive()) {
       picturesPath = cwAPI.getLiveServerURL() + "pictures/gallerypictures/uuid/";
