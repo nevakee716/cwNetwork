@@ -85,6 +85,7 @@
       this.network.updateExternalFilterInformation(this.networkDisposition.external);
     }
 
+
     // provide the data in the vis format
     var nodes = this.network.getEnabledVisNodes(); //this.network.getVisNodes());
     var edges = this.network.getVisEdges(); //this.network.getVisEdges());
@@ -103,7 +104,7 @@
       physics: this.physConfiguration,
       layout: this.layoutConfiguration,
       interaction: {
-        keyboard: true
+        keyboard: false
       }
     };
 
@@ -211,7 +212,7 @@
     fitButton.addEventListener("click", function() {
       self.networkUI.fit();
     });
-
+  
     if (this.wiggle) {
       // Activate Starting element
       this.activateStartingGroup();
