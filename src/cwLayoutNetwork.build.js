@@ -23,6 +23,7 @@
 
       var networkContainer = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
       this.createLoadingElement(networkContainer.parentNode);
+
       // set height
       var titleReact = document.querySelector("#cw-top-bar").getBoundingClientRect();
       var topBarReact = document.querySelector(".page-top").getBoundingClientRect();
@@ -67,6 +68,7 @@
 
   // Building network
   cwLayoutNetwork.prototype.createNetwork = function() {
+  	this.hideLoading();
     function addStyleString(str) {
       var node = document.createElement("style");
       node.innerHTML = str;
@@ -283,6 +285,7 @@
     this.networkUI.on("stabilizationProgress", function(params) {
 
       var widthFactor = params.iterations / params.total;
+      self.displayLoading();
       self.setLoadingAt(Math.round(widthFactor * 100) + "%");
     });
 
