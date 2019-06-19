@@ -52,6 +52,7 @@
 
     var filterGroupObjectTitle = document.createElement("div");
     filterGroupObjectTitle.innerHTML = $.i18n.prop("objects_filters") + " : ";
+    filterGroupObjectTitle.className = "LayoutNetork_filterTitle";
     var filterGroupObjectFilters = document.createElement("div");
     filterGroupObjectFilters.className = "bootstrap-iso";
 
@@ -59,7 +60,9 @@
     // Adding filter for all selector group
     for (objectTypeNode in objectTypeNodes) {
       if (objectTypeNodes.hasOwnProperty(objectTypeNode)) {
-        filterGroupObjectFilters.appendChild(objectTypeNodes[objectTypeNode].getFilterObject(this.nodeID, this.groupsArt));
+        let f = objectTypeNodes[objectTypeNode].getFilterObject(this.nodeID, this.groupsArt);
+        f.className += " cwLayout_networkSelect";
+        filterGroupObjectFilters.appendChild(f);
         i += 1;
       }
     }
@@ -73,11 +76,14 @@
       var edgeFilterObject = document.createElement("div");
       edgeFilterObject.className = "LayoutNetork_filterGroup";
       var edgeFilterObjectTitle = document.createElement("div");
+      edgeFilterObjectTitle.className = "LayoutNetork_filterTitle";
       edgeFilterObjectTitle.innerHTML = $.i18n.prop("link_type") + " : ";
 
       var edgeFilterObjectFilters = document.createElement("div");
       edgeFilterObjectFilters.className = "bootstrap-iso";
-      edgeFilterObjectFilters.appendChild(this.getEdgeFilterObject("selectNetworkEdge_" + this.nodeID));
+      let edgeFilter = this.getEdgeFilterObject("selectNetworkEdge_" + this.nodeID);
+      edgeFilter.className += " cwLayout_networkSelect";
+      edgeFilterObjectFilters.appendChild(edgeFilter);
 
       edgeFilterObject.appendChild(edgeFilterObjectTitle);
       edgeFilterObject.appendChild(edgeFilterObjectFilters);
@@ -91,12 +97,14 @@
     associationFilterObject.className = "LayoutNetork_filterGroup";
     var associationFilterObjectTitle = document.createElement("div");
     associationFilterObjectTitle.innerHTML = $.i18n.prop("external_association") + " :";
-
+    associationFilterObjectTitle.className = "LayoutNetork_filterTitle";
     var associationFilterObjectFilters = document.createElement("div");
     associationFilterObjectFilters.className = "bootstrap-iso";
     for (externalfilter in this.externalFilters) {
       if (this.externalFilters.hasOwnProperty(externalfilter)) {
-        associationFilterObjectFilters.appendChild(this.externalFilters[externalfilter].getFilterObject("selectNetworkExternal_" + this.nodeID));
+        let extFilter = this.externalFilters[externalfilter].getFilterObject("selectNetworkExternal_" + this.nodeID);
+        extFilter.className += " cwLayout_networkSelect";
+        associationFilterObjectFilters.appendChild(extFilter);
         i += 1;
       }
     }
@@ -112,12 +120,15 @@
       clusterFilterObject.className = "LayoutNetork_filterGroup bootstrap-iso";
 
       var clusterFilterObjectTitle = document.createElement("div");
+      clusterFilterObjectTitle.className = "LayoutNetork_filterTitle";
       clusterFilterObjectTitle.innerHTML = $.i18n.prop("cluster_by_groups");
 
       var clusterFilterObjectFilterHead = document.createElement("div");
       clusterFilterObjectFilterHead = this.network.getFilterClusterByGroupHead("selectNetworkClusterByGroup_" + this.nodeID);
+      clusterFilterObjectFilterHead.className += " cwLayout_networkSelect";
       var clusterFilterObjectFilterChilds = document.createElement("div");
       clusterFilterObjectFilterChilds = this.network.getFilterClusterByGroupChilds("selectNetworkClusterByGroup_" + this.nodeID);
+      clusterFilterObjectFilterChilds.className += " cwLayout_networkSelect";
 
       clusterFilterObject.appendChild(clusterFilterObjectTitle);
       clusterFilterObject.appendChild(clusterFilterObjectFilterHead);
@@ -129,13 +140,17 @@
       configurationFilterObject.className = "LayoutNetork_filterGroup";
 
       var configurationFilterObjectTitle = document.createElement("div");
+      configurationFilterObjectTitle.className = "LayoutNetork_filterTitle";
       configurationFilterObjectTitle.innerHTML = "   " + $.i18n.prop("network");
 
       configurationFilterObject.appendChild(configurationFilterObjectTitle);
 
       var wrapper = document.createElement("span");
       wrapper.className = "bootstrap-iso";
-      wrapper.appendChild(this.getNetworkConfigurationFilterObject("selectNetworkConfiguration_" + this.nodeID));
+
+      let networkConfigurationFilter = this.getNetworkConfigurationFilterObject("selectNetworkConfiguration_" + this.nodeID);
+      networkConfigurationFilter.className += " cwLayout_networkSelect";
+      wrapper.appendChild(networkConfigurationFilter);
 
       configurationFilterObject.appendChild(wrapper);
 

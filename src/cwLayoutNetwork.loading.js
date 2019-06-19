@@ -24,7 +24,11 @@
         var a = document.createElement('a');
         a.className = 'networkLoadingElementWrapper';
         a.innerHTML = "<i class='networkLoadingElement fa fa-circle-o-notch fa-spin'> </i>";
-
+        let m;
+        m = (document.body.offsetHeight-10) /2;
+        a.style.top = m + "px";
+        m = (document.body.offsetWidth-50) /2;
+        a.style.left = m + "px";
         var span = document.createElement("span");
         span.className = "cwLayoutNetworkLoadingBartext";
         span.id = "cwLayoutNetwork_text" + this.nodeID;

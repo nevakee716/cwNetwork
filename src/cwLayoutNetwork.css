@@ -20,6 +20,7 @@ div.LayoutNetork_filterGroup {
 div.LayoutNetork_filterGroup div {
     display: flex;
     flex-wrap: wrap;
+    background-color: transparent;
 }
 
 div.cwLayoutNetworkLegend i {
@@ -101,8 +102,8 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
     width: 400px;
     display: block;
     top: 0px;
-    z-index: 100;
-    background-color: #ffffff;
+    z-index: 10000;
+    background-color: transparent;
 }
 
 .cwLayoutNetworkOption .k-button{ 
@@ -112,17 +113,17 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
 
 .cwLayoutNetworkSearchBox {
     margin-right : 15px;
-    background-color: #ffffff;
+    background-color: transparent;
 }
 
 .cwLayoutNetworkOptionWrapper { 
     display: flex;
-    background-color: #ffffff;
+    background-color: transparent;
 }
 
 .cwLayoutNetworkButtons { 
     margin-top : 20px;
-    background-color: #ffffff;
+    background-color: transparent;
 }
 
 .nodeConfigurationSaveButton{
@@ -139,7 +140,7 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
 .cwLayoutNetork_filterSection{
     margin-top: 50px;
     display: block;
-    background-color: #ffffff;
+    background-color: transparent;
 }
 
 
@@ -163,14 +164,56 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
 }
 
 .networkLoadingElementWrapper {
-    position: absolute;
-    z-index: 200;
+    position: fixed;
+    z-index: 20000;
     left: 50%;
     padding: 3px;
     z-index: 600;
-    top: calc((100% - 50px)/2);
-    left: calc((100% - 50px)/2);
     color: #FF5722;
     margin-top: -22px;
     margin-left: -22px;
+
+}
+
+
+div.LayoutNetork_filterTitle {
+    font-weight: bold;
+    padding-top: 5px;
+}
+
+
+div.cwLayout_networkSelect {
+    padding-bottom: 5px;
+}
+
+.cwLayout_networkSelect_menu {
+    color: #5c5d61;
+    font-size: 12px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    outline: none;
+    font-family: "Roboto Regular", "Arial", "Corbel", "Segoe UI" !important;
+    -webkit-appearance: menulist;
+    box-sizing: border-box;
+    align-items: center;
+    white-space: pre;
+    -webkit-rtl-ordering: logical;
+    background-color: white;
+    cursor: default;
+    text-rendering: auto;
+    color: initial;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    text-align: start;
+    font: 400 13.3333px Arial;
+    border-collapse: collapse;
+}
+
+.cwLayout_networkSelect_menu:hover {
+
 }

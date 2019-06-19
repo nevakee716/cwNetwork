@@ -103,11 +103,9 @@
                         element.object_id = nextChild.object_id;
 
                         element.objectTypeScriptName = nextChild.objectTypeScriptName;
-                        if (nextChild.properties.icon && nextChild.properties.color) {
-                            element.icon = {};
-                            element.icon.code = nextChild.properties.icon;
-                            element.icon.color = nextChild.properties.color;
-                        } else element.icon = null;
+
+                        this.getSpecificProperties(nextChild,element);
+    
 
                         // on check si l'element appartient deja a un group
                         let fatherID = "";
@@ -212,6 +210,15 @@
         return childrenArray;
     };
 
+    cwLayoutNetwork.prototype.getSpecificProperties = function(nextChild,element) {
+        if (nextChild.properties.icon && nextChild.properties.color) {
+            element.icon = {};
+            element.icon.code = nextChild.properties.icon;
+            element.icon.color = nextChild.properties.color;
+        } else element.icon = null;
+    };
+
+
     cwLayoutNetwork.prototype.multiLine = function(name, size) {
         if (name && size !== "" && size > 0) {
             var nameSplit = name.split(" ");
@@ -311,7 +318,7 @@
             output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="cw-hidden"></div>');
             output.push("</div>");
 
-            output.push('<div id="cwLayoutNetworkCanva' + this.nodeID + '"></div>');
+            output.push('<div><div id="cwLayoutNetworkCanva' + this.nodeID + '"></div></div>');
 
             output.push("</div>");
         } catch (e) {
