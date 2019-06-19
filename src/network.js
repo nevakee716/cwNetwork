@@ -347,13 +347,12 @@
         var option, optgroup;
 
         filterObject = document.createElement("select");
-        filterObject.setAttribute('title', '<i style="color : black" class="fa fa-search" aria-hidden="true"></i> ' + $.i18n.prop('focus_on'));
+        filterObject.setAttribute('title', $.i18n.prop('focus_on'));
         filterObject.setAttribute('data-selected-text-format', 'static');
         filterObject.setAttribute('data-size', '10');
         filterObject.setAttribute('data-live-search', 'true');
         filterObject.setAttribute('data-selected-text-format', 'static');
         filterObject.setAttribute('data-size', '10');
-
         filterObject.className = "selectNetworkSearch_" + nodeID;
         return filterObject;
 
