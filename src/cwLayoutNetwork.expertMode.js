@@ -32,9 +32,7 @@
                 cwApi.CwPopout.setContent(self.createExpertModeElement());
                 cwApi.CwPopout.onClose(function() {
                     self.expertMode = false;
-                    event.target.innerText = $.i18n.prop(
-                        "activate_expert_mode"
-                    );
+                    event.target.innerText = $.i18n.prop("activate_expert_mode");
                 });
             }
         });
@@ -48,13 +46,9 @@
         expertModeConfig.className = "cwLayoutNetworkExpertModeConfig";
         expertModeConfig.id = "cwLayoutNetworkExpertModeConfig" + this.nodeID;
 
-        var cwLayoutNetworkExpertModeContainerTab = document.createElement(
-            "div"
-        );
-        cwLayoutNetworkExpertModeContainerTab.className =
-            "cwLayoutNetworkExpertModeContainerTab";
-        cwLayoutNetworkExpertModeContainerTab.id =
-            "cwLayoutNetworkExpertModeContainerTab" + this.nodeID;
+        var cwLayoutNetworkExpertModeContainerTab = document.createElement("div");
+        cwLayoutNetworkExpertModeContainerTab.className = "cwLayoutNetworkExpertModeContainerTab";
+        cwLayoutNetworkExpertModeContainerTab.id = "cwLayoutNetworkExpertModeContainerTab" + this.nodeID;
 
         var tabPhysics = document.createElement("div");
         tabPhysics.className = "cwLayoutNetworkExpertModeTabs";
@@ -110,10 +104,7 @@
             nodesConfig.style.display = "none";
             groupsConfig.innerHTML = "";
             tabGroups.className += " selected";
-            self.createGroupAngular(
-                groupsConfig,
-                $("#cwLayoutNetworkExpertModegroupConfig" + self.nodeID)
-            );
+            self.createGroupAngular(groupsConfig, $("#cwLayoutNetworkExpertModegroupConfig" + self.nodeID));
         });
 
         tabNodes.addEventListener("click", function(event) {
@@ -134,10 +125,7 @@
 
     cwLayoutNetwork.prototype.unselectExpertModeTabs = function(tabs) {
         for (var i = 0; i < tabs.children.length; i++) {
-            tabs.children[i].className = tabs.children[i].className.replace(
-                " selected",
-                ""
-            );
+            tabs.children[i].className = tabs.children[i].className.replace(" selected", "");
         }
     };
 
@@ -158,15 +146,11 @@
         };
         this.networkUI.setOptions(this.networkUI.options);
 
-        var buttonPhysicsConfig = document.getElementById(
-            "cwLayoutNetworkButtonPhysicsConfig" + this.nodeID
-        );
+        var buttonPhysicsConfig = document.getElementById("cwLayoutNetworkButtonPhysicsConfig" + this.nodeID);
         if (buttonPhysicsConfig === null) {
             buttonPhysicsConfig = document.createElement("button");
-            buttonPhysicsConfig.className =
-                "cwLayoutNetworkButtonPhysicsConfig k-grid k-button";
-            buttonPhysicsConfig.id =
-                "cwLayoutNetworkButtonPhysicsConfig" + this.nodeID;
+            buttonPhysicsConfig.className = "cwLayoutNetworkButtonPhysicsConfig k-grid k-button";
+            buttonPhysicsConfig.id = "cwLayoutNetworkButtonPhysicsConfig" + this.nodeID;
             buttonPhysicsConfig.innerText = "Physics Configuration";
         }
 
@@ -180,69 +164,47 @@
         container.appendChild(buttonPhysicsConfig);
     };
 
-    cwLayoutNetwork.prototype.createGroupAngular = function(
-        container,
-        $container
-    ) {
+    cwLayoutNetwork.prototype.createGroupAngular = function(container, $container) {
         var loader = cwApi.CwAngularLoader,
             templatePath;
         loader.setup();
         var that = this;
         var self = this;
 
-        templatePath =
-            cwAPI.getCommonContentPath() +
-            "/html/cwNetwork/expertModeGroupTable.ng.html" +
-            "?" +
-            Math.random();
+        templatePath = cwAPI.getCommonContentPath() + "/html/cwNetwork/expertModeGroupTable.ng.html" + "?" + Math.random();
 
-        loader.loadControllerWithTemplate(
-            "expertModeGroupTable",
-            $container,
-            templatePath,
-            function($scope) {
-                self.angularScope = $scope;
-                var g = self.options.CustomOptions["iconGroup"].split("||");
-                $scope.configString = self.options.CustomOptions["iconGroup"];
-                for (var i = 0; i < g.length; i++) {
-                    g[i] = g[i].split(",");
-                    if (self.groupToSelectOnStart.indexOf(g[i][0]) !== -1)
-                        g[i][4] = true;
-                    else g[i][4] = false;
-                }
-
-                $scope.groupToSelectOnStartString =
-                    self.options.CustomOptions["groupToSelectOnStart"];
-                $scope.groups = g;
-                $scope.updateGroups = self.updateGroups.bind(self);
-                $scope.bootstrapFilter = self.bootstrapFilter;
-                $scope.checkIfContainObjectType = self.checkIfGroupMatchTemplate.bind(
-                    self
-                );
-                $scope.diagramTemplate = self.diagramTemplate;
-                $scope.addGroup = self.addGroup.bind(self);
-                $scope.copyToClipboard = cwAPI.customLibs.utils.copyToClipboard;
-                $scope.errorsTemplate = self.errors.diagrameTemplate;
-
-                $scope.checkIfErrorOnProperties = function(nodeID) {
-                    if (
-                        Object.keys($scope.errorsTemplate[nodeID].properties)
-                            .length > 0
-                    ) {
-                        return true;
-                    } else return false;
-                };
-
-                $scope.checkIfErrorOnAssociation = function(nodeID) {
-                    if (
-                        Object.keys($scope.errorsTemplate[nodeID].associations)
-                            .length > 0
-                    ) {
-                        return true;
-                    } else return false;
-                };
+        loader.loadControllerWithTemplate("expertModeGroupTable", $container, templatePath, function($scope) {
+            self.angularScope = $scope;
+            var g = self.options.CustomOptions["iconGroup"].split("||");
+            $scope.configString = self.options.CustomOptions["iconGroup"];
+            for (var i = 0; i < g.length; i++) {
+                g[i] = g[i].split(",");
+                if (self.groupToSelectOnStart.indexOf(g[i][0]) !== -1) g[i][4] = true;
+                else g[i][4] = false;
             }
-        );
+
+            $scope.groupToSelectOnStartString = self.options.CustomOptions["groupToSelectOnStart"];
+            $scope.groups = g;
+            $scope.updateGroups = self.updateGroups.bind(self);
+            $scope.bootstrapFilter = self.bootstrapFilter;
+            $scope.checkIfContainObjectType = self.checkIfGroupMatchTemplate.bind(self);
+            $scope.diagramTemplate = self.diagramTemplate;
+            $scope.addGroup = self.addGroup.bind(self);
+            $scope.copyToClipboard = cwAPI.customLibs.utils.copyToClipboard;
+            $scope.errorsTemplate = self.errors.diagrameTemplate;
+
+            $scope.checkIfErrorOnProperties = function(nodeID) {
+                if (Object.keys($scope.errorsTemplate[nodeID].properties).length > 0) {
+                    return true;
+                } else return false;
+            };
+
+            $scope.checkIfErrorOnAssociation = function(nodeID) {
+                if (Object.keys($scope.errorsTemplate[nodeID].associations).length > 0) {
+                    return true;
+                } else return false;
+            };
+        });
     };
 
     cwLayoutNetwork.prototype.addGroup = function(groups) {
@@ -275,8 +237,7 @@
 
         // starting group
         let index = self.groupToSelectOnStart.indexOf(changeGroup[0]);
-        if (changeGroup[4] === true && index === -1)
-            self.groupToSelectOnStart.push(changeGroup[0]);
+        if (changeGroup[4] === true && index === -1) self.groupToSelectOnStart.push(changeGroup[0]);
         else if (index > -1 && changeGroup[4] === false) {
             self.groupToSelectOnStart.splice(index, 1);
         }
@@ -301,9 +262,7 @@
             if (changeGroup && node.group === changeGroup[0]) {
                 let img = self.shapeToImage(node);
                 if (img) {
-                    self.network.objectTypeNodes[node.group].nodes[
-                        node.id
-                    ].dataImage = img;
+                    self.network.objectTypeNodes[node.group].nodes[node.id].dataImage = img;
                     node.image = img;
                     node.shape = "image";
                 }
@@ -325,10 +284,7 @@
         }, 1000);
     };
 
-    cwLayoutNetwork.prototype.checkIfGroupMatchTemplate = function(
-        group,
-        template
-    ) {
+    cwLayoutNetwork.prototype.checkIfGroupMatchTemplate = function(group, template) {
         var OTs = this.groupsArt[group.replaceAll("Hidden", "")].objectTypes;
 
         for (var paletteEntry in template.diagram.paletteEntries) {
@@ -356,9 +312,7 @@
 
         if (noLoop !== true) {
             node.SortedChildren.forEach(function(n) {
-                node.children.push(
-                    self.nodeIDToFancyTree(self.viewSchema.NodesByID[n.NodeId])
-                );
+                node.children.push(self.nodeIDToFancyTree(self.viewSchema.NodesByID[n.NodeId]));
             });
         }
 
@@ -377,26 +331,18 @@
             this.viewSchema.Tab.Tabs.forEach(function(t) {
                 if (t.Id === tab) {
                     t.Nodes.forEach(function(n) {
-                        source.push(
-                            self.nodeIDToFancyTree(self.viewSchema.NodesByID[n])
-                        );
+                        source.push(self.nodeIDToFancyTree(self.viewSchema.NodesByID[n]));
                     });
                 }
             });
         } else {
             self.viewSchema.RootNodesId.forEach(function(n) {
-                source.push(
-                    self.nodeIDToFancyTree(self.viewSchema.NodesByID[n])
-                );
+                source.push(self.nodeIDToFancyTree(self.viewSchema.NodesByID[n]));
             });
         }
 
         if (cwApi.isIndexPage() === false) {
-            tmpsource.push(
-                self.nodeIDToFancyTree(
-                    self.viewSchema.NodesByID[self.viewSchema.RootNodesId[0]]
-                )
-            );
+            tmpsource.push(self.nodeIDToFancyTree(self.viewSchema.NodesByID[self.viewSchema.RootNodesId[0]]));
             tmpsource[0].children = source;
             source = tmpsource;
         }
@@ -418,249 +364,179 @@
         var that = this;
         var self = this;
 
-        templatePath =
-            cwAPI.getCommonContentPath() +
-            "/html/cwNetwork/expertModeNodeConfig.ng.html" +
-            "?" +
-            Math.random();
+        templatePath = cwAPI.getCommonContentPath() + "/html/cwNetwork/expertModeNodeConfig.ng.html" + "?" + Math.random();
 
-        loader.loadControllerWithTemplate(
-            "expertModeNodeConfig",
-            $("#cwLayoutNetworkExpertModeNodesConfigProp" + self.nodeID),
-            templatePath,
-            function($scope) {
-                $scope.data = {};
-                $scope.config = {};
-                $scope.config.hnode = false;
-                $scope.config.dnode = false;
-                $scope.config.cnode = false;
-                $scope.config.egroup = "";
+        loader.loadControllerWithTemplate("expertModeNodeConfig", $("#cwLayoutNetworkExpertModeNodesConfigProp" + self.nodeID), templatePath, function($scope) {
+            $scope.data = {};
+            $scope.config = {};
+            $scope.config.hnode = false;
+            $scope.config.dnode = false;
+            $scope.config.cnode = false;
+            $scope.config.egroup = "";
 
-                $scope.optionString = {};
-                $("#cwLayoutNetworkExpertModeNodesConfigTree" + self.nodeID)
-                    .on("changed.jstree", function(e, data) {
-                        if (data.node && data.node.original) {
-                            $scope.data = data.node.original;
+            $scope.optionString = {};
+            $("#cwLayoutNetworkExpertModeNodesConfigTree" + self.nodeID)
+                .on("changed.jstree", function(e, data) {
+                    if (data.node && data.node.original) {
+                        $scope.data = data.node.original;
 
-                            $scope.config.hnode = $scope.isHiddenNode(
-                                $scope.data.NodeID
-                            );
-                            $scope.config.dnode = $scope.isDuplicateNode(
-                                $scope.data.NodeID
-                            );
-                            $scope.config.cnode = $scope.isComplementaryNode(
-                                $scope.data.NodeID
-                            );
+                        $scope.config.hnode = $scope.isHiddenNode($scope.data.NodeID);
+                        $scope.config.dnode = $scope.isDuplicateNode($scope.data.NodeID);
+                        $scope.config.cnode = $scope.isComplementaryNode($scope.data.NodeID);
 
-                            if (self.specificGroup[$scope.data.NodeID])
-                                $scope.config.sgroup =
-                                    self.specificGroup[$scope.data.NodeID];
-                            else $scope.config.sgroup = "None";
+                        if (self.specificGroup[$scope.data.NodeID]) $scope.config.sgroup = self.specificGroup[$scope.data.NodeID];
+                        else $scope.config.sgroup = "None";
 
-                            if (self.directionList[$scope.data.NodeID])
-                                $scope.config.aDirection =
-                                    self.directionList[$scope.data.NodeID];
-                            else $scope.config.aDirection = "None";
+                        if (self.directionList[$scope.data.NodeID]) $scope.config.aDirection = self.directionList[$scope.data.NodeID];
+                        else $scope.config.aDirection = "None";
 
-                            if (self.nodeFiltered[data.node.original.NodeID])
-                                $scope.config.egroup =
-                                    self.nodeFiltered[
-                                        data.node.original.NodeID
-                                    ][0];
-                            else $scope.config.egroup = "";
+                        if (self.nodeFiltered[data.node.original.NodeID]) $scope.config.egroup = self.nodeFiltered[data.node.original.NodeID][0];
+                        else $scope.config.egroup = "";
 
-                            $scope.$apply();
-                        }
-                    })
-                    .jstree({
-                        core: {
-                            data: source
-                        }
-                    });
+                        $scope.$apply();
+                    }
+                })
+                .jstree({
+                    core: {
+                        data: source
+                    }
+                });
 
-                var g = self.options.CustomOptions["iconGroup"].split("||");
+            var g = self.options.CustomOptions["iconGroup"].split("||");
 
-                for (var i = 0; i < g.length; i++) {
-                    g[i] = g[i].split(",");
+            for (var i = 0; i < g.length; i++) {
+                g[i] = g[i].split(",");
+            }
+
+            $scope.groups = g;
+
+            $scope.isComplementaryNode = function(nodeID) {
+                if (self.complementaryNode.indexOf(nodeID) === -1) return false;
+                else return true;
+            };
+            $scope.isDuplicateNode = function(nodeID) {
+                if (self.duplicateNode.indexOf(nodeID) === -1) return false;
+                else return true;
+            };
+            $scope.isHiddenNode = function(nodeID) {
+                if (self.hiddenNodes.indexOf(nodeID) === -1) return false;
+                else return true;
+            };
+
+            $scope.isSpecificGroup = function(nodeID, group) {
+                if (self.specificGroup[nodeID] === group) return true;
+                else return false;
+            };
+            $scope.updateComplementaryNode = function(nodeID) {
+                let index = self.complementaryNode.indexOf(nodeID);
+                if ($scope.config.cnode && index === -1) self.complementaryNode.push(nodeID);
+                else if (index > -1 && $scope.config.cnode === false) {
+                    self.complementaryNode.splice(index, 1);
+                }
+                $scope.optionString.complementaryNodesString = self.complementaryNode.join(",");
+                self.complementaryNodesString = $scope.optionString.complementaryNodesString;
+                self.updateNetworkData();
+            };
+
+            $scope.updateDuplicateNode = function(nodeID) {
+                let index = self.duplicateNode.indexOf(nodeID);
+                if ($scope.config.dnode && index === -1) self.duplicateNode.push(nodeID);
+                else if (index > -1 && $scope.config.dnode === false) {
+                    self.duplicateNode.splice(index, 1);
+                }
+                $scope.optionString.duplicateNodesString = self.duplicateNode.join(",");
+                self.duplicateNodesString = $scope.optionString.duplicateNodesString;
+                self.updateNetworkData();
+                $(".selectNetworkPicker_" + self.nodeID + "." + $scope.config.sgroup.replaceAll(" ", "_")).selectpicker("selectAll");
+            };
+
+            $scope.updateHiddenNode = function(nodeID) {
+                let index = self.hiddenNodes.indexOf(nodeID);
+                if ($scope.config.hnode && index === -1) self.hiddenNodes.push(nodeID);
+                else if (index > -1 && $scope.config.hnode === false) {
+                    self.hiddenNodes.splice(index, 1);
+                }
+                $scope.optionString.hiddenNodesString = self.hiddenNodes.join(",");
+                self.hiddenNodesString = self.hiddenNodes.join(",");
+                self.updateNetworkData();
+            };
+
+            $scope.updateExtFilters = function(string, nodeID) {
+                if (string === "" || string.length < 2) {
+                    delete self.nodeFiltered[nodeID];
+                } else {
+                    self.nodeFiltered[nodeID] = [string];
                 }
 
-                $scope.groups = g;
-
-                $scope.isComplementaryNode = function(nodeID) {
-                    if (self.complementaryNode.indexOf(nodeID) === -1)
-                        return false;
-                    else return true;
-                };
-                $scope.isDuplicateNode = function(nodeID) {
-                    if (self.duplicateNode.indexOf(nodeID) === -1) return false;
-                    else return true;
-                };
-                $scope.isHiddenNode = function(nodeID) {
-                    if (self.hiddenNodes.indexOf(nodeID) === -1) return false;
-                    else return true;
-                };
-
-                $scope.isSpecificGroup = function(nodeID, group) {
-                    if (self.specificGroup[nodeID] === group) return true;
-                    else return false;
-                };
-                $scope.updateComplementaryNode = function(nodeID) {
-                    let index = self.complementaryNode.indexOf(nodeID);
-                    if ($scope.config.cnode && index === -1)
-                        self.complementaryNode.push(nodeID);
-                    else if (index > -1 && $scope.config.cnode === false) {
-                        self.complementaryNode.splice(index, 1);
+                var newNodeFilteredString = "";
+                for (var n in self.nodeFiltered) {
+                    if (self.nodeFiltered.hasOwnProperty(n)) {
+                        newNodeFilteredString += n + ":" + self.nodeFiltered[n] + "#";
                     }
-                    $scope.optionString.complementaryNodesString = self.complementaryNode.join(
-                        ","
-                    );
-                    self.complementaryNodesString =
-                        $scope.optionString.complementaryNodesString;
-                    self.updateNetworkData();
-                };
+                }
+                if (newNodeFilteredString != "") newNodeFilteredString = newNodeFilteredString.slice(0, -1);
+                self.externalFilters = {};
+                self.nodeFiltered = {};
+                self.getExternalFilterNodes(newNodeFilteredString);
+                self.updateNetworkData();
+                self.newNodeFilteredString = newNodeFilteredString;
+                $scope.optionString.nodeFilteredString = newNodeFilteredString;
+            };
 
-                $scope.updateDuplicateNode = function(nodeID) {
-                    let index = self.duplicateNode.indexOf(nodeID);
-                    if ($scope.config.dnode && index === -1)
-                        self.duplicateNode.push(nodeID);
-                    else if (index > -1 && $scope.config.dnode === false) {
-                        self.duplicateNode.splice(index, 1);
+            $scope.copyToClipboard = cwAPI.customLibs.utils.copyToClipboard;
+
+            $scope.updateSpecificGroups = function(sgroup, nodeID) {
+                if (sgroup === "None") {
+                    delete self.specificGroup[nodeID];
+                } else {
+                    self.specificGroup[nodeID] = sgroup;
+                }
+
+                this.specificGroupString = "";
+                for (var n in self.specificGroup) {
+                    if (self.specificGroup.hasOwnProperty(n)) {
+                        this.specificGroupString += n + "," + self.specificGroup[n] + "#";
                     }
-                    $scope.optionString.duplicateNodesString = self.duplicateNode.join(
-                        ","
-                    );
-                    self.duplicateNodesString =
-                        $scope.optionString.duplicateNodesString;
-                    self.updateNetworkData();
-                    $(
-                        ".selectNetworkPicker_" +
-                            self.nodeID +
-                            "." +
-                            $scope.config.sgroup.replaceAll(" ", "_")
-                    ).selectpicker("selectAll");
-                };
+                }
+                if (this.specificGroupString != "") this.specificGroupString = this.specificGroupString.slice(0, -1);
+                self.specificGroup = {};
+                self.options.CustomOptions["specificGroup"] = this.specificGroupString;
+                self.specificGroupString = this.specificGroupString;
+                $scope.optionString.specificGroupString = this.specificGroupString;
+                self.getOption("specificGroup", "specificGroup", "#", ",");
+                self.updateNetworkData();
+            };
 
-                $scope.updateHiddenNode = function(nodeID) {
-                    let index = self.hiddenNodes.indexOf(nodeID);
-                    if ($scope.config.hnode && index === -1)
-                        self.hiddenNodes.push(nodeID);
-                    else if (index > -1 && $scope.config.hnode === false) {
-                        self.hiddenNodes.splice(index, 1);
+            $scope.updateArrowDirection = function(dir, nodeID) {
+                if (dir === "None") {
+                    delete self.directionList[nodeID];
+                } else {
+                    self.directionList[nodeID] = dir;
+                }
+
+                $scope.optionString.directionListString = "";
+                for (var n in self.directionList) {
+                    if (self.directionList.hasOwnProperty(n)) {
+                        $scope.optionString.directionListString += n + "," + self.directionList[n] + "#";
                     }
-                    $scope.optionString.hiddenNodesString = self.hiddenNodes.join(
-                        ","
-                    );
-                    self.hiddenNodesString = self.hiddenNodes.join(",");
-                    self.updateNetworkData();
-                };
+                }
+                if ($scope.optionString.directionListString != "") $scope.optionString.directionListString = $scope.optionString.directionListString.slice(0, -1);
+                self.directionList = {};
+                self.options.CustomOptions["arrowDirection"] = $scope.optionString.directionListString;
+                self.directionListString = $scope.optionString.directionListString;
 
-                $scope.updateExtFilters = function(string, nodeID) {
-                    if (string === "" || string.length < 2) {
-                        delete self.nodeFiltered[nodeID];
-                    } else {
-                        self.nodeFiltered[nodeID] = [string];
-                    }
+                self.getdirectionList($scope.optionString.directionListString);
+                self.updateNetworkData();
+            };
 
-                    var newNodeFilteredString = "";
-                    for (var n in self.nodeFiltered) {
-                        if (self.nodeFiltered.hasOwnProperty(n)) {
-                            newNodeFilteredString +=
-                                n + ":" + self.nodeFiltered[n] + "#";
-                        }
-                    }
-                    if (newNodeFilteredString != "")
-                        newNodeFilteredString = newNodeFilteredString.slice(
-                            0,
-                            -1
-                        );
-                    self.externalFilters = {};
-                    self.nodeFiltered = {};
-                    self.getExternalFilterNodes(newNodeFilteredString);
-                    self.updateNetworkData();
-                    self.newNodeFilteredString = newNodeFilteredString;
-                    $scope.optionString.nodeFilteredString = newNodeFilteredString;
-                };
-
-                $scope.copyToClipboard = cwAPI.customLibs.utils.copyToClipboard;
-
-                $scope.updateSpecificGroups = function(sgroup, nodeID) {
-                    if (sgroup === "None") {
-                        delete self.specificGroup[nodeID];
-                    } else {
-                        self.specificGroup[nodeID] = sgroup;
-                    }
-
-                    this.specificGroupString = "";
-                    for (var n in self.specificGroup) {
-                        if (self.specificGroup.hasOwnProperty(n)) {
-                            this.specificGroupString +=
-                                n + "," + self.specificGroup[n] + "#";
-                        }
-                    }
-                    if (this.specificGroupString != "")
-                        this.specificGroupString = this.specificGroupString.slice(
-                            0,
-                            -1
-                        );
-                    self.specificGroup = {};
-                    self.options.CustomOptions[
-                        "specificGroup"
-                    ] = this.specificGroupString;
-                    self.specificGroupString = this.specificGroupString;
-                    $scope.optionString.specificGroupString = this.specificGroupString;
-                    self.getOption("specificGroup", "specificGroup", "#", ",");
-                    self.updateNetworkData();
-                };
-
-                $scope.updateArrowDirection = function(dir, nodeID) {
-                    if (dir === "None") {
-                        delete self.directionList[nodeID];
-                    } else {
-                        self.directionList[nodeID] = dir;
-                    }
-
-                    $scope.optionString.directionListString = "";
-                    for (var n in self.directionList) {
-                        if (self.directionList.hasOwnProperty(n)) {
-                            $scope.optionString.directionListString +=
-                                n + "," + self.directionList[n] + "#";
-                        }
-                    }
-                    if ($scope.optionString.directionListString != "")
-                        $scope.optionString.directionListString = $scope.optionString.directionListString.slice(
-                            0,
-                            -1
-                        );
-                    self.directionList = {};
-                    self.options.CustomOptions["arrowDirection"] =
-                        $scope.optionString.directionListString;
-                    self.directionListString =
-                        $scope.optionString.directionListString;
-
-                    self.getdirectionList(
-                        $scope.optionString.directionListString
-                    );
-                    self.updateNetworkData();
-                };
-
-                $scope.optionString.complementaryNodesString = self.complementaryNode.join(
-                    ","
-                );
-                $scope.optionString.duplicateNodesString = self.duplicateNode.join(
-                    ","
-                );
-                $scope.optionString.hiddenNodesString = self.hiddenNodes.join(
-                    ","
-                );
-                $scope.optionString.nodeFilteredString =
-                    self.options.CustomOptions["filterNode"];
-                $scope.optionString.directionListString =
-                    self.options.CustomOptions["arrowDirection"];
-                $scope.optionString.updateNetworkData = self.updateNetworkData;
-                $scope.optionString.specificGroupString =
-                    self.options.CustomOptions["specificGroup"];
-            }
-        );
+            $scope.optionString.complementaryNodesString = self.complementaryNode.join(",");
+            $scope.optionString.duplicateNodesString = self.duplicateNode.join(",");
+            $scope.optionString.hiddenNodesString = self.hiddenNodes.join(",");
+            $scope.optionString.nodeFilteredString = self.options.CustomOptions["filterNode"];
+            $scope.optionString.directionListString = self.options.CustomOptions["arrowDirection"];
+            $scope.optionString.updateNetworkData = self.updateNetworkData;
+            $scope.optionString.specificGroupString = self.options.CustomOptions["specificGroup"];
+        });
     };
 
     cwLayoutNetwork.prototype.updateNetworkData = function() {

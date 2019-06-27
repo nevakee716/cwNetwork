@@ -10,7 +10,7 @@
 			<tr><th> Duplicate Node : </th><td class="cw-edit-property-value" ><input class="cw-edit-attr" ng-model="config.dnode" ng-change="updateDuplicateNode(data.NodeID)" type="checkbox" ng-checked="isDuplicateNode(data.NodeID)	"></	td></tr>
 			<tr><th> Hidden Node : </th> <td class="cw-edit-property-value" ><input class="cw-edit-attr" ng-model="config.hnode" ng-change="updateHiddenNode(data.NodeID)" type="checkbox" ng-checked="isHiddenNode(data.NodeID)"></td>	</tr>
 			<tr><th> Filter Association : </th><td class="cw-edit-property-value" > <input class="cw-edit-attr cwLayout_expertModeAssociationFilterText" type="text" ng-model="config.egroup"></input><button class="cwLayout_expertModeAssociationFilterButton k-grid k-button" ng-click="updateExtFilters(config.egroup,data.NodeID)"><i class="fa fa-refresh" aria-hidden="true"></i></button></td></tr>
-			<tr><th> Specific Group : </th>
+			<tr class="cwLayout_expertModeTableSelect"><th> Specific Group : </th>
 				<td class="cw-edit-property-value">
 					<select class="cw-edit-attr cw-edit-attr-combobox" ng-model="config.sgroup" ng-change="updateSpecificGroups(config.sgroup,data.NodeID)">
 		    			<option >None</option>
@@ -18,7 +18,7 @@
 					</select>
 				</td>
 			</tr>
-			<tr><th> Arrow Direction : </th>
+			<tr class="cwLayout_expertModeTableSelect"><th> Arrow Direction : </th>
 				<td class="cw-edit-property-value">
 					<select class="cw-edit-attr cw-edit-attr-combobox" ng-model="config.aDirection" ng-change="updateArrowDirection(config.aDirection,data.NodeID)">
 		    			<option>None</option>
