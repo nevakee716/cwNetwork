@@ -179,6 +179,7 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
 div.LayoutNetork_filterTitle {
     font-weight: bold;
     padding-top: 5px;
+    padding-bottom: 1px;
 }
 
 
@@ -187,33 +188,21 @@ div.cwLayout_networkSelect {
 }
 
 .cwLayout_networkSelect_menu {
-    color: #5c5d61;
-    font-size: 12px;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
-    border-radius: 6px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    outline: none;
-    font-family: "Roboto Regular", "Arial", "Corbel", "Segoe UI" !important;
-    -webkit-appearance: menulist;
-    box-sizing: border-box;
-    align-items: center;
-    white-space: pre;
-    -webkit-rtl-ordering: logical;
-    background-color: white;
-    cursor: default;
-    text-rendering: auto;
-    color: initial;
-    letter-spacing: normal;
-    word-spacing: normal;
-    text-transform: none;
-    text-indent: 0px;
-    text-shadow: none;
-    text-align: start;
-    font: 400 13.3333px Arial;
-    border-collapse: collapse;
+
 }
 
 .cwLayout_networkSelect_menu:hover {
 
+}
+
+td.cw-edit-property-value input.cwLayout_expertModeAssociationFilterText {
+    width: 80%;
+}
+
+.cwLayout_expertModeAssociationFilterButton {
+    height: 25px;
+}
+
+.cwLayout_expertModeConfigButton {
+    margin-top: 5px;
 }

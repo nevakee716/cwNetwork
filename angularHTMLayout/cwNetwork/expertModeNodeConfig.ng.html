@@ -1,37 +1,43 @@
-<div ng-controller="expertModeNodeConfig" class="cw-visible">
+<div ng-controller="expertModeNodeConfig cw-diagram-popout-container" class="cw-visible view-container">
 
-<h1> Node Configuration</h1>
-<div ng-if="data.NodeID === undefined">Please Select a node to Configure </div>
-<table ng-if="data.NodeID !== undefined">
-	<tr><td> Node : </td><td>{{data.text}}</td></tr>
-		<tr><td> Node ID : </td><td>{{data.NodeID}}</td></tr>
-		<tr><td> Complementary Node : </td><td><input ng-model="config.cnode" ng-change="updateComplementaryNode(data.NodeID)" type="checkbox" ng-checked="isComplementaryNode(data.NodeID)"></td></tr>
-		<tr><td> Duplicate Node : </td><td><input ng-model="config.dnode" ng-change="updateDuplicateNode(data.NodeID)" type="checkbox" ng-checked="isDuplicateNode(data.NodeID)"></td></tr>
-		<tr><td> Hidden Node : </td> <td><input ng-model="config.hnode" ng-change="updateHiddenNode(data.NodeID)" type="checkbox" ng-checked="isHiddenNode(data.NodeID)"></td></tr>
-		<tr><td> Filter Association : </td><td> <input type="text" ng-model="config.egroup"></input><button ng-click="updateExtFilters(config.egroup,data.NodeID)"><i class="fa fa-refresh" aria-hidden="true"></i></button></td></tr>
-		<tr><td> Specific Group : </td><td>
-			<select ng-model="config.sgroup" ng-change="updateSpecificGroups(config.sgroup,data.NodeID)">
-    			<option >None</option>
-    			<option ng-repeat="g in groups" ng-selected="isSpecificGroup(g,data.NodeID)">{{g[0]}}</option>
-			</select>
-		</td></tr>
-		<tr><td> Arrow Direction : </td><td>
-			<select ng-model="config.aDirection" ng-change="updateArrowDirection(config.aDirection,data.NodeID)">
-    			<option>None</option>
-    			<option value='from'>From</option>
-    			<option value='to'>To</option>
-			</select>
-		</td></tr>
-</table>
+	<div class="cwPropertiesTableHeader CwPropertiesLayoutTableHeader" ng-if="data.NodeID !== undefined"> Node Configuration</div>
+	<div class="cwPropertiesTableHeader CwPropertiesLayoutTableHeader" ng-if="data.NodeID === undefined"> Please Select a node to Configure </div>
+	<div class="cwPropertiesTableContainer">
+		<table class="cwPropertiesTable" ng-if="data.NodeID !== undefined">
+			<tr><th> Node : </th><td class="cw-edit-property-value" >{{data.text}}</td></tr>
+			<tr><th> Node ID : </th><td class="cw-edit-property-value" >{{data.NodeID}}</td></tr>
+			<tr><th> Complementary Node : </th><td class="cw-edit-property-value" ><input class="cw-edit-attr" ng-model="config.cnode" ng-change="updateComplementaryNode(data.NodeID)" type="checkbox" ng-checked="isComplementaryNode(		data.NodeID)"></td></tr>
+			<tr><th> Duplicate Node : </th><td class="cw-edit-property-value" ><input class="cw-edit-attr" ng-model="config.dnode" ng-change="updateDuplicateNode(data.NodeID)" type="checkbox" ng-checked="isDuplicateNode(data.NodeID)	"></	td></tr>
+			<tr><th> Hidden Node : </th> <td class="cw-edit-property-value" ><input class="cw-edit-attr" ng-model="config.hnode" ng-change="updateHiddenNode(data.NodeID)" type="checkbox" ng-checked="isHiddenNode(data.NodeID)"></td>	</tr>
+			<tr><th> Filter Association : </th><td class="cw-edit-property-value" > <input class="cw-edit-attr cwLayout_expertModeAssociationFilterText" type="text" ng-model="config.egroup"></input><button class="cwLayout_expertModeAssociationFilterButton k-grid k-button" ng-click="updateExtFilters(config.egroup,data.NodeID)"><i class="fa fa-refresh" aria-hidden="true"></i></button></td></tr>
+			<tr><th> Specific Group : </th>
+				<td class="cw-edit-property-value">
+					<select class="cw-edit-attr cw-edit-attr-combobox" ng-model="config.sgroup" ng-change="updateSpecificGroups(config.sgroup,data.NodeID)">
+		    			<option >None</option>
+		    			<option ng-repeat="g in groups" ng-selected="isSpecificGroup(g,data.NodeID)">{{g[0]}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr><th> Arrow Direction : </th>
+				<td class="cw-edit-property-value">
+					<select class="cw-edit-attr cw-edit-attr-combobox" ng-model="config.aDirection" ng-change="updateArrowDirection(config.aDirection,data.NodeID)">
+		    			<option>None</option>
+		    			<option value='from'>From</option>
+		    			<option value='to'>To</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="cwPropertiesTableHeader cwpropertieslayouttableheader"> Config String for Evolve Designer (click to copy to clipboard) : 	</div>
 
-<h2>Config String for Evolve Designer</h2>
-<h3>(click to copy to clipboard) : </h3>
-<div><button ng-if="optionString.hiddenNodesString != ''" ng-click="copyToClipboard(optionString.hiddenNodesString)">Hidden Nodes</button></div>
-<div><button ng-if="optionString.complementaryNodesString != ''" ng-click="copyToClipboard(optionString.complementaryNodesString)">Complementary Nodes</button></div>
-<div><button ng-if="optionString.duplicateNodesString != ''" ng-click="copyToClipboard(optionString.duplicateNodesString)">Duplicate Nodes</button></div>
-<div><button ng-if="optionString.nodeFilteredString != ''" ng-click="copyToClipboard(optionString.nodeFilteredString)">Filter Association</button></div>
-<div><button ng-if="optionString.directionListString != ''" ng-click="copyToClipboard(optionString.directionListString)">Arrow Direction</button></div>
-<div><button ng-if="optionString.specificGroupString != ''" ng-click="copyToClipboard(optionString.specificGroupString)">Specific Group String</button></div>
+	<button class="k-grid k-button cwLayout_expertModeConfigButton" ng-if="optionString.hiddenNodesString != ''" ng-click="copyToClipboard(optionString.hiddenNodesString)">Hidden Nodes</button>
+	<button class="k-grid k-button cwLayout_expertModeConfigButton" ng-if="optionString.complementaryNodesString != ''" ng-click="copyToClipboard(optionString.complementaryNodesString)">Complementary Nodes</button>
+	<button class="k-grid k-button cwLayout_expertModeConfigButton" ng-if="optionString.duplicateNodesString != ''" ng-click="copyToClipboard(optionString.duplicateNodesString)">Duplicate Nodes</button>
+	<button class="k-grid k-button cwLayout_expertModeConfigButton" ng-if="optionString.nodeFilteredString != ''" ng-click="copyToClipboard(optionString.nodeFilteredString)">Filter Association</button>
+	<button class="k-grid k-button cwLayout_expertModeConfigButton" ng-if="optionString.directionListString != ''" ng-click="copyToClipboard(optionString.directionListString)">Arrow Direction</button>
+	<button class="k-grid k-button cwLayout_expertModeConfigButton" ng-if="optionString.specificGroupString != ''" ng-click="copyToClipboard(optionString.specificGroupString)">Specific Group String</button>
+
 
 </div>
 

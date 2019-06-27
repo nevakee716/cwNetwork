@@ -164,7 +164,7 @@
         if (buttonPhysicsConfig === null) {
             buttonPhysicsConfig = document.createElement("button");
             buttonPhysicsConfig.className =
-                "cwLayoutNetworkButtonPhysicsConfig";
+                "cwLayoutNetworkButtonPhysicsConfig k-grid k-button";
             buttonPhysicsConfig.id =
                 "cwLayoutNetworkButtonPhysicsConfig" + this.nodeID;
             buttonPhysicsConfig.innerText = "Physics Configuration";
