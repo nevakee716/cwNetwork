@@ -22,23 +22,14 @@
         }
         if (this.networkConfiguration.nodes[node.object_id] === undefined) {
             this.networkConfiguration.nodes[node.object_id] = {};
-            this.networkConfiguration.nodes[node.object_id].label =
-                node.properties[this.definition.capinetworkLabelScriptname];
-            this.networkConfiguration.nodes[
-                node.object_id
-            ].configuration = JSON.parse(
-                node.properties.configuration.replaceAll("\\", "")
-            );
+            this.networkConfiguration.nodes[node.object_id].label = node.properties[this.definition.capinetworkLabelScriptname];
+            this.networkConfiguration.nodes[node.object_id].configuration = JSON.parse(node.properties.configuration.replaceAll("\\", ""));
             this.networkConfiguration.nodes[node.object_id].obj = node;
             if (!cwAPI.isIndexPage()) {
                 node.associations = {};
                 node.associations[this.nodeID] = {};
-                node.associations[
-                    this.nodeID
-                ].associationScriptName = this.definition.capinetworkToAnyAssociationScriptname;
-                node.associations[
-                    this.nodeID
-                ].displayName = this.definition.capinetworkToAnyAssociationDisplayName;
+                node.associations[this.nodeID].associationScriptName = this.definition.capinetworkToAnyAssociationScriptname;
+                node.associations[this.nodeID].displayName = this.definition.capinetworkToAnyAssociationDisplayName;
                 node.associations[this.nodeID].items = [];
                 node.associations[this.nodeID].nodeId = this.nodeID;
             }
@@ -49,15 +40,10 @@
         newItem.targetObjectID = father.object_id;
         newItem.isNew = "false";
         newItem.targetObjectTypeScriptName = father.objectTypeScriptName;
-        if (!cwAPI.isIndexPage())
-            this.networkConfiguration.nodes[node.object_id].obj.associations[
-                this.nodeID
-            ].items.push(newItem);
+        if (!cwAPI.isIndexPage()) this.networkConfiguration.nodes[node.object_id].obj.associations[this.nodeID].items.push(newItem);
     };
 
-    cwLayoutNetwork.prototype.getNetworkConfigurationFilterObject = function(
-        classname
-    ) {
+    cwLayoutNetwork.prototype.getNetworkConfigurationFilterObject = function(classname) {
         var filterObject;
         var object;
         var id;
@@ -104,26 +90,16 @@
     };
 
     cwLayoutNetwork.prototype.addEventOnSave = function() {
-        var buttonSave = document.getElementsByClassName(
-            "cw-edit-mode-button-edit"
-        )[0];
+        var buttonSave = document.getElementsByClassName("cw-edit-mode-button-edit")[0];
         if (buttonSave) {
-            buttonSave.addEventListener(
-                "click",
-                this.createChangeset.bind(this),
-                false
-            );
+            buttonSave.addEventListener("click", this.createChangeset.bind(this), false);
         }
     };
 
     cwLayoutNetwork.prototype.createAddButton = function() {
         var buttonAdd = document.createElement("a");
-        buttonAdd.className = "networkAddButton fa fa-2x fa-plus-circle"
-        buttonAdd.addEventListener(
-            "click",
-            this.createChangesetWithCreation.bind(this),
-            false
-        );
+        buttonAdd.className = "networkAddButton fa fa-2x fa-plus-circle";
+        buttonAdd.addEventListener("click", this.createChangesetWithCreation.bind(this), false);
         return buttonAdd;
     };
 
@@ -157,21 +133,12 @@
 
     cwLayoutNetwork.prototype.createChangesetWithCreation = function(event) {
         var networkName;
-        if (
-            event.currentTarget.parentElement &&
-            event.currentTarget.parentElement.firstElementChild &&
-            event.currentTarget.parentElement.firstElementChild.value !== ""
-        ) {
-            this.directSaveNewNetwork(
-                event.currentTarget.parentElement.firstElementChild.value
-            );
+        if (event.currentTarget.parentElement && event.currentTarget.parentElement.firstElementChild && event.currentTarget.parentElement.firstElementChild.value !== "") {
+            this.directSaveNewNetwork(event.currentTarget.parentElement.firstElementChild.value);
         }
     };
 
-    cwLayoutNetwork.prototype.getConfigurationAndAssociationObjectToNetwork = function(
-        newObj,
-        networkLabel
-    ) {
+    cwLayoutNetwork.prototype.getConfigurationAndAssociationObjectToNetwork = function(newObj, networkLabel) {
         var linkTypeLabels,
             nodes,
             config,
@@ -180,15 +147,9 @@
             newAssoItemsObj = {},
             self = this;
         newObj.displayNames = {};
-        newObj.displayNames[
-            this.definition.capinetworkConfigurationScriptname
-        ] = this.definition.capinetworkConfigurationDisplayname;
-        newObj.displayNames[
-            this.definition.capinetworkCreateOnViewScriptname
-        ] = this.definition.capinetworkCreateOnViewDisplayName;
-        newObj.displayNames[
-            this.definition.capinetworkLabelScriptname
-        ] = this.definition.capinetworkLabelDisplayName;
+        newObj.displayNames[this.definition.capinetworkConfigurationScriptname] = this.definition.capinetworkConfigurationDisplayname;
+        newObj.displayNames[this.definition.capinetworkCreateOnViewScriptname] = this.definition.capinetworkCreateOnViewDisplayName;
+        newObj.displayNames[this.definition.capinetworkLabelScriptname] = this.definition.capinetworkLabelDisplayName;
 
         nodes = this.network.getAllNodeForSaving();
         config = {};
@@ -196,19 +157,12 @@
         config.external = this.getExternalFilterInformation();
         config.clusters = this.clusters;
         config.clusterByGroupOption = {};
-        config.clusterByGroupOption.head = $(
-            "select.selectNetworkClusterByGroup_" + this.nodeID + "_head"
-        ).val();
-        config.clusterByGroupOption.child = $(
-            "select.selectNetworkClusterByGroup_" + this.nodeID + "_child"
-        ).val();
+        config.clusterByGroupOption.head = $("select.selectNetworkClusterByGroup_" + this.nodeID + "_head").val();
+        config.clusterByGroupOption.child = $("select.selectNetworkClusterByGroup_" + this.nodeID + "_child").val();
 
         config.linkType = [];
         for (var s in this.edgeConfiguration) {
-            if (
-                this.edgeConfiguration.hasOwnProperty(s) &&
-                this.edgeConfiguration[s].show === true
-            ) {
+            if (this.edgeConfiguration.hasOwnProperty(s) && this.edgeConfiguration[s].show === true) {
                 config.linkType.push(s);
             }
         }
@@ -224,9 +178,7 @@
         if (!cwAPI.isIndexPage()) {
             if (newObj.associations) {
                 newObj.associations[this.nodeID].items.forEach(function(item) {
-                    newAssoItemsObj[
-                        item.targetObjectID + item.targetObjectTypeScriptName
-                    ] = item;
+                    newAssoItemsObj[item.targetObjectID + item.targetObjectTypeScriptName] = item;
                 });
             } else {
                 newAssoItems = [];
@@ -268,38 +220,27 @@
         config.options.duplicateNodesString = this.duplicateNodesString;
         config.options.groupString = this.groupString;
 
-        newObj.properties[
-            this.definition.capinetworkConfigurationScriptname
-        ] = JSON.stringify(config);
+        newObj.properties[this.definition.capinetworkConfigurationScriptname] = JSON.stringify(config);
 
         var view = cwAPI.getCurrentView();
         if (view && view.cwView) {
             view = view.cwView;
         }
 
-        newObj.properties[this.definition.capinetworkCreateOnViewScriptname] =
-            view + "." + this.nodeID;
+        newObj.properties[this.definition.capinetworkCreateOnViewScriptname] = view + "." + this.nodeID;
 
-        newObj.properties[
-            this.definition.capinetworkLabelScriptname
-        ] = networkLabel;
+        newObj.properties[this.definition.capinetworkLabelScriptname] = networkLabel;
 
-        newObj.properties["name"] =
-            view + "." + this.nodeID + " => " + networkLabel;
+        newObj.properties["name"] = view + "." + this.nodeID + " => " + networkLabel;
 
         return config;
     };
 
     cwLayoutNetwork.prototype.indirectSave = function(init) {
         if (init === undefined) init = false;
-        var id =
-            this.originalObject.objectTypeScriptName +
-            "_" +
-            this.originalObject.object_id +
-            "_configuration";
+        var id = this.originalObject.objectTypeScriptName + "_" + this.originalObject.object_id + "_configuration";
         if (cwApi.customLibs.edits === undefined) cwApi.customLibs.edits = {};
-        if (cwApi.customLibs.edits[id] === undefined)
-            cwApi.customLibs.edits[id] = {};
+        if (cwApi.customLibs.edits[id] === undefined) cwApi.customLibs.edits[id] = {};
         if (init === true) {
             cwApi.customLibs.edits[id].initValue = this.getConfiguration();
         } else {
@@ -314,94 +255,52 @@
         var self = this;
         var config;
         newObj.properties = {};
-        config = this.getConfigurationAndAssociationObjectToNetwork(
-            newObj,
-            networkName
-        );
+        config = this.getConfigurationAndAssociationObjectToNetwork(newObj, networkName);
         var asso = $.extend(true, {}, newObj.associations);
         newObj.associations = {};
         newNewObj = $.extend(true, {}, newObj);
         newNewObj.associations = asso;
 
-        cwAPI.CwEditSave.setPopoutContentForGrid(
-            cwApi.CwPendingChangeset.ActionType.Create,
-            null,
-            newObj,
-            0,
-            this.definition.capinetworkScriptname,
-            function(elem) {
-                if (elem && elem.status == "Ok") {
-                    newObj.associations[self.nodeID] = {};
-                    newObj.associations[self.nodeID].items = [];
-                    newObj.associations[self.nodeID].associationScriptName =
-                        self.definition.capinetworkToAnyAssociationScriptname;
-                    newObj.object_id = elem.id;
+        cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Create, null, newObj, 0, this.definition.capinetworkScriptname, function(elem) {
+            if (elem && elem.status == "Ok") {
+                newObj.associations[self.nodeID] = {};
+                newObj.associations[self.nodeID].items = [];
+                newObj.associations[self.nodeID].associationScriptName = self.definition.capinetworkToAnyAssociationScriptname;
+                newObj.object_id = elem.id;
 
-                    if (cwApi.isIndexPage()) {
-                        self.networkConfiguration.nodes[elem.id] = {};
-                        newObj.objectTypeScriptName =
-                            self.definition.capinetworkScriptname;
-                        self.networkConfiguration.nodes[elem.id].obj = newObj;
-                        self.networkConfiguration.nodes[
-                            elem.id
-                        ].label = networkName;
-                        self.networkConfiguration.nodes[
-                            elem.id
-                        ].configuration = config;
-                        self.networkConfiguration.selected =
-                            self.networkConfiguration.nodes[elem.id];
-                        self.addNetworkInFilter(elem.id, networkName);
-                    } else {
-                        newNewObj.object_id = elem.id;
-                        cwAPI.CwEditSave.setPopoutContentForGrid(
-                            cwApi.CwPendingChangeset.ActionType.Update,
-                            newObj,
-                            newNewObj,
-                            newObj.object_id,
-                            self.definition.capinetworkScriptname,
-                            function(response) {
-                                if (!cwApi.statusIsKo(response)) {
-                                    self.createdSaveObjFromReponse(
-                                        newNewObj,
-                                        response,
-                                        networkName,
-                                        config
-                                    );
-                                    self.addNetworkInFilter(
-                                        response.id,
-                                        networkName
-                                    );
-                                }
-                            }
-                        );
-                    }
+                if (cwApi.isIndexPage()) {
+                    self.networkConfiguration.nodes[elem.id] = {};
+                    newObj.objectTypeScriptName = self.definition.capinetworkScriptname;
+                    self.networkConfiguration.nodes[elem.id].obj = newObj;
+                    self.networkConfiguration.nodes[elem.id].label = networkName;
+                    self.networkConfiguration.nodes[elem.id].configuration = config;
+                    self.networkConfiguration.selected = self.networkConfiguration.nodes[elem.id];
+                    self.addNetworkInFilter(elem.id, networkName);
+                } else {
+                    newNewObj.object_id = elem.id;
+                    cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, newObj, newNewObj, newObj.object_id, self.definition.capinetworkScriptname, function(response) {
+                        if (!cwApi.statusIsKo(response)) {
+                            self.createdSaveObjFromReponse(newNewObj, response, networkName, config);
+                            self.addNetworkInFilter(response.id, networkName);
+                        }
+                    });
                 }
             }
-        );
+        });
     };
 
-    cwLayoutNetwork.prototype.addNetworkInFilter = function(
-        object_id,
-        networkName
-    ) {
+    cwLayoutNetwork.prototype.addNetworkInFilter = function(object_id, networkName) {
         var html = '<option id="' + object_id + '">' + networkName + "</>";
         $(".selectNetworkConfiguration_" + this.nodeID)
             .append(html)
             .selectpicker("refresh");
 
-        $(
-            "div.selectNetworkConfiguration_" + this.nodeID + " > option"
-        ).remove();
+        $("div.selectNetworkConfiguration_" + this.nodeID + " > option").remove();
         $(".selectNetworkConfiguration_" + this.nodeID)
             .val(networkName)
             .selectpicker("refresh");
     };
-    cwLayoutNetwork.prototype.createdSaveObjFromReponse = function(
-        obj,
-        response,
-        networkName,
-        config
-    ) {
+    cwLayoutNetwork.prototype.createdSaveObjFromReponse = function(obj, response, networkName, config) {
         var r,
             self = this;
 
@@ -431,78 +330,41 @@
         }
 
         if (!cwAPI.isIndexPage()) {
-            obj.associations[
-                this.nodeID
-            ].associationScriptName = this.definition.capinetworkToAnyAssociationScriptname;
-            obj.associations[
-                this.nodeID
-            ].displayName = this.definition.capinetworkToAnyAssociationDisplayName;
+            obj.associations[this.nodeID].associationScriptName = this.definition.capinetworkToAnyAssociationScriptname;
+            obj.associations[this.nodeID].displayName = this.definition.capinetworkToAnyAssociationDisplayName;
             obj.associations[this.nodeID].nodeID = self.nodeID;
         }
 
         this.networkConfiguration.nodes[response.id].obj = obj;
         this.networkConfiguration.nodes[response.id].label = networkName;
-        this.networkConfiguration.selected = this.networkConfiguration.nodes[
-            response.id
-        ];
+        this.networkConfiguration.selected = this.networkConfiguration.nodes[response.id];
     };
 
     cwLayoutNetwork.prototype.directSave = function(oldObj) {
         var config, changeset, newObj;
         var self = this;
-        changeset = new cwApi.CwPendingChangeset(
-            oldObj.objectTypeScriptName,
-            oldObj.object_id,
-            oldObj.name,
-            true,
-            1
-        );
+        changeset = new cwApi.CwPendingChangeset(oldObj.objectTypeScriptName, oldObj.object_id, oldObj.name, true, 1);
         newObj = $.extend(true, {}, oldObj);
 
-        config = this.getConfigurationAndAssociationObjectToNetwork(
-            newObj,
-            oldObj.properties[this.definition.capinetworkLabelScriptname]
-        );
+        config = this.getConfigurationAndAssociationObjectToNetwork(newObj, oldObj.properties[this.definition.capinetworkLabelScriptname]);
         //changeset.compareAndAddChanges(oldObj, newObj);
 
-        cwAPI.CwEditSave.setPopoutContentForGrid(
-            cwApi.CwPendingChangeset.ActionType.Update,
-            oldObj,
-            newObj,
-            oldObj.object_id,
-            oldObj.objectTypeScriptName,
-            function(response) {
-                if (!cwApi.statusIsKo(response)) {
-                    self.createdSaveObjFromReponse(
-                        newObj,
-                        response,
-                        newObj.properties["name"],
-                        config
-                    );
-                }
+        cwAPI.CwEditSave.setPopoutContentForGrid(cwApi.CwPendingChangeset.ActionType.Update, oldObj, newObj, oldObj.object_id, oldObj.objectTypeScriptName, function(response) {
+            if (!cwApi.statusIsKo(response)) {
+                self.createdSaveObjFromReponse(newObj, response, newObj.properties["name"], config);
             }
-        );
+        });
     };
 
-    cwApi.cwEditProperties.cwEditProperty.prototype.getValueFromEditModeInDOM = function(
-        isInitialValueLoad
-    ) {
+    cwApi.cwEditProperties.cwEditProperty.prototype.getValueFromEditModeInDOM = function(isInitialValueLoad) {
         var data = this.getDataForUpdate();
         data = this.getValueFromEditModeInDOMCustom(data, isInitialValueLoad);
         this.getValueFromCustomLayout(data, isInitialValueLoad);
         return data;
     };
 
-    cwApi.cwEditProperties.cwEditProperty.prototype.getValueFromCustomLayout = function(
-        data,
-        isInitialValueLoad
-    ) {
-        var id =
-            this.objectTypeScriptName +
-            "_" +
-            this.objectID +
-            "_" +
-            this.scriptName;
+    cwApi.cwEditProperties.cwEditProperty.prototype.getValueFromCustomLayout = function(data, isInitialValueLoad) {
+        var id = this.objectTypeScriptName + "_" + this.objectID + "_" + this.scriptName;
         if (cwApi.customLibs.edits && cwApi.customLibs.edits[id]) {
             if (isInitialValueLoad) {
                 data.v = cwApi.customLibs.edits[id].initValue;
@@ -524,57 +386,42 @@
         // load options
 
         if (false && config.options) {
-            if (config.options.groupString === undefined)
-                config.options.groupString = this.originalOptions.groupString;
-            if (config.options.directionListString === undefined)
-                config.options.directionListString = this.originalOptions.directionListString;
-            if (config.options.newNodeFilteredString === undefined)
-                config.options.newNodeFilteredString = this.originalOptions.newNodeFilteredString;
-            if (config.options.specificGroupString === undefined)
-                config.options.specificGroupString = this.originalOptions.specificGroupString;
-            if (config.options.hiddenNodesString === undefined)
-                config.options.hiddenNodesString = this.originalOptions.hiddenNodesString;
-            if (config.options.duplicateNodesString === undefined)
-                config.options.duplicateNodesString = this.originalOptions.duplicateNodesString;
-            if (config.options.complementaryNodesString === undefined)
-                config.options.complementaryNodesString = this.originalOptions.complementaryNodesString;
+            if (config.options.groupString === undefined) config.options.groupString = this.originalOptions.groupString;
+            if (config.options.directionListString === undefined) config.options.directionListString = this.originalOptions.directionListString;
+            if (config.options.newNodeFilteredString === undefined) config.options.newNodeFilteredString = this.originalOptions.newNodeFilteredString;
+            if (config.options.specificGroupString === undefined) config.options.specificGroupString = this.originalOptions.specificGroupString;
+            if (config.options.hiddenNodesString === undefined) config.options.hiddenNodesString = this.originalOptions.hiddenNodesString;
+            if (config.options.duplicateNodesString === undefined) config.options.duplicateNodesString = this.originalOptions.duplicateNodesString;
+            if (config.options.complementaryNodesString === undefined) config.options.complementaryNodesString = this.originalOptions.complementaryNodesString;
 
             this.groupString = config.options.groupString;
-            this.options.CustomOptions["iconGroup"] =
-                config.options.groupString;
+            this.options.CustomOptions["iconGroup"] = config.options.groupString;
             this.getFontAwesomeList(config.options.groupString);
 
             this.externalFilters = {};
             this.nodeFiltered = {};
             this.getdirectionList(config.options.directionListString);
-            this.options.CustomOptions["arrowDirection"] =
-                config.options.directionListString;
+            this.options.CustomOptions["arrowDirection"] = config.options.directionListString;
             this.directionListString = config.options.directionListString;
 
             this.getExternalFilterNodes(config.options.newNodeFilteredString);
-            this.options.CustomOptions["filterNode"] =
-                config.options.newNodeFilteredString;
+            this.options.CustomOptions["filterNode"] = config.options.newNodeFilteredString;
             this.newNodeFilteredString = config.options.newNodeFilteredString;
 
             this.specificGroupString = config.options.specificGroupString;
-            this.options.CustomOptions["specificGroup"] =
-                config.options.specificGroupString;
+            this.options.CustomOptions["specificGroup"] = config.options.specificGroupString;
             this.getOption("specificGroup", "specificGroup", "#", ",");
 
             this.hiddenNodesString = config.options.hiddenNodesString;
-            this.options.CustomOptions["hidden-nodes"] =
-                config.options.hiddenNodesString;
+            this.options.CustomOptions["hidden-nodes"] = config.options.hiddenNodesString;
             this.getOption("hidden-nodes", "hiddenNodes", ",");
 
             this.duplicateNodesString = config.options.duplicateNodesString;
-            this.options.CustomOptions["duplicateNodes"] =
-                config.options.duplicateNodesString;
+            this.options.CustomOptions["duplicateNodes"] = config.options.duplicateNodesString;
             this.getOption("duplicateNodes", "duplicateNode", ",");
 
-            this.complementaryNodesString =
-                config.options.complementaryNodesString;
-            this.options.CustomOptions["complementaryNode"] =
-                config.options.complementaryNodesString;
+            this.complementaryNodesString = config.options.complementaryNodesString;
+            this.options.CustomOptions["complementaryNode"] = config.options.complementaryNodesString;
             this.getOption("complementaryNode", "complementaryNode", ",");
 
             this.updateNetworkData();
@@ -614,10 +461,7 @@
         if (this.clusterOption) {
             this.clusterByGroupOption.head = config.clusterByGroupOption.head;
             this.clusterByGroupOption.child = config.clusterByGroupOption.child;
-            this.fillValueInClusterFilter(
-                config.clusterByGroupOption.head,
-                config.clusterByGroupOption.child
-            );
+            this.fillValueInClusterFilter(config.clusterByGroupOption.head, config.clusterByGroupOption.child);
             this.clusterByGroup();
             this.activateClusterEvent();
         }
@@ -637,9 +481,7 @@
 
         if (selectedNetwork) {
             this.networkConfiguration.selected = selectedNetwork;
-            $("select.selectNetworkConfiguration_" + this.nodeID).each(function(
-                index
-            ) {
+            $("select.selectNetworkConfiguration_" + this.nodeID).each(function(index) {
                 // put values into filters
                 $(this).selectpicker("val", selectedNetwork.label); //init cwAPInetworkfilter
             });

@@ -20,18 +20,14 @@
         this.definition.capinetworkDisplayname = "Network";
         this.definition.capinetworkLabelScriptname = "label";
         this.definition.capinetworkLabelDisplayname = "Libéllé";
-        this.definition.capinetworkToAnyAssociationScriptname =
-            "CAPINETWORKTOASSOCWAPINETWORKTOANYOBJECTTOANYOBJECT";
-        this.definition.capinetworkToAnyAssociationDisplayName =
-            "Present On Network";
+        this.definition.capinetworkToAnyAssociationScriptname = "CAPINETWORKTOASSOCWAPINETWORKTOANYOBJECTTOANYOBJECT";
+        this.definition.capinetworkToAnyAssociationDisplayName = "Present On Network";
         this.definition.capinetworkCreateOnViewScriptname = "createoncwview";
         this.definition.capinetworkConfigurationScriptname = "configuration";
         this.canCreateNetwork = false;
         this.canUpdateNetwork = false;
         this.networkConfiguration = {};
-        this.networkConfiguration.enableEdit = this.options.CustomOptions[
-            "enableEdit"
-        ];
+        this.networkConfiguration.enableEdit = this.options.CustomOptions["enableEdit"];
         this.networkConfiguration.nodes = {};
         this.expertMode = false;
         this.expertModeAvailable = this.options.CustomOptions["expertMode"];
@@ -41,31 +37,13 @@
         this.errors.diagrameTemplate = {};
         this.errors.init = false;
         try {
-            this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(
-                this.definition.capinetworkScriptname,
-                this.definition.capinetworkCreateOnViewScriptname
-            ).name;
-            this.definition.capinetworkConfigurationDisplayname = cwAPI.mm.getProperty(
-                this.definition.capinetworkScriptname,
-                this.definition.capinetworkConfigurationScriptname
-            ).name;
+            this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(this.definition.capinetworkScriptname, this.definition.capinetworkCreateOnViewScriptname).name;
+            this.definition.capinetworkConfigurationDisplayname = cwAPI.mm.getProperty(this.definition.capinetworkScriptname, this.definition.capinetworkConfigurationScriptname).name;
 
-            if (
-                cwAPI.cwUser.isCurrentUserSocial() === false &&
-                cwAPI.mm.getLookupsOnAccessRights(
-                    this.definition.capinetworkScriptname,
-                    "CanCreate"
-                ).length > 0
-            ) {
+            if (cwAPI.cwUser.isCurrentUserSocial() === false && cwAPI.mm.getLookupsOnAccessRights(this.definition.capinetworkScriptname, "CanCreate").length > 0) {
                 this.canCreateNetwork = true;
             }
-            if (
-                cwAPI.cwUser.isCurrentUserSocial() === false &&
-                cwAPI.mm.getLookupsOnAccessRights(
-                    this.definition.capinetworkScriptname,
-                    "CanUpdate"
-                ).length > 0
-            ) {
+            if (cwAPI.cwUser.isCurrentUserSocial() === false && cwAPI.mm.getLookupsOnAccessRights(this.definition.capinetworkScriptname, "CanUpdate").length > 0) {
                 this.canUpdateNetwork = true;
             }
         } catch (e) {
@@ -99,27 +77,13 @@
         this.dragged = {};
 
         this.originalOptions = {};
-        this.originalOptions.groupString = this.options.CustomOptions[
-            "iconGroup"
-        ];
-        this.originalOptions.directionListString = this.options.CustomOptions[
-            "arrowDirection"
-        ];
-        this.originalOptions.newNodeFilteredString = this.options.CustomOptions[
-            "filterNode"
-        ];
-        this.originalOptions.specificGroupString = this.options.CustomOptions[
-            "specificGroup"
-        ];
-        this.originalOptions.hiddenNodesString = this.options.CustomOptions[
-            "hidden-nodes"
-        ];
-        this.originalOptions.duplicateNodesString = this.options.CustomOptions[
-            "duplicateNodes"
-        ];
-        this.originalOptions.complementaryNodesString = this.options.CustomOptions[
-            "complementaryNode"
-        ];
+        this.originalOptions.groupString = this.options.CustomOptions["iconGroup"];
+        this.originalOptions.directionListString = this.options.CustomOptions["arrowDirection"];
+        this.originalOptions.newNodeFilteredString = this.options.CustomOptions["filterNode"];
+        this.originalOptions.specificGroupString = this.options.CustomOptions["specificGroup"];
+        this.originalOptions.hiddenNodesString = this.options.CustomOptions["hidden-nodes"];
+        this.originalOptions.duplicateNodesString = this.options.CustomOptions["duplicateNodes"];
+        this.originalOptions.complementaryNodesString = this.options.CustomOptions["complementaryNode"];
 
         this.multiLineCount = this.options.CustomOptions["multiLineCount"];
         this.getOption("complementaryNode", "complementaryNode", ",");
@@ -135,10 +99,7 @@
         this.getFontAwesomeList(this.options.CustomOptions["iconGroup"]);
         this.getdirectionList(this.options.CustomOptions["arrowDirection"]);
 
-        this.getExternalFilterNodes(
-            this.options.CustomOptions["filterNode"],
-            this.options.CustomOptions["filterNodeBehaviour"]
-        );
+        this.getExternalFilterNodes(this.options.CustomOptions["filterNode"], this.options.CustomOptions["filterNodeBehaviour"]);
 
         this.edgeOption = this.options.CustomOptions["zipEdgeOption"];
         this.edgeZipped = this.options.CustomOptions["zipEdgeInitState"];
@@ -146,21 +107,13 @@
 
         this.clusterOption = this.options.CustomOptions["clusterOn"];
         this.hideClusterMenu = this.options.CustomOptions["hideClusterMenu"];
-        this.getStartingCluster(
-            this.options.CustomOptions["clusterToSelectOnStart"]
-        );
+        this.getStartingCluster(this.options.CustomOptions["clusterToSelectOnStart"]);
 
         this.physicsOption = this.options.CustomOptions["physicsOn"];
-        this.hidePhysicsButton = this.options.CustomOptions[
-            "hidePhysicsButton"
-        ];
-        this.physicsOptionInitialState = this.options.CustomOptions[
-            "physicsInitialState"
-        ];
+        this.hidePhysicsButton = this.options.CustomOptions["hidePhysicsButton"];
+        this.physicsOptionInitialState = this.options.CustomOptions["physicsInitialState"];
 
-        this.physConfiguration = this.options.CustomOptions[
-            "physicsConfiguration"
-        ];
+        this.physConfiguration = this.options.CustomOptions["physicsConfiguration"];
         if (this.physConfiguration !== "") {
             try {
                 this.physConfiguration = JSON.parse(this.physConfiguration);
@@ -181,9 +134,7 @@
 
         this.assignEdge = {};
         try {
-            this.edgeConfiguration = JSON.parse(
-                this.options.CustomOptions["edgeColor"]
-            );
+            this.edgeConfiguration = JSON.parse(this.options.CustomOptions["edgeColor"]);
             this.getOption("edgeTypeToSelect", "edgeTypeToSelect", ",");
             this.getOption("assignEdge", "assignEdge", "#", ",");
         } catch (e) {
