@@ -22,7 +22,7 @@
 * 3.3 : Adding Complementary Item
 * 3.2 : Can be display in a tab for objectPage and Indexpage (this change the evolveNode Structure, please update your evolve designer configuration)
 * 3.1 : Correct double item, adding shape option, correct edge color
-* 3.0 : RightClick, Highlight by External, merging (with bigger size) arrow if several associations
+* 3.0 : RightClick, Highlight by External Association, merging (with bigger size) arrow if several associations
 * 2.0 : Adding group, icon, Impact, globalFilter, arrow
 * 1.0 : 1st version working
 
