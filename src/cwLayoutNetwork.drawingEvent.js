@@ -54,12 +54,13 @@
         palette = diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"];
       } else {
         if (obj && obj.properties.type === undefined) {
-          if (undefined === this.errors.diagrameTemplate[obj.nodeID]) {
-            this.errors.diagrameTemplate[obj.nodeID] = {};
-            this.errors.diagrameTemplate[obj.nodeID].properties = {};
-            this.errors.diagrameTemplate[obj.nodeID].associations = {};
+          if (undefined === self.errors.diagrameTemplate[node.group]) self.errors.diagrameTemplate[node.group] = {}; 
+          if (undefined === this.errors.diagrameTemplate[node.group][obj.nodeID]) {
+            this.errors.diagrameTemplate[node.group][obj.nodeID] = {};
+            this.errors.diagrameTemplate[node.group][obj.nodeID].properties = {};
+            this.errors.diagrameTemplate[node.group][obj.nodeID].associations = {};
           }
-          this.errors.diagrameTemplate[obj.nodeID].properties.type = cwAPI.mm.getProperty(obj.objectTypeScriptName, "type").name;
+          this.errors.diagrameTemplate[node.group][obj.nodeID].properties.type = cwAPI.mm.getProperty(obj.objectTypeScriptName, "type").name;
         }
       }
       if (palette) {
@@ -67,20 +68,22 @@
 
         palette.Regions.forEach(function(region) {
           if (region.RegionType >= 3 && region.RegionType < 8 && !obj.properties.hasOwnProperty(region.SourcePropertyTypeScriptName)) {
-            if (undefined === self.errors.diagrameTemplate[obj.nodeID]) {
-              self.errors.diagrameTemplate[obj.nodeID] = {};
-              self.errors.diagrameTemplate[obj.nodeID].properties = {};
-              self.errors.diagrameTemplate[obj.nodeID].associations = {};
+            if (undefined === self.errors.diagrameTemplate[node.group]) self.errors.diagrameTemplate[node.group] = {}; 
+            if (undefined === self.errors.diagrameTemplate[node.group][obj.nodeID]) {
+              self.errors.diagrameTemplate[node.group][obj.nodeID] = {};
+              self.errors.diagrameTemplate[node.group][obj.nodeID].properties = {};
+              self.errors.diagrameTemplate[node.group][obj.nodeID].associations = {};
             }
-            self.errors.diagrameTemplate[obj.nodeID].properties[region.SourcePropertyTypeScriptName] = cwAPI.mm.getProperty(obj.objectTypeScriptName, region.SourcePropertyTypeScriptName).name;
+            self.errors.diagrameTemplate[node.group][obj.nodeID].properties[region.SourcePropertyTypeScriptName] = cwAPI.mm.getProperty(obj.objectTypeScriptName, region.SourcePropertyTypeScriptName).name;
           }
           if (region.RegionType < 3 && region.RegionData && !obj.associations.hasOwnProperty(region.RegionData.Key)) {
-            if (undefined === self.errors.diagrameTemplate[obj.nodeID]) {
-              self.errors.diagrameTemplate[obj.nodeID] = {};
-              self.errors.diagrameTemplate[obj.nodeID].properties = {};
-              self.errors.diagrameTemplate[obj.nodeID].associations = {};
+            if (undefined === self.errors.diagrameTemplate[node.group]) self.errors.diagrameTemplate[node.group] = {}; 
+            if (undefined === self.errors.diagrameTemplate[node.group][obj.nodeID]) {
+              self.errors.diagrameTemplate[node.group][obj.nodeID] = {};
+              self.errors.diagrameTemplate[node.group][obj.nodeID].properties = {};
+              self.errors.diagrameTemplate[node.group][obj.nodeID].associations = {};
             }
-            self.errors.diagrameTemplate[obj.nodeID].associations[region.RegionData.Key] = region.RegionData.AssociationTypeScriptName + " => " + cwAPI.mm.getObjectType(region.RegionData.TargetObjectTypeScriptName).name;
+            self.errors.diagrameTemplate[node.group][obj.nodeID].associations[region.RegionData.Key] = region.RegionData.AssociationTypeScriptName + " => " + cwAPI.mm.getObjectType(region.RegionData.TargetObjectTypeScriptName).name;
           }
         });
 

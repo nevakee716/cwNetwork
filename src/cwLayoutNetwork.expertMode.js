@@ -193,14 +193,14 @@
             $scope.copyToClipboard = cwAPI.customLibs.utils.copyToClipboard;
             $scope.errorsTemplate = self.errors.diagrameTemplate;
 
-            $scope.checkIfErrorOnProperties = function(nodeID) {
-                if (Object.keys($scope.errorsTemplate[nodeID].properties).length > 0) {
+            $scope.checkIfErrorOnProperties = function(nodeID,group) {
+                if ($scope.errorsTemplate[group] && Object.keys($scope.errorsTemplate[group][nodeID].properties).length > 0) {
                     return true;
                 } else return false;
             };
 
-            $scope.checkIfErrorOnAssociation = function(nodeID) {
-                if (Object.keys($scope.errorsTemplate[nodeID].associations).length > 0) {
+            $scope.checkIfErrorOnAssociation = function(nodeID,group) {
+                if ($scope.errorsTemplate[group] && Object.keys($scope.errorsTemplate[group][nodeID].associations).length > 0) {
                     return true;
                 } else return false;
             };
@@ -242,7 +242,7 @@
             self.groupToSelectOnStart.splice(index, 1);
         }
 
-        this.errors.diagrameTemplate = {};
+        this.errors.diagrameTemplate[changeGroup[1]] = {};
 
         this.getFontAwesomeList(output);
         var opt = {};

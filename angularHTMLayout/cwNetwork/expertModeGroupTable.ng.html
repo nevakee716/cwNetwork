@@ -1,11 +1,11 @@
-<div ng-init="updateGroup" ng-controller="expertModeGroupTable" class="cw-visible">
+<div ng-init="updateGroup" ng-controller="expertModeGroupTable" class="cw-visible view-container">
   <div class="cwPropertiesTableContainer">
 
     <div class="cwPropertiesTableHeader CwPropertiesLayoutTableHeader"> Groups Style Option </div>
     <table class="cwPropertiesTable">
     <tr class="cwLayout_expertModeTableSelect" ng-repeat="group in groups">
-      <td class="cw-edit-property-value" style="width:10px" ><input ng-change="updateGroups(groups,group)" type="checkbox" ng-model="group[4]"> </td>
-      <td class="cw-edit-property-value" style="width:150px"><input type="text" ng-change="updateGroups(groups,group)" ng-model="group[0]" value="{{group[0]}}"></input></td>
+      <td class="cw-edit-property-value" style="width:8px" ><input ng-change="updateGroups(groups,group)" type="checkbox" ng-model="group[4]"> </td>
+      <td class="cw-edit-property-value" style="width:130px"><input type="text" ng-change="updateGroups(groups,group)" ng-model="group[0]" value="{{group[0]}}"></input></td>
       <td style="width:85px" class="cw-edit-property-value" > 
       	<select class="cw-edit-attr cw-edit-attr-combobox" style="width:83px; min-width:0px;" ng-change="updateGroups(groups,group)" ng-model="group[1]">
       		<option ng-selected="'icon' === group[1]" value="icon">Icon</option>
@@ -45,7 +45,7 @@
 </table>
 </div>
 
-<div class="cwPropertiesTableHeader cwpropertieslayouttableheader"> Config String for Evolve Designer (click to copy to clipboard) :  </div>
+<div class="cwPropertiesTableHeader cwpropertieslayouttableheader"> Config String for Evolve Designer (click to copy to clipboard) : </div>
 
 <button style="margin-bottom:5px" class="k-grid k-button cwLayout_expertModeConfigButton" ng-if="configString != ''" ng-click="copyToClipboard(configString)">Icon Group</button>
 <button style="margin-bottom:5px" class="k-grid k-button cwLayout_expertModeConfigButton" ng-if="configString != ''" ng-click="copyToClipboard(groupToSelectOnStartString)">Group Active At Start</button>
@@ -53,13 +53,14 @@
 
 
 <div class="cwPropertiesTableHeader cwpropertieslayouttableheader">Information Missing on Evolve Configuration for Diagram Region : </div>
-<div ng-repeat="(nodeID, errs) in errorsTemplate">
-  <h2 ng-if="checkIfErrorOnAssociation(nodeID) || checkIfErrorOnProperties(nodeID)"> {{nodeID}} : </h2>
-  <div ng-if="checkIfErrorOnProperties(nodeID)"> <span>Please Add the Following Properties : </span><span ng-repeat="(pScriptname, label) in errs.properties"> {{label}}, </span></div>
-  <div ng-if="checkIfErrorOnAssociation(nodeID)"> <span>Please Add the Following Associations : </span><div ng-repeat="(nodeName, label) in errs.associations">{{nodeName}}</div></div>
+<div ng-repeat="(group, groupError) in errorsTemplate">
+<div ng-repeat="(nodeID, errs) in groupError">
+  <div class="LayoutNetork_filterTitle" ng-if="checkIfErrorOnAssociation(nodeID,group) || checkIfErrorOnProperties(nodeID,group)"> {{group}} : {{nodeID}} : </div>
+  <div ng-if="checkIfErrorOnProperties(nodeID,group)"> <span>Please Add the Following Properties : </span><span ng-repeat="(pScriptname, label) in errs.properties"> {{label}}, </span></div>
+  <div ng-if="checkIfErrorOnAssociation(nodeID,group)"> <span>Please Add the Following Associations : </span><div ng-repeat="(nodeName, label) in errs.associations">{{nodeName}}</div></div>
   <h2>   </h2>
 </div>
-
+</div>
 </div>
 
 
