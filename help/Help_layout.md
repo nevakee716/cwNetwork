@@ -1,6 +1,6 @@
 | **Name** | **cwLayoutNetwork** | **Version** | 
 | --- | --- | --- |
-| **Updated by** | Mathias PFAUWADEL | 7.0 |
+| **Updated by** | Mathias PFAUWADEL | 7.1 |
 
 
 ## Patch Notes
