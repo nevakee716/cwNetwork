@@ -193,17 +193,25 @@
             $scope.copyToClipboard = cwAPI.customLibs.utils.copyToClipboard;
             $scope.errorsTemplate = self.errors.diagrameTemplate;
 
-            $scope.checkIfErrorOnProperties = function(nodeID,group) {
+            $scope.metamodel = cwAPI.mm.getMetaModel();
+            $scope.groupsArt = self.groupsArt;
+            $scope.splitGroupByProperty = self.splitGroupByProperty;
+            $scope.splitGroupByPropertyString = self.options.CustomOptions["separateObjectTypeGroupByProperty"];
+            $scope.getObjectTypeName = cwApi.getObjectTypeName;
+
+            $scope.checkIfErrorOnProperties = function(nodeID, group) {
                 if ($scope.errorsTemplate[group] && Object.keys($scope.errorsTemplate[group][nodeID].properties).length > 0) {
                     return true;
                 } else return false;
             };
 
-            $scope.checkIfErrorOnAssociation = function(nodeID,group) {
+            $scope.checkIfErrorOnAssociation = function(nodeID, group) {
                 if ($scope.errorsTemplate[group] && Object.keys($scope.errorsTemplate[group][nodeID].associations).length > 0) {
                     return true;
                 } else return false;
             };
+
+            $scope.updateSplitGroupPropertyNode = self.updateSplitGroupPropertyNode.bind(self);
         });
     };
 
@@ -214,8 +222,32 @@
         g[2] = Math.floor(Math.random() * 16777215).toString(16);
         g[3] = Math.floor(Math.random() * 16777215).toString(16);
         g[4] = false;
+        g[5] = false;
         groups.push(g);
         this.updateGroups(groups, g);
+    };
+
+    cwLayoutNetwork.prototype.updateSplitGroupPropertyNode = function(group, value) {
+        if (value === "none") this.splitGroupByProperty[group] = undefined;
+        else this.splitGroupByProperty[group] = value;
+
+        this.angularScope.splitGroupByPropertyString = "";
+        for (let i in this.angularScope.splitGroupByProperty) {
+            if (this.angularScope.splitGroupByProperty.hasOwnProperty(i)) {
+                this.angularScope.splitGroupByPropertyString += i + "," + this.angularScope.splitGroupByProperty[i] + "#";
+            }
+        }
+        this.options.CustomOptions["separateObjectTypeGroupByProperty"] = this.angularScope.splitGroupByPropertyString;
+
+        this.updateNetworkData();
+        this.angularScope.configString = this.options.CustomOptions["iconGroup"];
+
+        this.angularScope.groups = this.options.CustomOptions["iconGroup"].split("||");
+        for (var i = 0; i < this.angularScope.groups.length; i++) {
+            this.angularScope.groups[i] = this.angularScope.groups[i].split(",");
+            if (this.groupToSelectOnStart.indexOf(this.angularScope.groups[i][0]) !== -1) this.angularScope.groups[i][4] = true;
+            else this.angularScope.groups[i][4] = false;
+        }
     };
 
     cwLayoutNetwork.prototype.updateGroups = function(groups, changeGroup) {

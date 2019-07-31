@@ -1,6 +1,23 @@
 <div ng-init="updateGroup" ng-controller="expertModeGroupTable" class="cw-visible view-container">
   <div class="cwPropertiesTableContainer">
+    <div class="cwPropertiesTableHeader CwPropertiesLayoutTableHeader"> Groups Split by Properties Option </div>
+    <table class="cwPropertiesTable">
+    <tr ng-if="group[5] !== 'true' && group[0].indexOf('Hidden') === -1" class="cwLayout_expertModeTableSelect" ng-repeat="group in groups">
+      <td class="cw-edit-property-value" style="width:130px">{{group[0]}}</td>
+      <td class="cw-edit-property-value" >
+        <select ng-change="updateSplitGroupPropertyNode(group[0],splitGroupByProperty[group[0]])" ng-model="splitGroupByProperty[group[0]]" value="{{splitGroupByProperty[group[0]]}}">
+          <option ng-selected="true" value="none">None</option>
+          <optgroup ng-repeat="ot in groupsArt[group[0]].objectTypes" label="{{getObjectTypeName(ot)}}">
+          <option ng-repeat="(scriptname, prop) in metamodel.objectTypes[ot].properties" ng-selected="splitGroupByProperty[group[0]] === scriptname" value="{{scriptname}}">{{prop.name}}</option>
+          <optgroup/>
+        </select>    
+      </td>
+     </tr>
+     </table>
+     </div>
+  </div>
 
+  <div class="cwPropertiesTableContainer">
     <div class="cwPropertiesTableHeader CwPropertiesLayoutTableHeader"> Groups Style Option </div>
     <table class="cwPropertiesTable">
     <tr class="cwLayout_expertModeTableSelect" ng-repeat="group in groups">
@@ -49,7 +66,7 @@
 
 <button style="margin-bottom:5px" class="k-grid k-button cwLayout_expertModeConfigButton" ng-if="configString != ''" ng-click="copyToClipboard(configString)">Icon Group</button>
 <button style="margin-bottom:5px" class="k-grid k-button cwLayout_expertModeConfigButton" ng-if="configString != ''" ng-click="copyToClipboard(groupToSelectOnStartString)">Group Active At Start</button>
-
+<button style="margin-bottom:5px" class="k-grid k-button cwLayout_expertModeConfigButton" ng-if="splitGroupByPropertyString != ''" ng-click="copyToClipboard(splitGroupByPropertyString)">Split Group By Properties</button>
 
 
 <div class="cwPropertiesTableHeader cwpropertieslayouttableheader">Information Missing on Evolve Configuration for Diagram Region : </div>

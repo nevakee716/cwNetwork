@@ -115,6 +115,7 @@
                                 element.isDuplicate = true;
                             }
 
+                            let splitGroup = false;
                             if (!this.objects.hasOwnProperty(element.object_id + "#" + element.objectTypeScriptName + fatherID)) {
                                 if (this.specificGroup.hasOwnProperty(associationNode)) {
                                     // mise en place du groupe
@@ -122,15 +123,17 @@
                                 } else {
                                     element.group = cwAPI.mm.getObjectType(nextChild.objectTypeScriptName).name;
                                 }
+                                if(this.splitGroupByProperty[element.group] && nextChild.properties[this.splitGroupByProperty[element.group]]) {
+                                    let s =  " " + nextChild.properties[this.splitGroupByProperty[element.group]]
+                                    if(s === " __|UndefinedValue|__") s = " UndefinedValue";
+
+                                    element.group += s;
+                                    splitGroup = true;
+                                }
                                 this.objects[element.object_id + "#" + element.objectTypeScriptName + fatherID] = element.group;
                                 this.originalObjects[element.object_id + "#" + element.objectTypeScriptName] = nextChild;
                             } else {
                                 element.group = this.objects[element.object_id + "#" + element.objectTypeScriptName + fatherID];
-                            }
-
-                            // add objectType ScriptName to group
-                            if (element.group && element.objectTypeScriptName && this.groupsArt[element.group] && this.groupsArt[element.group].objectTypes && this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1) {
-                                this.groupsArt[element.group].objectTypes.push(element.objectTypeScriptName);
                             }
 
                             //attribute id, will have the father name in case of duplicate node
@@ -139,12 +142,17 @@
                             if (this.groupsArt.hasOwnProperty(element.group) === false) {
                                 let o = this.options.CustomOptions["iconGroup"];
                                 if (o !== "") o = "||" + o;
-                                this.options.CustomOptions["iconGroup"] = element.group + "," + "ellipse" + ",#" + Math.floor(Math.random() * 16777215).toString(16) + o;
+                                this.options.CustomOptions["iconGroup"] = element.group + "," + "triangle" + ",#" + Math.floor(Math.random() * 16777215).toString(16) + ",#" + Math.floor(Math.random() * 16777215).toString(16) + ",false,true" + o;
                                 this.getFontAwesomeList(this.options.CustomOptions["iconGroup"]);
                             } else {
                                 if (this.groupsArt[element.group].diagram === true && this.diagramTemplate[this.groupsArt[element.group].diagramTemplateID]) {
                                     element.image = this.shapeToImage(element);
                                 }
+                            }
+
+                            // add objectType ScriptName to group
+                            if (element.group && element.objectTypeScriptName && this.groupsArt[element.group] && this.groupsArt[element.group].objectTypes && this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1) {
+                                this.groupsArt[element.group].objectTypes.push(element.objectTypeScriptName);
                             }
 
                             if (hiddenNode) {

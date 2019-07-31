@@ -92,6 +92,8 @@
         this.getOption("groupToSelectOnStart", "groupToSelectOnStart", ",");
         this.getOption("specificGroup", "specificGroup", "#", ",");
         this.getOption("popOutList", "popOut", "#", ",");
+        this.getOption("separateObjectTypeGroupByProperty", "splitGroupByProperty", "#", ",");
+
 
         this.startingNetwork = this.options.CustomOptions["startingNetwork"];
         this.getOption("duplicateNodes", "duplicateNode", ",");

@@ -29,6 +29,12 @@
         "Type": 0
     },
     {
+        "Id": "separateObjectTypeGroupByProperty",
+        "DisplayName": "Split a group depending value of a property",
+        "Description": "list the group and the propertyTypeScriptname in lowercase splitter is a comma",
+        "Type": 0
+    }, 
+    {
         "Id": "groupToSelectOnStart",
         "DisplayName": "Group To Select On Start",
         "Description": "List the groups you want to display when the network is started. Use comma separator",
