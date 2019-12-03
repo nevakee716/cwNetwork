@@ -2,160 +2,166 @@
 
 /*global cwAPI, jQuery */
 (function(cwApi, $) {
-    "use strict";
-    if (cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
-        var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
-    } else {
-        // constructor
-        var cwLayoutNetwork = function(options, viewSchema) {
-            cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
-            cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
-            this.construct(options);
-        };
+  "use strict";
+  if (cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
+    var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
+  } else {
+    // constructor
+    var cwLayoutNetwork = function(options, viewSchema) {
+      cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
+      cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
+      this.construct(options);
+    };
+  }
+
+  cwLayoutNetwork.prototype.construct = function(options) {
+    this.definition = {};
+    this.definition.capinetworkScriptname = "capinetwork";
+    this.definition.capinetworkDisplayname = "Network";
+    this.definition.capinetworkLabelScriptname = "label";
+    this.definition.capinetworkLabelDisplayname = "Libéllé";
+    this.definition.capinetworkToAnyAssociationScriptname = "CAPINETWORKTOASSOCWAPINETWORKTOANYOBJECTTOANYOBJECT";
+    this.definition.capinetworkToAnyAssociationDisplayName = "Present On Network";
+    this.definition.capinetworkCreateOnViewScriptname = "createoncwview";
+    this.definition.capinetworkConfigurationScriptname = "configuration";
+    this.canCreateNetwork = false;
+    this.canUpdateNetwork = false;
+    try {
+      this.config = JSON.parse(this.options.CustomOptions["configuration"]);
+    } catch (e) {
+      this.config = {};
+    }
+    if (this.config.groups === undefined) this.config.groups = {};
+
+    this.networkConfiguration = {};
+    this.networkConfiguration.enableEdit = this.options.CustomOptions["enableEdit"];
+    this.networkConfiguration.nodes = {};
+    this.expertMode = false;
+    this.expertModeAvailable = this.options.CustomOptions["expertMode"];
+
+    this.imageTemplate = {};
+    this.errors = {};
+    this.errors.diagrameTemplate = {};
+    this.errors.init = false;
+    try {
+      this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(this.definition.capinetworkScriptname, this.definition.capinetworkCreateOnViewScriptname).name;
+      this.definition.capinetworkConfigurationDisplayname = cwAPI.mm.getProperty(this.definition.capinetworkScriptname, this.definition.capinetworkConfigurationScriptname).name;
+
+      if (cwAPI.cwUser.isCurrentUserSocial() === false && cwAPI.mm.getLookupsOnAccessRights(this.definition.capinetworkScriptname, "CanCreate").length > 0) {
+        this.canCreateNetwork = true;
+      }
+      if (cwAPI.cwUser.isCurrentUserSocial() === false && cwAPI.mm.getLookupsOnAccessRights(this.definition.capinetworkScriptname, "CanUpdate").length > 0) {
+        this.canUpdateNetwork = true;
+      }
+    } catch (e) {
+      console.log(e);
     }
 
-    cwLayoutNetwork.prototype.construct = function(options) {
-        this.definition = {};
-        this.definition.capinetworkScriptname = "capinetwork";
-        this.definition.capinetworkDisplayname = "Network";
-        this.definition.capinetworkLabelScriptname = "label";
-        this.definition.capinetworkLabelDisplayname = "Libéllé";
-        this.definition.capinetworkToAnyAssociationScriptname = "CAPINETWORKTOASSOCWAPINETWORKTOANYOBJECTTOANYOBJECT";
-        this.definition.capinetworkToAnyAssociationDisplayName = "Present On Network";
-        this.definition.capinetworkCreateOnViewScriptname = "createoncwview";
-        this.definition.capinetworkConfigurationScriptname = "configuration";
-        this.canCreateNetwork = false;
-        this.canUpdateNetwork = false;
-        this.networkConfiguration = {};
-        this.networkConfiguration.enableEdit = this.options.CustomOptions["enableEdit"];
-        this.networkConfiguration.nodes = {};
-        this.expertMode = false;
-        this.expertModeAvailable = this.options.CustomOptions["expertMode"];
+    this.hiddenNodes = [];
+    this.complementaryNode = [];
+    this.externalFilters = [];
 
-        this.imageTemplate = {};
-        this.errors = {};
-        this.errors.diagrameTemplate = {};
-        this.errors.init = false;
-        try {
-            this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(this.definition.capinetworkScriptname, this.definition.capinetworkCreateOnViewScriptname).name;
-            this.definition.capinetworkConfigurationDisplayname = cwAPI.mm.getProperty(this.definition.capinetworkScriptname, this.definition.capinetworkConfigurationScriptname).name;
+    this.behaviour = {};
+    this.behaviour.add = false;
+    this.behaviour.absolute = false;
+    this.behaviour.or = false;
+    this.behaviour.highlight = true;
 
-            if (cwAPI.cwUser.isCurrentUserSocial() === false && cwAPI.mm.getLookupsOnAccessRights(this.definition.capinetworkScriptname, "CanCreate").length > 0) {
-                this.canCreateNetwork = true;
-            }
-            if (cwAPI.cwUser.isCurrentUserSocial() === false && cwAPI.mm.getLookupsOnAccessRights(this.definition.capinetworkScriptname, "CanUpdate").length > 0) {
-                this.canUpdateNetwork = true;
-            }
-        } catch (e) {
-            console.log(e);
-        }
+    this.nodeFiltered = [];
+    this.popOut = [];
+    this.specificGroup = [];
+    this.directionList = [];
+    this.groupToSelectOnStart = [];
 
-        this.hiddenNodes = [];
-        this.complementaryNode = [];
-        this.externalFilters = [];
+    this.layoutsByNodeId = {};
+    this.clusters = [];
+    this.init = true;
 
-        this.behaviour = {};
-        this.behaviour.add = false;
-        this.behaviour.absolute = false;
-        this.behaviour.or = false;
-        this.behaviour.highlight = true;
+    this.clustered = false;
+    this.clusterByGroupOption = {};
+    this.clusterByGroupOption.head = "";
+    this.clusterByGroupOption.child = [];
+    this.dragged = {};
 
-        this.nodeFiltered = [];
-        this.popOut = [];
-        this.specificGroup = [];
-        this.directionList = [];
-        this.groupToSelectOnStart = [];
+    this.originalOptions = {};
+    this.originalOptions.groupString = this.options.CustomOptions["iconGroup"];
+    this.originalOptions.directionListString = this.options.CustomOptions["arrowDirection"];
+    this.originalOptions.newNodeFilteredString = this.options.CustomOptions["filterNode"];
+    this.originalOptions.specificGroupString = this.options.CustomOptions["specificGroup"];
+    this.originalOptions.hiddenNodesString = this.options.CustomOptions["hidden-nodes"];
+    this.originalOptions.duplicateNodesString = this.options.CustomOptions["duplicateNodes"];
+    this.originalOptions.complementaryNodesString = this.options.CustomOptions["complementaryNode"];
 
-        this.layoutsByNodeId = {};
-        this.clusters = [];
-        this.init = true;
+    this.multiLineCount = this.options.CustomOptions["multiLineCount"];
+    this.getOption("complementaryNode", "complementaryNode", ",");
+    this.getOption("contextualFilter", "contextualNode", ",");
+    this.getOption("hidden-nodes", "hiddenNodes", ",");
+    this.getOption("groupToSelectOnStart", "groupToSelectOnStart", ",");
+    this.getOption("specificGroup", "specificGroup", "#", ",");
+    this.getOption("popOutList", "popOut", "#", ",");
+    this.getOption("separateObjectTypeGroupByProperty", "splitGroupByProperty", "#", ",");
 
-        this.clustered = false;
-        this.clusterByGroupOption = {};
-        this.clusterByGroupOption.head = "";
-        this.clusterByGroupOption.child = [];
-        this.dragged = {};
+    this.startingNetwork = this.options.CustomOptions["startingNetwork"];
+    this.getOption("duplicateNodes", "duplicateNode", ",");
 
-        this.originalOptions = {};
-        this.originalOptions.groupString = this.options.CustomOptions["iconGroup"];
-        this.originalOptions.directionListString = this.options.CustomOptions["arrowDirection"];
-        this.originalOptions.newNodeFilteredString = this.options.CustomOptions["filterNode"];
-        this.originalOptions.specificGroupString = this.options.CustomOptions["specificGroup"];
-        this.originalOptions.hiddenNodesString = this.options.CustomOptions["hidden-nodes"];
-        this.originalOptions.duplicateNodesString = this.options.CustomOptions["duplicateNodes"];
-        this.originalOptions.complementaryNodesString = this.options.CustomOptions["complementaryNode"];
+    this.getFontAwesomeList(this.options.CustomOptions["iconGroup"]);
+    this.getdirectionList(this.options.CustomOptions["arrowDirection"]);
 
-        this.multiLineCount = this.options.CustomOptions["multiLineCount"];
-        this.getOption("complementaryNode", "complementaryNode", ",");
-        this.getOption("contextualFilter", "contextualNode", ",");
-        this.getOption("hidden-nodes", "hiddenNodes", ",");
-        this.getOption("groupToSelectOnStart", "groupToSelectOnStart", ",");
-        this.getOption("specificGroup", "specificGroup", "#", ",");
-        this.getOption("popOutList", "popOut", "#", ",");
-        this.getOption("separateObjectTypeGroupByProperty", "splitGroupByProperty", "#", ",");
+    this.getExternalFilterNodes(this.options.CustomOptions["filterNode"], this.options.CustomOptions["filterNodeBehaviour"]);
 
+    this.edgeOption = this.options.CustomOptions["zipEdgeOption"];
+    this.edgeZipped = this.options.CustomOptions["zipEdgeInitState"];
+    this.hideEdgeButton = this.options.CustomOptions["hideEdgeButton"];
 
-        this.startingNetwork = this.options.CustomOptions["startingNetwork"];
-        this.getOption("duplicateNodes", "duplicateNode", ",");
+    this.clusterOption = this.options.CustomOptions["clusterOn"];
+    this.hideClusterMenu = this.options.CustomOptions["hideClusterMenu"];
+    this.getStartingCluster(this.options.CustomOptions["clusterToSelectOnStart"]);
 
-        this.getFontAwesomeList(this.options.CustomOptions["iconGroup"]);
-        this.getdirectionList(this.options.CustomOptions["arrowDirection"]);
+    this.physicsOption = this.options.CustomOptions["physicsOn"];
+    this.hidePhysicsButton = this.options.CustomOptions["hidePhysicsButton"];
+    this.physicsOptionInitialState = this.options.CustomOptions["physicsInitialState"];
 
-        this.getExternalFilterNodes(this.options.CustomOptions["filterNode"], this.options.CustomOptions["filterNodeBehaviour"]);
+    this.physConfiguration = this.options.CustomOptions["physicsConfiguration"];
+    if (this.physConfiguration !== "") {
+      try {
+        this.physConfiguration = JSON.parse(this.physConfiguration);
+        this.layoutConfiguration = this.physConfiguration.layout;
+        this.physConfiguration = this.physConfiguration.phys;
+      } catch (e) {
+        console.log("Error inside physics JSON : " + e);
+      }
+    } else {
+      this.physConfiguration = {
+        barnesHut: { gravitationalConstant: -26500, springLength: 150 },
+        minVelocity: 0.75,
+      };
+      this.layoutConfiguration = {};
+    }
 
-        this.edgeOption = this.options.CustomOptions["zipEdgeOption"];
-        this.edgeZipped = this.options.CustomOptions["zipEdgeInitState"];
-        this.hideEdgeButton = this.options.CustomOptions["hideEdgeButton"];
+    this.removeLonely = this.options.CustomOptions["removeLonelyOn"];
 
-        this.clusterOption = this.options.CustomOptions["clusterOn"];
-        this.hideClusterMenu = this.options.CustomOptions["hideClusterMenu"];
-        this.getStartingCluster(this.options.CustomOptions["clusterToSelectOnStart"]);
+    this.assignEdge = {};
+    try {
+      this.edgeConfiguration = JSON.parse(this.options.CustomOptions["edgeColor"]);
+      this.getOption("edgeTypeToSelect", "edgeTypeToSelect", ",");
+      this.getOption("assignEdge", "assignEdge", "#", ",");
+    } catch (e) {
+      this.edgeConfiguration = {};
+    }
 
-        this.physicsOption = this.options.CustomOptions["physicsOn"];
-        this.hidePhysicsButton = this.options.CustomOptions["hidePhysicsButton"];
-        this.physicsOptionInitialState = this.options.CustomOptions["physicsInitialState"];
-
-        this.physConfiguration = this.options.CustomOptions["physicsConfiguration"];
-        if (this.physConfiguration !== "") {
-            try {
-                this.physConfiguration = JSON.parse(this.physConfiguration);
-                this.layoutConfiguration = this.physConfiguration.layout;
-                this.physConfiguration = this.physConfiguration.phys;
-            } catch (e) {
-                console.log("Error inside physics JSON : " + e);
-            }
-        } else {
-            this.physConfiguration = {
-                barnesHut: { gravitationalConstant: -26500, springLength: 150 },
-                minVelocity: 0.75
-            };
-            this.layoutConfiguration = {};
-        }
-
-        this.removeLonely = this.options.CustomOptions["removeLonelyOn"];
-
-        this.assignEdge = {};
-        try {
-            this.edgeConfiguration = JSON.parse(this.options.CustomOptions["edgeColor"]);
-            this.getOption("edgeTypeToSelect", "edgeTypeToSelect", ",");
-            this.getOption("assignEdge", "assignEdge", "#", ",");
-        } catch (e) {
-            this.edgeConfiguration = {};
-        }
-
-        this.originalObjects = {};
-        this.wiggle = false;
-        this.CDSNodesOption = true;
-        this.CDSFilterOption = true;
-        this.physics = true;
-        this.nodeOptions = {
-            CDSFilterOption: this.CDSFilterOption,
-            CDSNodesOption: this.CDSNodesOption
-        };
-
-        this.filterBoxShowed = false;
-        this.optionBoxShowed = false;
+    this.originalObjects = {};
+    this.wiggle = false;
+    this.CDSNodesOption = true;
+    this.CDSFilterOption = true;
+    this.physics = true;
+    this.nodeOptions = {
+      CDSFilterOption: this.CDSFilterOption,
+      CDSNodesOption: this.CDSNodesOption,
     };
 
-    cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;
+    this.filterBoxShowed = false;
+    this.optionBoxShowed = false;
+  };
+
+  cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;
 })(cwAPI, jQuery);

@@ -60,7 +60,7 @@
     // Adding filter for all selector group
     for (objectTypeNode in objectTypeNodes) {
       if (objectTypeNodes.hasOwnProperty(objectTypeNode)) {
-        let f = objectTypeNodes[objectTypeNode].getFilterObject(this.nodeID, this.groupsArt);
+        let f = objectTypeNodes[objectTypeNode].getFilterObject(this.nodeID, this.config.groups[objectTypeNode.id]);
         f.className += " cwLayout_networkSelect";
         filterGroupObjectFilters.appendChild(f);
         i += 1;
@@ -74,7 +74,7 @@
 
     if (this.edgeConfiguration && !(Object.keys(this.edgeConfiguration).length === 0 && this.edgeConfiguration.constructor === Object)) {
       var edgeFilterObject = document.createElement("div");
-      edgeFilterObject.className = "LayoutNetork_filterGroup";
+      edgeFilterObject.className = "LayoutNetork_filterGroup cw-hidden";
       var edgeFilterObjectTitle = document.createElement("div");
       edgeFilterObjectTitle.className = "LayoutNetork_filterTitle";
       edgeFilterObjectTitle.innerHTML = $.i18n.prop("link_type") + " : ";

@@ -2,261 +2,292 @@
 
 /*global cwAPI, jQuery */
 (function(cwApi, $) {
-    "use strict";
-    if (cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
-        var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
-    } else {
-        // constructor
-        var cwLayoutNetwork = function(options, viewSchema) {
-            cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
-            cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
-            this.construct(options);
-        };
+  "use strict";
+  if (cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
+    var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
+  } else {
+    // constructor
+    var cwLayoutNetwork = function(options, viewSchema) {
+      cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
+      cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
+      this.construct(options);
+    };
+  }
+
+  cwLayoutNetwork.prototype.getdirectionList = function(options) {
+    if (options) {
+      var optionList = options.split("#");
+      var optionSplit;
+      for (var i = 0; i < optionList.length; i += 1) {
+        if (optionList[i] !== "") {
+          var optionSplit = optionList[i].split(",");
+          this.directionList[optionSplit[0]] = optionSplit[1].replaceAll("'", "").replaceAll('"', "");
+        }
+      }
+    }
+  };
+
+  cwLayoutNetwork.prototype.getFontAwesomeList = function(options) {
+    var self = this;
+
+    var iconSize = 70;
+    var fontSize = 15;
+    var shapeSize = 40;
+    var idTemplateDiagram = [];
+
+    function getColorForNode(color) {
+      var colorObj = {};
+      colorObj.border = color;
+      colorObj.background = color;
+      colorObj.highlight = {};
+      colorObj.highlight.border = self.LightenDarkenColor(color, -50);
+      colorObj.highlight.background = self.LightenDarkenColor(color, -50);
+      return colorObj;
     }
 
-    cwLayoutNetwork.prototype.getdirectionList = function(options) {
-        if (options) {
-            var optionList = options.split("#");
-            var optionSplit;
-            for (var i = 0; i < optionList.length; i += 1) {
-                if (optionList[i] !== "") {
-                    var optionSplit = optionList[i].split(",");
-                    this.directionList[optionSplit[0]] = optionSplit[1].replaceAll("'", "").replaceAll('"', "");
-                }
-            }
-        }
-    };
+    function string_as_unicode_escape(str) {
+      return str
+        .split("")
+        .map(function(s) {
+          return "\\u" + ("0000" + s.charCodeAt(0).toString(16)).slice(-4);
+        })
+        .join("");
+    }
 
-    cwLayoutNetwork.prototype.getFontAwesomeList = function(options) {
-        var self = this;
+    var groups = {};
+    if (this.groupsArt !== undefined) groups = this.groupsArt;
 
-        var iconSize = 70;
-        var fontSize = 15;
-        var shapeSize = 40;
-        var idTemplateDiagram = [];
+    if (options) {
+      var optionList = options.split("||");
+      var optionSplit;
+      for (var i = 0; i < optionList.length; i += 1) {
+        if (optionList[i] !== "") {
+          var optionSplit = optionList[i].split(",");
 
-        function getColorForNode(color) {
-            var colorObj = {};
-            colorObj.border = color;
-            colorObj.background = color;
-            colorObj.highlight = {};
-            colorObj.highlight.border = self.LightenDarkenColor(color, -50);
-            colorObj.highlight.background = self.LightenDarkenColor(color, -50);
-            return colorObj;
-        }
+          if (groups[optionSplit[0]] === undefined) {
+            groups[optionSplit[0]] = {};
+            groups[optionSplit[0]].objectTypes = [];
+          }
+          groups[optionSplit[0]].font = {};
+          groups[optionSplit[0]].font.size = fontSize;
+          groups[optionSplit[0]].diagram = false;
+          var ots = groups[optionSplit[0]].objectTypes;
 
-        function string_as_unicode_escape(str) {
-            return str
-                .split("")
-                .map(function(s) {
-                    return "\\u" + ("0000" + s.charCodeAt(0).toString(16)).slice(-4);
-                })
-                .join("");
-        }
+          if (optionSplit[1] === "diagram") {
+            groups[optionSplit[0]] = {};
+            groups[optionSplit[0]].color = {};
 
-        var groups = {};
-        if (this.groupsArt !== undefined) groups = this.groupsArt;
+            groups[optionSplit[0]].color.border = optionSplit[2];
+            groups[optionSplit[0]].color.background = this.LightenDarkenColor(optionSplit[2], 50);
+            groups[optionSplit[0]].borderWidthSelected = 50;
 
-        if (options) {
-            var optionList = options.split("||");
-            var optionSplit;
-            for (var i = 0; i < optionList.length; i += 1) {
-                if (optionList[i] !== "") {
-                    var optionSplit = optionList[i].split(",");
+            groups[optionSplit[0]].font = {};
+            groups[optionSplit[0]].font.size = 0;
+            groups[optionSplit[0]].diagramTemplateID = optionSplit[3];
 
-                    if (groups[optionSplit[0]] === undefined) {
-                        groups[optionSplit[0]] = {};
-                        groups[optionSplit[0]].objectTypes = [];
-                    }
-                    groups[optionSplit[0]].font = {};
-                    groups[optionSplit[0]].font.size = fontSize;
-                    groups[optionSplit[0]].diagram = false;
-                    var ots = groups[optionSplit[0]].objectTypes;
-
-                    if (optionSplit[1] === "diagram") {
-                        
-                        groups[optionSplit[0]] = {}; 
-                        groups[optionSplit[0]].color = {};
-
-                        groups[optionSplit[0]].color.border = optionSplit[2];
-                        groups[optionSplit[0]].color.background = this.LightenDarkenColor(optionSplit[2], 50);
-                        groups[optionSplit[0]].borderWidthSelected = 50;
-
-                        groups[optionSplit[0]].font = {};
-                        groups[optionSplit[0]].font.size = 0;
-                        groups[optionSplit[0]].diagramTemplateID = optionSplit[3];
-
-
-                        groups[optionSplit[0]].diagram = true;
-
-                    } else if (optionSplit[1] === "icon") {
-                        let color, icon;
-                        if (optionSplit[2].indexOf("#") === 0) {
-                            color = optionSplit[2];
-                            icon = optionSplit[3];
-                        } else {
-                            color = optionSplit[3];
-                            icon = optionSplit[2];
-                        }
-                        groups[optionSplit[0]].shape = "icon";
-                        groups[optionSplit[0]].icon = {};
-                        groups[optionSplit[0]].icon.face = "FontAwesome";
-                        groups[optionSplit[0]].icon.code = unescape("%u" + icon);
-                        groups[optionSplit[0]].unicode = icon;
-
-                        groups[optionSplit[0]].icon.color = color;
-                        groups[optionSplit[0]].color = getColorForNode(color);
-                        groups[optionSplit[0]].icon.size = iconSize;
-                        groups[optionSplit[0]].font = {
-                            background: "#FFFFFF"
-                        };
-                        groups[optionSplit[0]].background = {
-                            background: "#FFFFFF"
-                        };
-                    } else if (optionSplit[1] === "image" || optionSplit[1] === "circularImage") {
-                        let color,image;
-                        if (optionSplit[2].indexOf("#") === 0) {
-                            color = getColorForNode(optionSplit[2]);
-                            image = optionSplit[3];
-                        } else {
-                            color = getColorForNode(optionSplit[3]);
-                            image = optionSplit[2];
-                        }
-                        groups[optionSplit[0]].shape = optionSplit[1];
-                        groups[optionSplit[0]].image = image;
-                        groups[optionSplit[0]].color = color;
-                        groups[optionSplit[0]].size = 35;
-                    } else {
-                        //shape
-                        groups[optionSplit[0]].shape = optionSplit[1];
-                        if (optionSplit[2]) {
-                            groups[optionSplit[0]].color = {};
-                            if (optionSplit[3]) {
-                                groups[optionSplit[0]].color.border = optionSplit[3];
-                                groups[optionSplit[0]].color.highlight = {};
-                                groups[optionSplit[0]].color.highlight.border = optionSplit[3];
-                                groups[optionSplit[0]].color.highlight.background = optionSplit[3];
-                            } else {
-                                groups[optionSplit[0]].color.border = this.LightenDarkenColor(optionSplit[2], 50);
-                                groups[optionSplit[0]].color.highlight = {};
-                                groups[optionSplit[0]].color.highlight.border = this.LightenDarkenColor(optionSplit[2], -50);
-                                groups[optionSplit[0]].color.highlight.background = this.LightenDarkenColor(optionSplit[2], -50);
-                            }
-                            groups[optionSplit[0]].color.background = optionSplit[2];
-                        }
-                        groups[optionSplit[0]].size = 35;
-                    }
-                    groups[optionSplit[0]].objectTypes = ots;
-                    groups[optionSplit[0]].splitOption = false;
-                }
-            }
-        }
-        this.groupsArt = groups;
-    };
-
-    cwLayoutNetwork.prototype.getOption = function(options, name, splitter1, splitter2) {
-        options = this.options.CustomOptions[options];
-
-        if (splitter2) this[name] = {};
-        else this[name] = [];
-
-        if (options) {
-            var optionList = options.split(splitter1);
-            var optionSplit;
-            for (var i = 0; i < optionList.length; i += 1) {
-                if (optionList[i] !== "") {
-                    if (splitter2) {
-                        optionSplit = optionList[i].split(splitter2);
-                        this[name][optionSplit[0]] = optionSplit[1];
-                    } else {
-                        this[name].push(optionList[i]);
-                    }
-                }
-            }
-        }
-    };
-
-    cwLayoutNetwork.prototype.getStartingCluster = function(options) {
-        try {
-            if (options) {
-                this.clusterByGroupOption.head = options.split("#")[0];
-                this.clusterByGroupOption.child = options.split("#")[1].split(",");
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    };
-
-    cwLayoutNetwork.prototype.getExternalFilterNodes = function(nodesOptions, filterBehaviour) {
-        var i,
-            optionList = nodesOptions.split("#");
-        for (i = 0; i < optionList.length; i += 1) {
-            if (optionList[i] !== "") {
-                var optionSplit = optionList[i].split(":");
-                if (this.externalFilters.hasOwnProperty(optionSplit[1])) {
-                    this.externalFilters[optionSplit[1]].addNodeID(optionSplit[0]);
-                    if (this.nodeFiltered[optionSplit[0]] === undefined) {
-                        this.nodeFiltered[optionSplit[0]] = [optionSplit[1]];
-                    } else {
-                        this.nodeFiltered[optionSplit[0]] = [optionSplit[1]];
-                    }
-                } else {
-                    this.externalFilters[optionSplit[1]] = new cwApi.customLibs.cwLayoutNetwork.externalAssociationFilter(true, optionSplit[0], optionSplit[1]);
-                    this.nodeFiltered[optionSplit[0]] = [optionSplit[1]];
-                }
-            }
-        }
-
-        if (filterBehaviour) {
-            this.behaviour.highlight = false;
-            this.behaviour.add = false;
-            this.behaviour.absolute = false;
-
-            if (filterBehaviour === "highlight") this.behaviour.highlight = true;
-            if (filterBehaviour === "add") this.behaviour.add = true;
-            if (filterBehaviour === "absolute") this.behaviour.absolute = true;
-        }
-    };
-
-    cwLayoutNetwork.prototype.manageFilterButton = function(event) {
-        var filter = document.getElementById("cwLayoutNetworkFilter" + this.nodeID);
-        if (filter) {
-            if (this.filterBoxShowed === true) {
-                this.filterBoxShowed = false;
-                event.target.classList.remove("selected");
-                this.showHideElement(false, filter);
+            groups[optionSplit[0]].diagram = true;
+          } else if (optionSplit[1] === "icon") {
+            let color, icon;
+            if (optionSplit[2].indexOf("#") === 0) {
+              color = optionSplit[2];
+              icon = optionSplit[3];
             } else {
-                this.filterBoxShowed = true;
-                event.target.classList.add("selected");
-                this.showHideElement(true, filter);
+              color = optionSplit[3];
+              icon = optionSplit[2];
             }
-        }
-    };
+            groups[optionSplit[0]].shape = "icon";
+            groups[optionSplit[0]].icon = {};
+            groups[optionSplit[0]].icon.face = "FontAwesome";
+            groups[optionSplit[0]].icon.code = unescape("%u" + icon);
+            groups[optionSplit[0]].unicode = icon;
 
-    cwLayoutNetwork.prototype.manageOptionButton = function(event) {
-        var buttons = document.getElementById("cwLayoutNetworkAction" + this.nodeID);
-        if (buttons) {
-            if (this.optionBoxShowed === true) {
-                this.optionBoxShowed = false;
-                event.target.classList.remove("selected");
-                this.showHideElement(false, buttons);
+            groups[optionSplit[0]].icon.color = color;
+            groups[optionSplit[0]].color = getColorForNode(color);
+            groups[optionSplit[0]].icon.size = iconSize;
+            groups[optionSplit[0]].font = {
+              background: "#FFFFFF",
+            };
+            groups[optionSplit[0]].background = {
+              background: "#FFFFFF",
+            };
+          } else if (optionSplit[1] === "image" || optionSplit[1] === "circularImage") {
+            let color, image;
+            if (optionSplit[2].indexOf("#") === 0) {
+              color = getColorForNode(optionSplit[2]);
+              image = optionSplit[3];
             } else {
-                this.optionBoxShowed = true;
-                event.target.classList.add("selected");
-                this.showHideElement(true, buttons);
+              color = getColorForNode(optionSplit[3]);
+              image = optionSplit[2];
             }
+            groups[optionSplit[0]].shape = optionSplit[1];
+            groups[optionSplit[0]].image = image;
+            groups[optionSplit[0]].color = color;
+            groups[optionSplit[0]].size = 35;
+          } else {
+            //shape
+            groups[optionSplit[0]].shape = optionSplit[1];
+            if (optionSplit[2]) {
+              groups[optionSplit[0]].color = {};
+              if (optionSplit[3]) {
+                groups[optionSplit[0]].color.border = optionSplit[3];
+                groups[optionSplit[0]].color.highlight = {};
+                groups[optionSplit[0]].color.highlight.border = optionSplit[3];
+                groups[optionSplit[0]].color.highlight.background = optionSplit[3];
+              } else {
+                groups[optionSplit[0]].color.border = this.LightenDarkenColor(optionSplit[2], 50);
+                groups[optionSplit[0]].color.highlight = {};
+                groups[optionSplit[0]].color.highlight.border = this.LightenDarkenColor(optionSplit[2], -50);
+                groups[optionSplit[0]].color.highlight.background = this.LightenDarkenColor(optionSplit[2], -50);
+              }
+              groups[optionSplit[0]].color.background = optionSplit[2];
+            }
+            groups[optionSplit[0]].size = 35;
+          }
+          groups[optionSplit[0]].objectTypes = ots;
+          groups[optionSplit[0]].splitOption = false;
         }
-    };
+      }
+    }
+    this.groupsArt = groups;
+  };
 
-    cwLayoutNetwork.prototype.showHideElement = function(state, elem) {
-        if (state === true) {
-            elem.classList.remove("cw-hidden");
+  cwLayoutNetwork.prototype.getOption = function(options, name, splitter1, splitter2) {
+    options = this.options.CustomOptions[options];
+
+    if (splitter2) this[name] = {};
+    else this[name] = [];
+
+    if (options) {
+      var optionList = options.split(splitter1);
+      var optionSplit;
+      for (var i = 0; i < optionList.length; i += 1) {
+        if (optionList[i] !== "") {
+          if (splitter2) {
+            optionSplit = optionList[i].split(splitter2);
+            this[name][optionSplit[0]] = optionSplit[1];
+          } else {
+            this[name].push(optionList[i]);
+          }
+        }
+      }
+    }
+  };
+
+  cwLayoutNetwork.prototype.getStartingCluster = function(options) {
+    try {
+      if (options) {
+        this.clusterByGroupOption.head = options.split("#")[0];
+        this.clusterByGroupOption.child = options.split("#")[1].split(",");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  cwLayoutNetwork.prototype.getExternalFilterNodes = function(nodesOptions, filterBehaviour) {
+    var i,
+      optionList = nodesOptions.split("#");
+    for (i = 0; i < optionList.length; i += 1) {
+      if (optionList[i] !== "") {
+        var optionSplit = optionList[i].split(":");
+        if (this.externalFilters.hasOwnProperty(optionSplit[1])) {
+          this.externalFilters[optionSplit[1]].addNodeID(optionSplit[0]);
+          if (this.nodeFiltered[optionSplit[0]] === undefined) {
+            this.nodeFiltered[optionSplit[0]] = [optionSplit[1]];
+          } else {
+            this.nodeFiltered[optionSplit[0]] = [optionSplit[1]];
+          }
         } else {
-            elem.classList.add("cw-hidden");
+          this.externalFilters[optionSplit[1]] = new cwApi.customLibs.cwLayoutNetwork.externalAssociationFilter(true, optionSplit[0], optionSplit[1]);
+          this.nodeFiltered[optionSplit[0]] = [optionSplit[1]];
         }
-    };
+      }
+    }
 
+    if (filterBehaviour) {
+      this.behaviour.highlight = false;
+      this.behaviour.add = false;
+      this.behaviour.absolute = false;
 
+      if (filterBehaviour === "highlight") this.behaviour.highlight = true;
+      if (filterBehaviour === "add") this.behaviour.add = true;
+      if (filterBehaviour === "absolute") this.behaviour.absolute = true;
+    }
+  };
 
-    cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;
+  cwLayoutNetwork.prototype.manageFilterButton = function(event) {
+    var filter = document.getElementById("cwLayoutNetworkFilter" + this.nodeID);
+    if (filter) {
+      if (this.filterBoxShowed === true) {
+        this.filterBoxShowed = false;
+        event.target.classList.remove("selected");
+        this.showHideElement(false, filter);
+      } else {
+        this.filterBoxShowed = true;
+        event.target.classList.add("selected");
+        this.showHideElement(true, filter);
+      }
+    }
+  };
+
+  cwLayoutNetwork.prototype.manageOptionButton = function(event) {
+    var buttons = document.getElementById("cwLayoutNetworkAction" + this.nodeID);
+    if (buttons) {
+      if (this.optionBoxShowed === true) {
+        this.optionBoxShowed = false;
+        event.target.classList.remove("selected");
+        this.showHideElement(false, buttons);
+      } else {
+        this.optionBoxShowed = true;
+        event.target.classList.add("selected");
+        this.showHideElement(true, buttons);
+      }
+    }
+  };
+
+  cwLayoutNetwork.prototype.showHideElement = function(state, elem) {
+    if (state === true) {
+      elem.classList.remove("cw-hidden");
+    } else {
+      elem.classList.add("cw-hidden");
+    }
+  };
+
+  cwLayoutNetwork.prototype.createRandomGroup = function(name) {
+    var id = name.replace(/[\W_]+/g, " ").toLowerCase();
+    let group = {};
+    group.objectTypes = [];
+    group.id = id;
+    group.name = name;
+    group.shape = "box";
+
+    let color = "#" + Math.floor(Math.random() * 128 + 128).toString(16) + Math.floor(Math.random() * 128 + 128).toString(16) + Math.floor(Math.random() * 128 + 128).toString(16);
+    group.color1 = color;
+    group.color2 = this.LightenDarkenColor(color, -50);
+    group.color = {};
+    group.color.border = this.LightenDarkenColor(color, -50);
+    group.color.highlight = {};
+    group.color.highlight.border = this.LightenDarkenColor(color, -50);
+    group.color.highlight.background = this.LightenDarkenColor(color, -50);
+    group.color.background = color;
+    group.size = 35;
+
+    let groupHidden = $.extend(true, {}, group);
+    let colorHidden = "#666666";
+    groupHidden.color1 = colorHidden;
+    groupHidden.color2 = colorHidden;
+    groupHidden.color.border = this.LightenDarkenColor(colorHidden, -50);
+    groupHidden.color.highlight.border = this.LightenDarkenColor(colorHidden, -50);
+    groupHidden.color.highlight.background = this.LightenDarkenColor(colorHidden, -50);
+    groupHidden.color.background = colorHidden;
+    groupHidden.size = 35;
+    groupHidden.id = group.id + "_hidden";
+    groupHidden.name = name + " Hidden";
+    this.config.groups[id] = group;
+    this.config.groups[groupHidden.id] = groupHidden;
+
+    return group;
+  };
+
+  cwApi.cwLayouts.cwLayoutNetwork = cwLayoutNetwork;
 })(cwAPI, jQuery);

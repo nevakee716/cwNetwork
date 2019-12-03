@@ -19,7 +19,7 @@
     cwLayoutNetwork.prototype.activateStartingGroup = function(event) {
         var self = this;
         this.groupToSelectOnStart.forEach(function(group) {
-            $('.selectNetworkPicker_' + self.nodeID + "." + group.replaceAll(" ", "_")).selectpicker('selectAll');
+            $('.selectNetworkPicker_' + self.nodeID + "." + group.id).selectpicker('selectAll');
         });
     };
 
@@ -59,8 +59,8 @@
     // Adding all group
     cwLayoutNetwork.prototype.activateAllGroup = function(event) {
         var self = this;
-        this.networkUI.groups.groupsArray.forEach(function(group) {
-            $('.selectNetworkPicker_' + self.nodeID + "." + group.replaceAll(" ", "_")).selectpicker('selectAll');
+        this.config.groups.forEach(function(group) {
+            $('.selectNetworkPicker_' + self.nodeID + "." + group.id).selectpicker('selectAll');
         });
     };
 
@@ -80,12 +80,9 @@
             self = this;
 
         this.disableGroupClusters();
-        for (OT in self.network.objectTypeNodes) {
-            if (self.network.objectTypeNodes.hasOwnProperty(OT)) {
-                changeset = changeset.concat(self.network.SetAllAndGetNodesObject(false, OT));
-                $('.selectNetworkPicker_' + self.nodeID + "." + OT.replaceAll(" ", "_")).selectpicker('val', "");
-            }
-        }
+        this.config.groups.forEach(function(group) {
+            $('.selectNetworkPicker_' + self.nodeID + "." + group.id).selectpicker('deselectAll');
+        });
         this.nodes.remove(changeset);
     };
 

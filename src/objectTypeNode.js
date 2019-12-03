@@ -5,9 +5,9 @@
 
     "use strict";
     // constructor
-    var objectTypeNode = function (label,scriptname) {
+    var objectTypeNode = function (group,scriptname) {
         this.scriptname = scriptname;
-        this.label = label;
+        this.group = group;
         this.nodes = {};
         this.full = false;
     };
@@ -38,7 +38,7 @@
     objectTypeNode.prototype.getVisData = function (id) {
         var nodeVisData;
         nodeVisData = this.nodes[id].getVisData();
-        nodeVisData.group = this.label;
+        nodeVisData.group = this.group.id;
         nodeVisData.objectTypeScriptName = this.scriptname;
         return nodeVisData;
     };
@@ -51,7 +51,7 @@
             if (this.nodes.hasOwnProperty(node)) {
                 nodeVisData = this.nodes[node].getEnabledVisData();
                 if(nodeVisData) {
-                    nodeVisData.group = this.label;
+                    nodeVisData.group = this.group.id;
                     nodeVisData.objectTypeScriptName = this.scriptname;
                     visData.push(nodeVisData);
                 }
@@ -59,7 +59,6 @@
             }
         }
         return visData;
-
     };
 
     objectTypeNode.prototype.getAllNodeForSaving = function () {
@@ -72,7 +71,7 @@
                     nodeDataOut.x = nodeData.x;
                     nodeDataOut.y = nodeData.y;
                     nodeDataOut.name = nodeData.name;
-                    nodeDataOut.group = this.label;
+                    nodeDataOut.group = this.group.id;
                     nodeDataOut.objectTypeScriptName = this.scriptname;
                     nodeDataOut.status = nodeData.status;                    
                     nodeDataOut.id = nodeData.id;
@@ -112,21 +111,21 @@
     };
 
 
-    objectTypeNode.prototype.getFilterObject = function (nodeID,groups) {
+    objectTypeNode.prototype.getFilterObject = function (nodeID) {
         var filterObject;
         var object;
         var node;
 
         filterObject = document.createElement("select");
         filterObject.setAttribute('multiple','');
-        filterObject.setAttribute('title',this.getLegendElement(groups[this.label]) + " " + this.label);
+        filterObject.setAttribute('title',this.getLegendElement() + " " + this.group.name);
         filterObject.setAttribute('data-live-search','true');
         filterObject.setAttribute('data-selected-text-format','static');
         filterObject.setAttribute('data-actions-box','true');
         filterObject.setAttribute('data-size','10');
-        filterObject.className = "selectNetworkPicker_" + nodeID + " " + this.label.replaceAll(" ","_");
-        filterObject.setAttribute('name',this.label);
-        filterObject.setAttribute('id',this.label);
+        filterObject.className = "selectNetworkPicker_" + nodeID + " " + this.group.id;
+        filterObject.setAttribute('name',this.group.name);
+        filterObject.setAttribute('id',this.group.id);
         filterObject.setAttribute('scriptname',this.scriptname);
 
         var array = [];
@@ -161,28 +160,28 @@
         return filterObject;
     };
 
-    objectTypeNode.prototype.getLegendElement = function (group) {
+    objectTypeNode.prototype.getLegendElement = function () {
         var htmltxt = "";
-        if(group && group.shape == "icon") {
+        if(this.group && this.group.shape == "icon") {
             htmltxt += '<i class="fa"';
-            if(group.icon.color === undefined) htmltxt += 'style="color : black">';  
-            else htmltxt += 'style="color : ' + group.icon.color + '">';        
-            htmltxt += group.icon.code;
+            if(this.group.icon.color === undefined) htmltxt += 'style="color : black">';  
+            else htmltxt += 'style="color : ' + this.group.icon.color + '">';        
+            htmltxt += this.group.icon.code;
             htmltxt += '</i>';  
             return htmltxt;         
-        } else if(group && (group.shape === "image" || group.shape === "circularImage")) {
+        } else if(this.group && (this.group.shape === "image" || this.group.shape === "circularImage")) {
             var htmltxt = "";
-            htmltxt += '<img class="networkLegendImage" src="' + group.image+ '"></img>';
+            htmltxt += '<img class="networkLegendImage" src="' + this.group.image+ '"></img>';
             return htmltxt; 
-        } else if(group && group.shape) {
+        } else if(this.group && this.group.shape) {
 
             htmltxt += '<i class="fa"';
-            if(group.color.border === undefined) htmltxt += 'style="color : black">';  
-            else htmltxt += 'style="color : ' + group.color.border + '">';        
-            htmltxt += unescape('%u' + this.shapeToFontAwesome(group.shape));
+            if(this.group.color.border === undefined) htmltxt += 'style="color : black">';  
+            else htmltxt += 'style="color : ' + this.group.color.border + '">';        
+            htmltxt += unescape('%u' + this.shapeToFontAwesome(this.group.shape));
             htmltxt += '</i>';  
             return htmltxt; 
-        } else if(group && group.diagram === true && Object.keys(this.nodes) && Object.keys(this.nodes).length > 0 && this.nodes[Object.keys(this.nodes)[0]].dataImage) {
+        } else if(this.group && this.group.diagram === true && Object.keys(this.nodes) && Object.keys(this.nodes).length > 0 && this.nodes[Object.keys(this.nodes)[0]].dataImage) {
 
             var htmltxt = "";
             htmltxt += '<img class="networkLegendImage" src="' + this.nodes[Object.keys(this.nodes)[0]].dataImage + '"></img>';

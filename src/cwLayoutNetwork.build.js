@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
+/* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
 
 /*global cwAPI, jQuery */
 (function(cwApi, $) {
@@ -19,7 +19,6 @@
       this.init = false;
       var self = this;
       var libToLoad = [];
-
 
       var networkContainer = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
       this.createLoadingElement(networkContainer.parentNode);
@@ -60,15 +59,15 @@
     if (this.simplifyObject.length > 0) isData = true;
     if (isData === false) console.log("No data");
 
-    this.network = new cwApi.customLibs.cwLayoutNetwork.network(this.groupsArt, this.diagramTemplate, this.originalObjects);
-    this.network.searchForNodesAndEdges(this.simplifyObject, this.nodeOptions);
+    this.network = new cwApi.customLibs.cwLayoutNetwork.network(this.config, this.diagramTemplate, this.originalObjects);
+    this.network.searchForNodesAndEdges(this.simplifyObject);
     this.networkSize = Object.keys(this.originalObjects).length;
     this.createNetwork();
   };
 
   // Building network
   cwLayoutNetwork.prototype.createNetwork = function() {
-  	this.hideLoading();
+    this.hideLoading();
     function addStyleString(str) {
       var node = document.createElement("style");
       node.innerHTML = str;
@@ -87,7 +86,6 @@
       this.network.updateExternalFilterInformation(this.networkDisposition.external);
     }
 
-
     // provide the data in the vis format
     var nodes = this.network.getEnabledVisNodes(); //this.network.getVisNodes());
     var edges = this.network.getVisEdges(); //this.network.getVisEdges());
@@ -96,18 +94,18 @@
 
     var data = {
       nodes: this.nodes,
-      edges: this.edges
+      edges: this.edges,
     };
     if (this.layoutConfiguration === undefined) this.layoutConfiguration = {};
     if (this.networkSize > 100) this.layoutConfiguration.improvedLayout = false;
 
     this.networkOptions = {
-      groups: this.groupsArt,
+      groups: this.config.groups,
       physics: this.physConfiguration,
       layout: this.layoutConfiguration,
       interaction: {
-        keyboard: false
-      }
+        keyboard: false,
+      },
     };
 
     // filter search
@@ -130,14 +128,14 @@
           scale: 2,
           offset: {
             x: 0,
-            y: 0
+            y: 0,
           },
-          animation: true // default duration is 1000ms and default easingFunction is easeInOutQuad.
+          animation: true, // default duration is 1000ms and default easingFunction is easeInOutQuad.
         };
         self.networkUI.moveTo(options);
 
         options = {
-          nodes: [id]
+          nodes: [id],
         };
         self.networkUI.setSelection(options);
       }
@@ -146,8 +144,8 @@
 
     // Action for button
     /* if(this.clusterOption) {
-            var clusterButton = document.getElementById("cwLayoutNetworkButtonsCluster" + this.nodeID); 
-            clusterButton.addEventListener('click', this.clusterByHubsize.bind(this));              
+            var clusterButton = document.getElementById("cwLayoutNetworkButtonsCluster" + this.nodeID);
+            clusterButton.addEventListener('click', this.clusterByHubsize.bind(this));
         }*/
 
     if (this.physicsOption && this.hidePhysicsButton === false) {
@@ -214,7 +212,7 @@
     fitButton.addEventListener("click", function() {
       self.networkUI.fit();
     });
-  
+
     if (this.wiggle) {
       // Activate Starting element
       this.activateStartingGroup();
@@ -224,10 +222,10 @@
     this.networkUI.on("afterDrawing", this.afterDrawing.bind(this));
     this.networkUI.on("beforeDrawing", this.beforeDrawing.bind(this));
 
-    if(this.nodes.length === 0) this.hideLoading();
+    if (this.nodes.length === 0) this.hideLoading();
 
     // Activate Cluster
-    if (!this.startingNetwork) this.activateStartingCluster();
+    if (!(this.startingNetwork && this.networkConfiguration && this.networkConfiguration.nodes && Object.keys(this.networkConfiguration.nodes).length > 0)) this.activateStartingCluster();
 
     // Creation du menu et binding
     this.createMenu(networkContainer);
@@ -277,13 +275,7 @@
 
     this.networkUI.on("startStabilizing", function(params) {});
 
-
-
-
-
-
     this.networkUI.on("stabilizationProgress", function(params) {
-
       var widthFactor = params.iterations / params.total;
       self.displayLoading();
       self.setLoadingAt(Math.round(widthFactor * 100) + "%");
@@ -299,14 +291,14 @@
       self.hideLoading();
       self.networkUI.fit({
         nodes: self.nodes.getIds(),
-        animation: true
+        animation: true,
       });
     });
     if (this.viewSchema.ViewName.indexOf("popout") !== -1) {
       this.networkUI.on("resize", function(params) {
         self.networkUI.fit({
           nodes: self.nodes.getIds(),
-          animation: true
+          animation: true,
         });
       });
     }
@@ -352,7 +344,7 @@
     // Event for filter
     // Network Node Selector
     $("select.selectNetworkPicker_" + this.nodeID).on("changed.bs.select", function(e, clickedIndex, newValue, oldValue) {
-      var group = $(this).context["id"];
+      var groupId = $(this).context["id"];
       var scriptname = $(this).context.getAttribute("scriptname");
       var changeSet, id, i;
 
@@ -363,8 +355,8 @@
           self.removeNodes([id]);
         } else {
           // add one node
-          self.network.show(id, group);
-          changeSet = self.network.getVisNode(id, group); // get all the node self should be put on
+          self.network.show(id, groupId);
+          changeSet = self.network.getVisNode(id, groupId); // get all the node self should be put on
           self.nodes.add(changeSet); // adding nodes into network
           self.setAllExternalFilter();
           self.updatePhysics();
@@ -372,7 +364,7 @@
       } else {
         // select or deselect all node
         if ($(this).context[0]) {
-          var changeSet = self.network.SetAllAndGetNodesObject($(this).context[0].selected, group);
+          var changeSet = self.network.SetAllAndGetNodesObject($(this).context[0].selected, groupId);
           if ($(this).context[0].selected === true) {
             self.nodes.add(changeSet);
             self.updatePhysics();
@@ -391,7 +383,6 @@
     // Event for filter
     // Edge Selector
     $("select.selectNetworkEdge_" + this.nodeID).on("changed.bs.select", function(e, clickedIndex, newValue, oldValue) {
-      var group = $(this).context["id"];
       var scriptname = $(this).context.getAttribute("scriptname");
       var changeSet, id, nodeId, i;
 
@@ -424,7 +415,6 @@
 
     // Cluster Group Filter Head
     $("select.selectNetworkClusterByGroup_" + this.nodeID + "_head").on("changed.bs.select", function(e, clickedIndex, newValue, oldValue) {
-      var group = $(this).context["id"];
       if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
         self.clusterByGroupOption.head = $(this)
           .selectpicker("val")

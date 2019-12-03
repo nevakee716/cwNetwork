@@ -61,26 +61,26 @@
     };
 
     cwLayoutNetwork.prototype.AddNodesToNetwork = function (event,option) {
-        var group,changeSet,nodeID = event.data.d.nodes[0];
-        this.nodes.forEach(function(node) { 
+        var groupId,changeSet,nodeID = event.data.d.nodes[0];
+        this.nodes.forEach(function(node) {
             if(node.id === nodeID) {
-                group = node.group.replace("Hidden","");
+                groupId = node.group.replace("_hidden","");
             }
         });
-       
+
 
         if(this.behaviour.absolute === true) {
             this.deActivateAllGroup();
         }
         if(this.behaviour.highlight === true) {
             option.highlight  = true;
-        } 
+        }
 
 
-        changeSet = this.network.getVisNode(nodeID,group,option,this.edges); // get all the node self should be put on
+        changeSet = this.network.getVisNode(nodeID,groupId,option,this.edges); // get all the node self should be put on
 
         if(this.behaviour.absolute === true) {
-            var originObj = this.network.objectTypeNodes[group].getVisDataIfDeactivated(nodeID);
+            var originObj = this.network.objectTypeNodes[groupId].getVisDataIfDeactivated(nodeID);
             if(originObj.alreadyInNetwork !== true) {
                 changeSet.push(originObj);
             }
@@ -88,16 +88,16 @@
 
         if(this.networkUI) {
             this.colorAllNodes();
-            this.colorAllEdges();                        
+            this.colorAllEdges();
         }
-        this.setExternalFilterToNone(); 
+        this.setExternalFilterToNone();
 
         if(this.behaviour.highlight === false) {
             this.fillFilter(changeSet); // add the filter value
             this.nodes.add(changeSet); // adding nodes into network
         } else {
             var nodesIdToHighlight = [];
-            changeSet.forEach(function(c) { 
+            changeSet.forEach(function(c) {
                 nodesIdToHighlight.push(c.id);
             });
             nodesIdToHighlight.push(nodeID);
