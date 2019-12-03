@@ -136,6 +136,16 @@
             self.errors.navigationRegion = true;
           }
         };
+
+        diagC.getExplodedDiagramsForObject = function() {
+          if (self.errors.navigationRegion !== true) {
+            console.log("Navigation Region are not Supported Yet");
+            self.errors.navigationRegion = true;
+          }
+        };
+
+
+
         diagC.getDiagramPopoutForShape = function() {};
         var shapeObj = new cwApi.Diagrams.CwDiagramShape(shape, palette, diagC);
 
