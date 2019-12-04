@@ -147,7 +147,7 @@
                         groups[optionSplit[0]].size = 35;
                     }
                     groups[optionSplit[0]].objectTypes = ots;
-                    groups[optionSplit[0]].splitOption = false;
+
                 }
             }
         }
