@@ -54,7 +54,7 @@
         palette = diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"];
       } else {
         if (obj && obj.properties.type === undefined) {
-          if (undefined === self.errors.diagrameTemplate[node.group]) self.errors.diagrameTemplate[node.group] = {}; 
+          if (undefined === self.errors.diagrameTemplate[node.group]) self.errors.diagrameTemplate[node.group] = {};
           if (undefined === this.errors.diagrameTemplate[node.group][obj.nodeID]) {
             this.errors.diagrameTemplate[node.group][obj.nodeID] = {};
             this.errors.diagrameTemplate[node.group][obj.nodeID].properties = {};
@@ -68,7 +68,7 @@
 
         palette.Regions.forEach(function(region) {
           if (region.RegionType >= 3 && region.RegionType < 8 && !obj.properties.hasOwnProperty(region.SourcePropertyTypeScriptName)) {
-            if (undefined === self.errors.diagrameTemplate[node.group]) self.errors.diagrameTemplate[node.group] = {}; 
+            if (undefined === self.errors.diagrameTemplate[node.group]) self.errors.diagrameTemplate[node.group] = {};
             if (undefined === self.errors.diagrameTemplate[node.group][obj.nodeID]) {
               self.errors.diagrameTemplate[node.group][obj.nodeID] = {};
               self.errors.diagrameTemplate[node.group][obj.nodeID].properties = {};
@@ -77,7 +77,7 @@
             self.errors.diagrameTemplate[node.group][obj.nodeID].properties[region.SourcePropertyTypeScriptName] = cwAPI.mm.getProperty(obj.objectTypeScriptName, region.SourcePropertyTypeScriptName).name;
           }
           if (region.RegionType < 3 && region.RegionData && !obj.associations.hasOwnProperty(region.RegionData.Key)) {
-            if (undefined === self.errors.diagrameTemplate[node.group]) self.errors.diagrameTemplate[node.group] = {}; 
+            if (undefined === self.errors.diagrameTemplate[node.group]) self.errors.diagrameTemplate[node.group] = {};
             if (undefined === self.errors.diagrameTemplate[node.group][obj.nodeID]) {
               self.errors.diagrameTemplate[node.group][obj.nodeID] = {};
               self.errors.diagrameTemplate[node.group][obj.nodeID].properties = {};
@@ -144,8 +144,6 @@
           }
         };
 
-
-
         diagC.getDiagramPopoutForShape = function() {};
         var shapeObj = new cwApi.Diagrams.CwDiagramShape(shape, palette, diagC);
 
@@ -163,7 +161,7 @@
     var idToLoad = [];
     var idLoaded = 0;
     if (this.expertModeAvailable) {
-      $.getJSON(cwApi.getLiveServerURL() + "page/" + templateListUrl + "?" + Math.random(), function(json) {
+      $.getJSON(cwApi.getLiveServerURL() + "page/" + templateListUrl + "?" + cwApi.getDeployNumber(), function(json) {
         if (json) {
           for (var associationNode in json) {
             if (json.hasOwnProperty(associationNode)) {
@@ -174,7 +172,7 @@
           }
           if (idToLoad.length === 0) callback();
           idToLoad.forEach(function(id) {
-            var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + Math.random();
+            var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + cwApi.getDeployNumber();
             $.getJSON(url, function(json) {
               if (json.status === "Ok") {
                 self.diagramTemplate[id] = json.result;
@@ -196,7 +194,7 @@
       }
       if (idToLoad.length === 0) callback();
       idToLoad.forEach(function(id) {
-        var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + Math.random();
+        var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + cwApi.getDeployNumber();
         $.getJSON(url, function(json) {
           if (json.status === "Ok") {
             self.diagramTemplate[id] = json.result;
@@ -234,7 +232,7 @@
       });
     });
 
-    if(imageToLoad.length === 0) callback();
+    if (imageToLoad.length === 0) callback();
 
     let picturesPath = cwAPI.getSiteMediaPath() + "images/gallerypictures/";
     if (cwAPI.isLive()) {
@@ -250,7 +248,7 @@
 
     imageToLoad.forEach(function(uuid) {
       var image = new Image();
-      image.src = picturesPath + uuid + ".png";
+      image.src = picturesPath + uuid + ".png?" + cwApi.getDeployNumber();
       cwApi.CwPictureGalleryLoader.images[uuid] = image;
       image.onload = checkAllImagesLoaded;
       image.onerror = checkAllImagesLoaded;
