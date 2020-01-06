@@ -255,11 +255,24 @@
     });
   };
 
+  cwLayoutNetwork.prototype.getStepForNode = function(nodeId) {
+    let ystep;
+    let node = this.nodes.get(nodeId);
+    var group = this.networkUI.groups.get(node.group);
+    if (group.shape === "image" || group.shape === "circularImage" || group.diagram === true) {
+      ystep = 130;
+    } else if (group.shape === "icon") ystep = 100;
+    else if (group.shape === "box") ystep = 20 + 15 * node.label.split("\n").length;
+    else ystep = 30;
+
+    return ystep;
+  };
+
   cwLayoutNetwork.prototype.positionClusters = function(ctx) {
     var self = this;
     self.clusters.forEach(function(cluster) {
-      var nodePosition = self.networkUI.getPositions(cluster.nodes[0]);
-      nodePosition = nodePosition[cluster.nodes[0]];
+      var headPosition = self.networkUI.getPositions(cluster.head);
+      headPosition = headPosition[cluster.head];
       var n = cluster.nodes.length;
       var ystep;
       var labelmargin = 80;
@@ -274,20 +287,17 @@
         headerOffset = 0;
       }
 
-      if (group.shape === "image" || group.shape === "circularImage" || group.diagram === true) {
-        ystep = 130;
-      } else ystep = 100;
-
+      var offsetY = headerOffset + self.getStepForNode(cluster.head) / 2;
       if (cluster.nodes.length > 0) {
-        for (i = 1; i < n; i++) {
-          if (self.dragged[cluster.nodes[0]] || cluster.init || self.dragged[cluster.nodes[i]]) {
-            self.networkUI.moveNode(cluster.nodes[i], nodePosition.x, nodePosition.y + ystep * i);
+        for (i = 0; i < n; i++) {
+          if (true || self.dragged[cluster.head] || cluster.init || self.dragged[cluster.nodes[i]]) {
+            offsetY += self.getStepForNode(cluster.nodes[i]) / 2;
+            self.networkUI.moveNode(cluster.nodes[i], headPosition.x, headPosition.y + offsetY);
+            offsetY += self.getStepForNode(cluster.nodes[i]) / 2;
           }
         }
-        if (self.dragged[cluster.nodes[0]] || cluster.init || self.dragged[cluster.head]) {
-          self.networkUI.moveNode(cluster.head, nodePosition.x, nodePosition.y - ymargin * 2 - labelmargin - headerOffset);
-        }
       }
+
       cluster.init = false;
       ctx.strokeStyle = group.color.border;
       ctx.lineWidth = 2;
@@ -299,7 +309,7 @@
         }
         ctx.fillStyle = color;
       } else ctx.fillStyle = group.color.background;
-      ctx.rect(nodePosition.x - xmargin, nodePosition.y - ymargin * 2 - labelmargin, 2 * xmargin, ystep * n + labelmargin);
+      ctx.rect(headPosition.x - xmargin, headPosition.y, 2 * xmargin, offsetY);
       ctx.fill();
       ctx.stroke();
     });
