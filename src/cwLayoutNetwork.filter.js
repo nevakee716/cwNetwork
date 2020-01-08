@@ -39,6 +39,14 @@
     });
   };
 
+  cwLayoutNetwork.prototype.fillClusterFilter = function(clusterGroupName) {
+    let self = this;
+    $("select.selectNetworkClusterByGroup_" + this.nodeID + "_child").each(function(index) {
+      if (self.clusterByGroupOption[clusterGroupName] === undefined) self.clusterByGroupOption[clusterGroupName] = [];
+      $(this).selectpicker("val", self.clusterByGroupOption[clusterGroupName]);
+    });
+  };
+
   // Create Filter selector
   cwLayoutNetwork.prototype.createFilterObjects = function(filterContainer) {
     filterContainer.className += " cwLayoutNetork_filterSection";

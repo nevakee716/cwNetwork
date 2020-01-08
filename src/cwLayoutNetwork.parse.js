@@ -264,6 +264,8 @@
 
     if (!cwAPI.isIndexPage() || object.hasOwnProperty("object_id")) {
       cwAPI.customLibs.utils.manageContextualNodes(simplifyObject.associations, this.contextualNode, object.object_id);
+      cwAPI.customLibs.utils.manageFilterByBaseObjectNodes(simplifyObject.associations, this.filterByBaseObject, object.object_id);
+      cwAPI.customLibs.utils.cleanEmptyNodes(simplifyObject, this.IncludeOnlyIfHasAssociationsNode);
       simplifyObject = this.simplify(simplifyObject, this.addObjectOfObjectPage(null, object));
     } else {
       simplifyObject = this.simplify(simplifyObject);

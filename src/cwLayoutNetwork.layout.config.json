@@ -1,182 +1,194 @@
 {
-    "Name": "Network",
-    "DisplayName": "Network",
-    "Description": "Allow you to display your association in a Network",
-    "JavaScriptClassName": "cwLayoutNetwork",
-    "Options": [
+  "Name": "Network",
+  "DisplayName": "Network",
+  "Description": "Allow you to display your association in a Network",
+  "JavaScriptClassName": "cwLayoutNetwork",
+  "Options": [
     {
-        "Id": "multiLineCount",
-        "DisplayName": "MultiLines Count",
-        "Description": "Indicates the number of caracter you need to have a carriage return. Put 0 if you never want to have carriage return",
-        "Type": 0
+      "Id": "multiLineCount",
+      "DisplayName": "MultiLines Count",
+      "Description": "Indicates the number of caracter you need to have a carriage return. Put 0 if you never want to have carriage return",
+      "Type": 0
     },
     {
-        "Id": "hidden-nodes",
-        "DisplayName": "Hidden Nodes",
-        "Description": "Use comma as splitter character",
-        "Type": 0
+      "Id": "hidden-nodes",
+      "DisplayName": "Hidden Nodes",
+      "Description": "Use comma as splitter character",
+      "Type": 0
     },
     {
-        "Id": "popOutList",
-        "DisplayName": "PopOut List",
-        "Description": "list the scriptname of the objectType and the popOut",
-        "Type": 0
+      "Id": "popOutList",
+      "DisplayName": "PopOut List",
+      "Description": "list the scriptname of the objectType and the popOut",
+      "Type": 0
     },
     {
-        "Id": "specificGroup",
-        "DisplayName": "Specific Group List",
-        "Description": "list the nodeIDs and the assignGroup",
-        "Type": 0
+      "Id": "specificGroup",
+      "DisplayName": "Specific Group List",
+      "Description": "list the nodeIDs and the assignGroup",
+      "Type": 0
     },
     {
-        "Id": "groupToSelectOnStart",
-        "DisplayName": "Group To Select On Start",
-        "Description": "List the groups you want to display when the network is started. Use comma separator",
-        "Type": 0
+      "Id": "groupToSelectOnStart",
+      "DisplayName": "Group To Select On Start",
+      "Description": "List the groups you want to display when the network is started. Use comma separator",
+      "Type": 0
     },
     {
-        "Id": "iconGroup",
-        "DisplayName": "Assign Icon to Group",
-        "Description": "Use NameGroup,FontAwesomeUnicode,color||NameGroup2,FontAwesomeUnicode2,color2. For exemple, Organisation,f1ad,#f0a30a",
-        "Type": 0
+      "Id": "iconGroup",
+      "DisplayName": "Assign Icon to Group",
+      "Description": "Use NameGroup,FontAwesomeUnicode,color||NameGroup2,FontAwesomeUnicode2,color2. For exemple, Organisation,f1ad,#f0a30a",
+      "Type": 0
     },
     {
-        "Id": "arrowDirection",
-        "DisplayName": "Arrow Direction",
-        "Description": "Select the direction of each node. For exemple, processus_niveau_2_20006_883051288,'to'#processus_niveau_2_20005_1079817132,'from'. Use to, if you want the arrow that arrive to this node. Use from, if you want the arrow to leave from this node.",
-        "Type": 0
+      "Id": "arrowDirection",
+      "DisplayName": "Arrow Direction",
+      "Description": "Select the direction of each node. For exemple, processus_niveau_2_20006_883051288,'to'#processus_niveau_2_20005_1079817132,'from'. Use to, if you want the arrow that arrive to this node. Use from, if you want the arrow to leave from this node.",
+      "Type": 0
     },
     {
-        "Id": "filterNode",
-        "DisplayName": "Filter Association",
-        "Description": "Select Nodes that would be use to filter Node. nodeID:FilterName#nodeID2:FilterName2",
-        "Type": 0
+      "Id": "filterNode",
+      "DisplayName": "Filter Association",
+      "Description": "Select Nodes that would be use to filter Node. nodeID:FilterName#nodeID2:FilterName2",
+      "Type": 0
     },
     {
-        "Id": "filterNodeBehaviour",
-        "DisplayName": "Filter Association Behaviour",
-        "Description": "FilterName:Behaviour",
-        "Type": 0
+      "Id": "filterNodeBehaviour",
+      "DisplayName": "Filter Association Behaviour",
+      "Description": "FilterName:Behaviour",
+      "Type": 0
     },
     {
-        "Id": "complementaryNode",
-        "DisplayName": "Complementary Node",
-        "Description": "Select Nodes you want to add that are not under your layout network (see documentation for exemple)",
-        "Type": 0
+      "Id": "complementaryNode",
+      "DisplayName": "Complementary Node",
+      "Description": "Select Nodes you want to add that are not under your layout network (see documentation for exemple)",
+      "Type": 0
     },
     {
-        "Id": "contextualFilter",
-        "DisplayName": "Contextual Node ID",
-        "Description": "Node That Need To be Attach to the Main Object",
-        "Type": 0
+      "Id": "contextualFilter",
+      "DisplayName": "Contextual Nodes IDs",
+      "Description": "Nodes That Need To be Attach to the Main Object (the upper item will be deleted)",
+      "Type": 0
     },
     {
-        "Id": "clusterOn",
-        "DisplayName": "Activate Cluster",
-        "Description": "Check to Activate the cluster",
-        "Type": 1
+      "Id": "IncludeOnlyIfHasAssociationsNode",
+      "DisplayName": "Include Only If Has Associations Nodes ID",
+      "Description": "Include Only these nodes if they have some data underneath (filter is applied after the contextual filter and filter by base object)",
+      "Type": 0
     },
     {
-        "Id": "hideClusterMenu",
-        "DisplayName": "Hide Cluster Menu",
-        "Description": "Hide Cluster Menu",
-        "Type": 1
+      "Id": "filterByBaseObject",
+      "DisplayName": "Filter By Base Object Nodes Ids",
+      "Description": "Node That Need To be Attach to the Main Object (the upper item won't be deleted)",
+      "Type": 0
     },
     {
-        "Id": "clusterToSelectOnStart",
-        "DisplayName": "Cluster To Select On Start",
-        "Description": "List the Cluster you want to apply when the network is started. Head#Child,Child2",
-        "Type": 0
+      "Id": "clusterOn",
+      "DisplayName": "Activate Cluster",
+      "Description": "Check to Activate the cluster",
+      "Type": 1
     },
     {
-        "Id": "zipEdgeOption",
-        "DisplayName": "Activate UnzipEdge Option",
-        "Description": "Activate the button to unzip edge",
-        "Type": 1
-    }, 
-    {
-        "Id": "hideEdgeButton",
-        "DisplayName": "Hide Zip Edge Button",
-        "Description": "Hide Zip Edge Button",
-        "Type": 1
-    }, 
-    {
-        "Id": "zipEdgeInitState",
-        "DisplayName": "Edge Zip at Start",
-        "Description": "Activate this button to zip the edge at start",
-        "Type": 1
+      "Id": "hideClusterMenu",
+      "DisplayName": "Hide Cluster Menu",
+      "Description": "Hide Cluster Menu",
+      "Type": 1
     },
     {
-        "Id": "physicsOn",
-        "DisplayName": "Physics Button",
-        "Description": "Activate button to disable the physics",
-        "Type": 1
+      "Id": "clusterToSelectOnStart",
+      "DisplayName": "Cluster To Select On Start",
+      "Description": "List the Cluster you want to apply when the network is started. Head#Child,Child2",
+      "Type": 0
     },
     {
-        "Id": "hidePhysicsButton",
-        "DisplayName": "Hide Physics Button",
-        "Description": "Hide Physics Button",
-        "Type": 1
-    }, 
-    {
-        "Id": "physicsInitialState",
-        "DisplayName": "Physics Initially Activated",
-        "Description": "Activate the physics at beginning",
-        "Type": 1
+      "Id": "zipEdgeOption",
+      "DisplayName": "Activate UnzipEdge Option",
+      "Description": "Activate the button to unzip edge",
+      "Type": 1
     },
     {
-        "Id": "physicsConfiguration",
-        "DisplayName": "Physics Json Configuration",
-        "Description": "Don't forget to mimify it",
-        "Type": 0
+      "Id": "hideEdgeButton",
+      "DisplayName": "Hide Zip Edge Button",
+      "Description": "Hide Zip Edge Button",
+      "Type": 1
     },
     {
-        "Id": "expertMode",
-        "DisplayName": "Expert Mode Available",
-        "Description": "If you have the abiility to modify or create a network you will always have access to expert Mode",
-        "Type": 1
+      "Id": "zipEdgeInitState",
+      "DisplayName": "Edge Zip at Start",
+      "Description": "Activate this button to zip the edge at start",
+      "Type": 1
     },
     {
-        "Id": "removeLonelyOn",
-        "DisplayName": "Remove Lonely Objects",
-        "Description": "Activate the option to remove lonely object",
-        "Type": 1
+      "Id": "physicsOn",
+      "DisplayName": "Physics Button",
+      "Description": "Activate button to disable the physics",
+      "Type": 1
     },
     {
-        "Id": "enableEdit",
-        "DisplayName": "Enable Edit",
-        "Description": "Enable the edit",
-        "Type": 1
+      "Id": "hidePhysicsButton",
+      "DisplayName": "Hide Physics Button",
+      "Description": "Hide Physics Button",
+      "Type": 1
     },
     {
-        "Id": "startingNetwork",
-        "DisplayName": "Load the First Cw Api Network of the list",
-        "Description": "Load the First Cw Api Network of the list",
-        "Type": 1
+      "Id": "physicsInitialState",
+      "DisplayName": "Physics Initially Activated",
+      "Description": "Activate the physics at beginning",
+      "Type": 1
     },
     {
-        "Id": "edgeColor",
-        "DisplayName": "Edge Color",
-        "Description": "Chose the color of the edge based on the associationType",
-        "Type": 0
+      "Id": "physicsConfiguration",
+      "DisplayName": "Physics Json Configuration",
+      "Description": "Don't forget to mimify it",
+      "Type": 0
     },
     {
-        "Id": "edgeTypeToSelect",
-        "DisplayName": "Edge Type To Select on Start",
-        "Description": "Choose the Edge Type to select on Start",
-        "Type": 0
+      "Id": "expertMode",
+      "DisplayName": "Expert Mode Available",
+      "Description": "If you have the abiility to modify or create a network you will always have access to expert Mode",
+      "Type": 1
     },
     {
-        "Id": "assignEdge",
-        "DisplayName": "Assign associationNodeID to Edge Type",
-        "Description": "List the associationNodeID and the Edge Type",
-        "Type": 0
+      "Id": "removeLonelyOn",
+      "DisplayName": "Remove Lonely Objects",
+      "Description": "Activate the option to remove lonely object",
+      "Type": 1
     },
     {
-        "Id": "duplicateNodes",
-        "DisplayName": "Duplicate the nodeIDS",
-        "Description": "list the nodeIDs splitter is a comma",
-        "Type": 0
-    }, 
-    ]
+      "Id": "enableEdit",
+      "DisplayName": "Enable Edit",
+      "Description": "Enable the edit",
+      "Type": 1
+    },
+    {
+      "Id": "startingNetwork",
+      "DisplayName": "Load the First Cw Api Network of the list",
+      "Description": "Load the First Cw Api Network of the list",
+      "Type": 1
+    },
+    {
+      "Id": "edgeColor",
+      "DisplayName": "Edge Color",
+      "Description": "Chose the color of the edge based on the associationType",
+      "Type": 0
+    },
+    {
+      "Id": "edgeTypeToSelect",
+      "DisplayName": "Edge Type To Select on Start",
+      "Description": "Choose the Edge Type to select on Start",
+      "Type": 0
+    },
+    {
+      "Id": "assignEdge",
+      "DisplayName": "Assign associationNodeID to Edge Type",
+      "Description": "List the associationNodeID and the Edge Type",
+      "Type": 0
+    },
+    {
+      "Id": "duplicateNodes",
+      "DisplayName": "Duplicate the nodeIDS",
+      "Description": "list the nodeIDs splitter is a comma",
+      "Type": 0
+    }
+  ]
 }

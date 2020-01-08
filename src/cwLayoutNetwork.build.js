@@ -20,7 +20,6 @@
       var self = this;
       var libToLoad = [];
 
-
       var networkContainer = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
       this.createLoadingElement(networkContainer.parentNode);
 
@@ -68,7 +67,7 @@
 
   // Building network
   cwLayoutNetwork.prototype.createNetwork = function() {
-  	this.hideLoading();
+    this.hideLoading();
     function addStyleString(str) {
       var node = document.createElement("style");
       node.innerHTML = str;
@@ -87,7 +86,6 @@
       this.network.updateExternalFilterInformation(this.networkDisposition.external);
     }
 
-
     // provide the data in the vis format
     var nodes = this.network.getEnabledVisNodes(); //this.network.getVisNodes());
     var edges = this.network.getVisEdges(); //this.network.getVisEdges());
@@ -96,7 +94,7 @@
 
     var data = {
       nodes: this.nodes,
-      edges: this.edges
+      edges: this.edges,
     };
     if (this.layoutConfiguration === undefined) this.layoutConfiguration = {};
     if (this.networkSize > 100) this.layoutConfiguration.improvedLayout = false;
@@ -106,8 +104,8 @@
       physics: this.physConfiguration,
       layout: this.layoutConfiguration,
       interaction: {
-        keyboard: false
-      }
+        keyboard: false,
+      },
     };
 
     // filter search
@@ -130,14 +128,14 @@
           scale: 2,
           offset: {
             x: 0,
-            y: 0
+            y: 0,
           },
-          animation: true // default duration is 1000ms and default easingFunction is easeInOutQuad.
+          animation: true, // default duration is 1000ms and default easingFunction is easeInOutQuad.
         };
         self.networkUI.moveTo(options);
 
         options = {
-          nodes: [id]
+          nodes: [id],
         };
         self.networkUI.setSelection(options);
       }
@@ -146,8 +144,8 @@
 
     // Action for button
     /* if(this.clusterOption) {
-            var clusterButton = document.getElementById("cwLayoutNetworkButtonsCluster" + this.nodeID); 
-            clusterButton.addEventListener('click', this.clusterByHubsize.bind(this));              
+            var clusterButton = document.getElementById("cwLayoutNetworkButtonsCluster" + this.nodeID);
+            clusterButton.addEventListener('click', this.clusterByHubsize.bind(this));
         }*/
 
     if (this.physicsOption && this.hidePhysicsButton === false) {
@@ -200,9 +198,12 @@
           $(this).selectpicker("val", startCwApiNetwork.label); //init cwAPInetworkfilter
         });
       } else if (!this.wiggle) {
+        // no network to load
         // Activate Starting element
         this.activateStartingGroup();
+
         this.networkUI = new vis.Network(networkContainer, data, this.networkOptions);
+        this.activateStartingCluster();
       }
     } else if (!this.wiggle) {
       // Activate Starting element
@@ -214,7 +215,7 @@
     fitButton.addEventListener("click", function() {
       self.networkUI.fit();
     });
-  
+
     if (this.wiggle) {
       // Activate Starting element
       this.activateStartingGroup();
@@ -224,7 +225,7 @@
     this.networkUI.on("afterDrawing", this.afterDrawing.bind(this));
     this.networkUI.on("beforeDrawing", this.beforeDrawing.bind(this));
 
-    if(this.nodes.length === 0) this.hideLoading();
+    if (this.nodes.length === 0) this.hideLoading();
 
     // Activate Cluster
     if (!this.startingNetwork) this.activateStartingCluster();
@@ -243,7 +244,9 @@
       if (self.expertMode !== true) {
         if (params.hasOwnProperty("nodes") && params.nodes.length === 1) {
           let node = self.nodes.get(params.nodes[0]);
-          self.openPopOut(node.object_id, node.objectTypeScriptName);
+          console.table(node);
+          //self.nodes.update(node);
+          //self.openPopOut(node.object_id, node.objectTypeScriptName);
         } else if (params.hasOwnProperty("edges") && params.edges.length === 1) {
           var edge = self.edges.get(params.edges[0]);
           self.openPopOutFromEdge(edge);
@@ -277,13 +280,7 @@
 
     this.networkUI.on("startStabilizing", function(params) {});
 
-
-
-
-
-
     this.networkUI.on("stabilizationProgress", function(params) {
-
       var widthFactor = params.iterations / params.total;
       self.displayLoading();
       self.setLoadingAt(Math.round(widthFactor * 100) + "%");
@@ -299,14 +296,14 @@
       self.hideLoading();
       self.networkUI.fit({
         nodes: self.nodes.getIds(),
-        animation: true
+        animation: true,
       });
     });
     if (this.viewSchema.ViewName.indexOf("popout") !== -1) {
       this.networkUI.on("resize", function(params) {
         self.networkUI.fit({
           nodes: self.nodes.getIds(),
-          animation: true
+          animation: true,
         });
       });
     }
@@ -426,26 +423,26 @@
     $("select.selectNetworkClusterByGroup_" + this.nodeID + "_head").on("changed.bs.select", function(e, clickedIndex, newValue, oldValue) {
       var group = $(this).context["id"];
       if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-        self.clusterByGroupOption.head = $(this)
+        self.selectedCluster = $(this)
           .selectpicker("val")
           .replaceAll("_", " ");
-        self.clusterByGroup();
+        self.fillClusterFilter(self.selectedCluster);
       }
     });
 
     // Cluster Group Filter Child
     $("select.selectNetworkClusterByGroup_" + this.nodeID + "_child").on("changed.bs.select", function(e, clickedIndex, newValue, oldValue) {
       if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-        self.clusterByGroupOption.child = [];
-        if ($(this).selectpicker("val") && $(this).selectpicker("val").length > 0) {
-          $(this)
-            .selectpicker("val")
-            .forEach(function(c) {
-              self.clusterByGroupOption.child.push(c.replaceAll("_", " "));
-            });
+        let option = self.clusterByGroupOption[self.selectedCluster];
+        let value = $(this).context[clickedIndex].value;
+        if (newValue === true) {
+          self.clusterByGroupOption[self.selectedCluster].push(value);
         } else {
-          self.clusterByGroupOption.child = [];
+          self.clusterByGroupOption[self.selectedCluster] = option.filter(function(c) {
+            return c !== value;
+          });
         }
+
         self.clusterByGroup();
       }
     });
