@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
+﻿/* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
 
 /*global cwAPI, jQuery */
 (function(cwApi, $) {
@@ -178,6 +178,7 @@
         var self = this;
         options.split("||").forEach(function(co) {
           self.clusterByGroupOption[co.split("#")[0]] = co.split("#")[1].split(",");
+	  self.clusterByGroupOption[co.split("#")[0]] = self.clusterByGroupOption[co.split("#")[0]].map(function(group){ return group.replace(" ","_");});
         });
       }
     } catch (e) {

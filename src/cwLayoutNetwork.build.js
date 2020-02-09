@@ -203,7 +203,6 @@
         this.activateStartingGroup();
 
         this.networkUI = new vis.Network(networkContainer, data, this.networkOptions);
-        this.activateStartingCluster();
       }
     } else if (!this.wiggle) {
       // Activate Starting element
@@ -228,7 +227,7 @@
     if (this.nodes.length === 0) this.hideLoading();
 
     // Activate Cluster
-    if (!this.startingNetwork) this.activateStartingCluster();
+    if (false && !this.startingNetwork) this.activateStartingCluster();
 
     // Creation du menu et binding
     this.createMenu(networkContainer);
@@ -291,7 +290,7 @@
       self.colorAllNodes();
       self.colorAllEdges();
       var span = document.getElementById("cwLayoutNetwork_text" + self.nodeID);
-
+      self.activateStartingCluster()
       span.parentNode.removeChild(span);
       self.hideLoading();
       self.networkUI.fit({
