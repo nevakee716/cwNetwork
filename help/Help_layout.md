@@ -130,10 +130,9 @@ PS : the filter node should always be in first,
 
 ### Filter Association Behaviour
 
-This option will define the way your action(add close node, add connected node..., and also association filter) will work 
-add : this will add the selected node to your network
-highlight : this will highlight the selected node
-absolute : this will only display the selected node
+This option will define the way your action(add close node, add connected node..., and also association filter) will work * add : this will add the selected node to your network
+* highlight : this will highlight the selected node
+* absolute : this will only display the selected node
 
 ### Complementary Node :
 
