@@ -1,20 +1,20 @@
 ﻿/* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
 
 /*global cwAPI, jQuery */
-(function(cwApi, $) {
+(function (cwApi, $) {
   "use strict";
   if (cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
     var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
   } else {
     // constructor
-    var cwLayoutNetwork = function(options, viewSchema) {
+    var cwLayoutNetwork = function (options, viewSchema) {
       cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
       cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
       this.construct(options);
     };
   }
 
-  cwLayoutNetwork.prototype.applyJavaScript = function() {
+  cwLayoutNetwork.prototype.applyJavaScript = function () {
     if (this.init) {
       this.init = false;
       var self = this;
@@ -25,19 +25,27 @@
 
       // set height
       var titleReact = document.querySelector("#cw-top-bar").getBoundingClientRect();
-      var topBarReact = document.querySelector(".page-top").getBoundingClientRect();
-      var canvaHeight = window.innerHeight - titleReact.height - topBarReact.height;
+      let topBar = document.querySelector(".page-top");
+      let topBarHeight = 52;
+      if (topBar) topBarHeight = topBar.getBoundingClientRect().height;
+      var canvaHeight = window.innerHeight - titleReact.height - topBarHeight;
       networkContainer.setAttribute("style", "height:" + canvaHeight + "px");
 
       if (cwAPI.isDebugMode() === true) {
         self.loadDiagramTemplate("z_diagram_template", self.createNetworkData.bind(self));
       } else {
-        libToLoad = ["modules/bootstrap/bootstrap.min.js", "modules/bootstrap-select/bootstrap-select.min.js", "modules/vis/vis.min.js", "modules/d3/d3.min.js", "modules/jsTree/jstree.min.js"];
+        libToLoad = [
+          "modules/bootstrap/bootstrap.min.js",
+          "modules/bootstrap-select/bootstrap-select.min.js",
+          "modules/vis/vis.min.js",
+          "modules/d3/d3.min.js",
+          "modules/jsTree/jstree.min.js",
+        ];
         // AsyncLoad
-        cwApi.customLibs.aSyncLayoutLoader.loadUrls(libToLoad, function(error) {
+        cwApi.customLibs.aSyncLayoutLoader.loadUrls(libToLoad, function (error) {
           if (error === null) {
             libToLoad = ["modules/visNetworkMenu/visNetworkMenu.min.js"];
-            cwApi.customLibs.aSyncLayoutLoader.loadUrls(libToLoad, function(error) {
+            cwApi.customLibs.aSyncLayoutLoader.loadUrls(libToLoad, function (error) {
               if (error === null) {
                 self.loadDiagramTemplate("z_diagram_template", self.createNetworkData.bind(self));
               } else {
@@ -52,7 +60,7 @@
     }
   };
   // Building network
-  cwLayoutNetwork.prototype.createNetworkData = function() {
+  cwLayoutNetwork.prototype.createNetworkData = function () {
     this.simplifyObject = this.manageDataFromEvolve(this.copyObject);
     var isData = false;
 
@@ -66,7 +74,7 @@
   };
 
   // Building network
-  cwLayoutNetwork.prototype.createNetwork = function() {
+  cwLayoutNetwork.prototype.createNetwork = function () {
     this.hideLoading();
     function addStyleString(str) {
       var node = document.createElement("style");
@@ -117,7 +125,7 @@
 
     // Event for filter
     // Move On a Node
-    $("select.selectNetworkSearch_" + this.nodeID).on("changed.bs.select", function(e, clickedIndex, newValue, oldValue) {
+    $("select.selectNetworkSearch_" + this.nodeID).on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
       var changeSet, id, nodeId, i;
       var groupArray = {};
       if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
@@ -193,7 +201,7 @@
         this.loadCwApiNetwork(startCwApiNetwork.configuration);
 
         self.networkConfiguration.selected = startCwApiNetwork;
-        $("select.selectNetworkConfiguration_" + this.nodeID).each(function(index) {
+        $("select.selectNetworkConfiguration_" + this.nodeID).each(function (index) {
           // put values into filters
           $(this).selectpicker("val", startCwApiNetwork.label); //init cwAPInetworkfilter
         });
@@ -211,7 +219,7 @@
     }
 
     var fitButton = document.getElementById("cwLayoutNetworkButtonsFit" + this.nodeID);
-    fitButton.addEventListener("click", function() {
+    fitButton.addEventListener("click", function () {
       self.networkUI.fit();
     });
 
@@ -239,13 +247,11 @@
     networkContainer.addEventListener("AddAllConnectedNodes", this.AddAllConnectedNodes.bind(this));
 
     // Interaction Click
-    this.networkUI.on("click", function(params) {
+    this.networkUI.on("click", function (params) {
       if (self.expertMode !== true) {
         if (params.hasOwnProperty("nodes") && params.nodes.length === 1) {
           let node = self.nodes.get(params.nodes[0]);
-          console.table(node);
-          //self.nodes.update(node);
-          //self.openPopOut(node.object_id, node.objectTypeScriptName);
+          self.openPopOut(node.object_id, node.objectTypeScriptName);
         } else if (params.hasOwnProperty("edges") && params.edges.length === 1) {
           var edge = self.edges.get(params.edges[0]);
           self.openPopOutFromEdge(edge);
@@ -253,19 +259,19 @@
       }
     });
 
-    this.networkUI.on("dragStart", function(params) {
+    this.networkUI.on("dragStart", function (params) {
       if (params.hasOwnProperty("nodes") && params.nodes.length === 1) {
         self.dragged[params.nodes[0]] = true;
       }
     });
 
-    this.networkUI.on("dragEnd", function(params) {
+    this.networkUI.on("dragEnd", function (params) {
       if (params.hasOwnProperty("nodes") && params.nodes.length === 1) {
         delete self.dragged[params.nodes[0]];
       }
     });
 
-    this.networkUI.on("doubleClick", function(params) {
+    this.networkUI.on("doubleClick", function (params) {
       if (params.hasOwnProperty("nodes") && params.nodes.length === 1) {
         let node = self.nodes.get(params.nodes[0]);
         self.openObjectPage(node.object_id, node.objectTypeScriptName);
@@ -277,20 +283,20 @@
       }
     });
 
-    this.networkUI.on("startStabilizing", function(params) {});
+    this.networkUI.on("startStabilizing", function (params) {});
 
-    this.networkUI.on("stabilizationProgress", function(params) {
+    this.networkUI.on("stabilizationProgress", function (params) {
       var widthFactor = params.iterations / params.total;
       self.displayLoading();
       self.setLoadingAt(Math.round(widthFactor * 100) + "%");
     });
 
     var stop = false;
-    this.networkUI.on("stabilizationIterationsDone", function() {
+    this.networkUI.on("stabilizationIterationsDone", function () {
       self.colorAllNodes();
       self.colorAllEdges();
       var span = document.getElementById("cwLayoutNetwork_text" + self.nodeID);
-      self.activateStartingCluster()
+      self.activateStartingCluster();
       span.parentNode.removeChild(span);
       self.hideLoading();
       self.networkUI.fit({
@@ -299,7 +305,7 @@
       });
     });
     if (this.viewSchema.ViewName.indexOf("popout") !== -1) {
-      this.networkUI.on("resize", function(params) {
+      this.networkUI.on("resize", function (params) {
         self.networkUI.fit({
           nodes: self.nodes.getIds(),
           animation: true,
@@ -325,7 +331,7 @@
   };
 
   // Building network
-  cwLayoutNetwork.prototype.setFilters = function() {
+  cwLayoutNetwork.prototype.setFilters = function () {
     var self = this;
     var filterContainer = document.getElementById("cwLayoutNetworkFilter" + this.nodeID);
     var actionContainer = document.getElementById("cwLayoutNetworkAction" + this.nodeID);
@@ -347,7 +353,7 @@
 
     // Event for filter
     // Network Node Selector
-    $("select.selectNetworkPicker_" + this.nodeID).on("changed.bs.select", function(e, clickedIndex, newValue, oldValue) {
+    $("select.selectNetworkPicker_" + this.nodeID).on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
       var group = $(this).context["id"];
       var scriptname = $(this).context.getAttribute("scriptname");
       var changeSet, id, i;
@@ -386,7 +392,7 @@
 
     // Event for filter
     // Edge Selector
-    $("select.selectNetworkEdge_" + this.nodeID).on("changed.bs.select", function(e, clickedIndex, newValue, oldValue) {
+    $("select.selectNetworkEdge_" + this.nodeID).on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
       var group = $(this).context["id"];
       var scriptname = $(this).context.getAttribute("scriptname");
       var changeSet, id, nodeId, i;
@@ -419,25 +425,23 @@
     });
 
     // Cluster Group Filter Head
-    $("select.selectNetworkClusterByGroup_" + this.nodeID + "_head").on("changed.bs.select", function(e, clickedIndex, newValue, oldValue) {
+    $("select.selectNetworkClusterByGroup_" + this.nodeID + "_head").on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
       var group = $(this).context["id"];
       if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-        self.selectedCluster = $(this)
-          .selectpicker("val")
-          .replaceAll("_", " ");
+        self.selectedCluster = $(this).selectpicker("val").replaceAll("_", " ");
         self.fillClusterFilter(self.selectedCluster);
       }
     });
 
     // Cluster Group Filter Child
-    $("select.selectNetworkClusterByGroup_" + this.nodeID + "_child").on("changed.bs.select", function(e, clickedIndex, newValue, oldValue) {
+    $("select.selectNetworkClusterByGroup_" + this.nodeID + "_child").on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
       if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
         let option = self.clusterByGroupOption[self.selectedCluster];
         let value = $(this).context[clickedIndex].value;
         if (newValue === true) {
           self.clusterByGroupOption[self.selectedCluster].push(value);
         } else {
-          self.clusterByGroupOption[self.selectedCluster] = option.filter(function(c) {
+          self.clusterByGroupOption[self.selectedCluster] = option.filter(function (c) {
             return c !== value;
           });
         }
@@ -447,7 +451,7 @@
     });
 
     // External Filter
-    $("select.selectNetworkExternal_" + this.nodeID).on("changed.bs.select", function(e, clickedIndex, newValue, oldValue) {
+    $("select.selectNetworkExternal_" + this.nodeID).on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
       var group = $(this).context["id"];
       var filterName = $(this).context.getAttribute("filterName");
       var nodesArray, id, nodeId, i, changeSet;
@@ -482,7 +486,7 @@
 
     // Event for filter
     // Load a new network
-    $("select.selectNetworkConfiguration_" + this.nodeID).on("changed.bs.select", function(e, clickedIndex, newValue, oldValue) {
+    $("select.selectNetworkConfiguration_" + this.nodeID).on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
       var changeSet, id, nodeId, i, config;
       var groupArray = {};
       if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
@@ -498,7 +502,7 @@
   };
 
   // Save Button Event
-  cwLayoutNetwork.prototype.enableSaveButtonEvent = function() {
+  cwLayoutNetwork.prototype.enableSaveButtonEvent = function () {
     var saveButton = document.getElementById("nodeConfigurationSaveButton_" + this.nodeID);
     if (saveButton) {
       saveButton.addEventListener("click", this.saveIndexPage.bind(this));
@@ -506,7 +510,7 @@
   };
 
   // Expert Mode Button Event
-  cwLayoutNetwork.prototype.enableExpertModeButtonEvent = function() {
+  cwLayoutNetwork.prototype.enableExpertModeButtonEvent = function () {
     if (this.expertModeAvailable) {
       var expertButton = document.getElementById("cwLayoutNetworkExpertModeButton" + this.nodeID);
       if (expertButton) {
