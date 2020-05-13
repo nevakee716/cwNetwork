@@ -1,20 +1,20 @@
 /* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
 
 /*global cwAPI, jQuery */
-(function(cwApi, $) {
+(function (cwApi, $) {
   "use strict";
   if (cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
     var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
   } else {
     // constructor
-    var cwLayoutNetwork = function(options, viewSchema) {
+    var cwLayoutNetwork = function (options, viewSchema) {
       cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
       cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
       this.construct(options);
     };
   }
 
-  cwLayoutNetwork.prototype.createMenu = function(container) {
+  cwLayoutNetwork.prototype.createMenu = function (container) {
     var menuActions = [];
     var menuAction5 = {};
 
@@ -45,11 +45,11 @@
     var self = this;
     this.menu = [];
     for (var iAction in menuActions)
-      (function(iAction) {
+      (function (iAction) {
         var eventName = menuActions[iAction].eventName;
         var menu = {
           title: menuActions[iAction].title,
-          action: function(elm, d, i) {
+          action: function (elm, d, i) {
             var newEvent = document.createEvent("Event");
             var data = {};
             data.elm = elm;
@@ -65,7 +65,7 @@
     this.networkUI.on("oncontext", vis.contextMenu(this.menu));
   };
 
-  cwLayoutNetwork.prototype.lookForObjects = function(id, scriptname, child) {
+  cwLayoutNetwork.prototype.lookForObjects = function (id, scriptname, child) {
     var childrenArray = [];
     var element;
     var nextChild;
@@ -86,14 +86,14 @@
     return null;
   };
 
-  cwLayoutNetwork.prototype.openObjectPage = function(id, scriptname) {
+  cwLayoutNetwork.prototype.openObjectPage = function (id, scriptname) {
     var object = this.lookForObjects(id, scriptname, this.copyObject);
     if (object) {
       location.href = this.singleLinkMethod(scriptname, object);
     }
   };
 
-  cwLayoutNetwork.prototype.openPopOut = function(id, scriptname) {
+  cwLayoutNetwork.prototype.openPopOut = function (id, scriptname) {
     var object = {};
     object.object_id = id;
     if (this.popOut[scriptname]) {
@@ -101,7 +101,7 @@
     }
   };
 
-  cwLayoutNetwork.prototype.openPopOutFromEdge = function(edge) {
+  cwLayoutNetwork.prototype.openPopOutFromEdge = function (edge) {
     var id, scriptname, object;
     var from = edge.from.split("#");
     scriptname = from[1];
@@ -116,20 +116,20 @@
       return;
     }
     if (edge.labels && edge.labels.length > 0) {
-      var outputs = edge.labels.sort(function(a, b) {
+      var outputs = edge.labels.sort(function (a, b) {
         if (a.direction === "from" && b.direction === "from") return b.label - a.label;
         else if (a.direction === "to" && b.direction === "to") return b.label - a.label;
         else if (a.direction === "to" && b.direction === "from") return false;
         else if (a.direction === "from" && b.direction === "to") return true;
       });
       cwApi.customLibs.utils.createPopOutFormultipleObjects(
-        outputs.map(function(l) {
-          l.objectTypeScriptName = scriptname;
+        outputs.map(function (l) {
+          l.objectTypeScriptName = l.scriptname;
 
           l.properties = {};
           l.properties.name = l.label;
           l.name = l.label;
-          l.object_id = id;
+          l.object_id = l.id;
           return l;
         })
       );
