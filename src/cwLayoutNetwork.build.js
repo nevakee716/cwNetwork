@@ -128,8 +128,8 @@
     $("select.selectNetworkSearch_" + this.nodeID).on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
       var changeSet, id, nodeId, i;
       var groupArray = {};
-      if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-        id = $(this).context[clickedIndex]["id"];
+      if (clickedIndex !== undefined && $(this).context.children && $(this).context.children[clickedIndex]) {
+        id = $(this).context.children[clickedIndex].id;
         id = id.replaceAll("¤", " ");
         var options = {
           position: self.networkUI.getPositions()[id],
@@ -358,8 +358,8 @@
       var scriptname = $(this).context.getAttribute("scriptname");
       var changeSet, id, i;
 
-      if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-        id = $(this).context[clickedIndex]["id"];
+      if (clickedIndex !== undefined && $(this).context.children && $(this).context.children[clickedIndex]) {
+        id = $(this).context.children[clickedIndex].id;
         if (newValue === false) {
           // hide a node
           self.removeNodes([id]);
@@ -397,8 +397,8 @@
       var scriptname = $(this).context.getAttribute("scriptname");
       var changeSet, id, nodeId, i;
 
-      if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-        id = $(this).context[clickedIndex]["id"];
+      if (clickedIndex !== undefined && $(this).context.children && $(this).context.children[clickedIndex]) {
+        id = $(this).context.children[clickedIndex].id;
         if (newValue === false) {
           // hide a node
           self.edgeConfiguration[id].show = false;
@@ -427,7 +427,7 @@
     // Cluster Group Filter Head
     $("select.selectNetworkClusterByGroup_" + this.nodeID + "_head").on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
       var group = $(this).context["id"];
-      if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
+      if (clickedIndex !== undefined) {
         self.selectedCluster = $(this).selectpicker("val").replaceAll("_", " ");
         self.fillClusterFilter(self.selectedCluster);
       }
@@ -435,9 +435,9 @@
 
     // Cluster Group Filter Child
     $("select.selectNetworkClusterByGroup_" + this.nodeID + "_child").on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
-      if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
+      if (clickedIndex !== undefined && $(this).context.children && $(this).context.children[clickedIndex]) {
         let option = self.clusterByGroupOption[self.selectedCluster];
-        let value = $(this).context[clickedIndex].value;
+        let value = $(this).context.children[clickedIndex].value;
         if (newValue === true) {
           self.clusterByGroupOption[self.selectedCluster].push(value);
         } else {
@@ -462,8 +462,8 @@
         self.deActivateAllGroup();
       }
 
-      if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-        id = $(this).context[clickedIndex]["id"];
+      if (clickedIndex !== undefined && $(this).context.children && $(this).context.children[clickedIndex]) {
+        id = $(this).context.children[clickedIndex].id;
         if (newValue === false) {
           // hide a node
           self.removeExternalFilterValue(filterName, id);
@@ -489,8 +489,8 @@
     $("select.selectNetworkConfiguration_" + this.nodeID).on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
       var changeSet, id, nodeId, i, config;
       var groupArray = {};
-      if (clickedIndex !== undefined && $(this).context.hasOwnProperty(clickedIndex)) {
-        id = $(this).context[clickedIndex]["id"];
+      if (clickedIndex !== undefined && $(this).context.children && $(this).context.children[clickedIndex]) {
+        id = $(this).context.children[clickedIndex].id;
         if (id != 0) {
           config = self.networkConfiguration.nodes[id].configuration;
           self.networkConfiguration.selected = self.networkConfiguration.nodes[id];
