@@ -146,6 +146,13 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
   top: 12px;
   color: #76cf76 !important;
 }
+.cwLayoutNetworkToolBox .btn {
+  background-color: #5c5d61;
+}
+.cwLayoutNetworkToolBox .btn.fa-arrows-alt,
+.cwLayoutNetworkToolBox .btn.fa-download {
+  background-color: #03a0ce;
+}
 .cwLayoutNetworkToolBox .btn.selected {
   background-color: #03a0ce;
 }
