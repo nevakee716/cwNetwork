@@ -115,7 +115,7 @@
       cwApi.cwDiagramPopoutHelper.openDiagramPopout(object, this.popOut[scriptname + "_edge"]);
       return;
     }
-    if (edge.labels && edge.labels.length > 0) {
+    if (edge.zipped && edge.labels && edge.labels.length > 0) {
       var outputs = edge.labels.sort(function (a, b) {
         if (a.direction === "from" && b.direction === "from") return b.label - a.label;
         else if (a.direction === "to" && b.direction === "to") return b.label - a.label;
