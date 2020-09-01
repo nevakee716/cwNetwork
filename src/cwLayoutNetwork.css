@@ -12,7 +12,6 @@
 /* LIST BOX */
 /* PROPERTIES GROUP */
 /* BUTTONS */
-@cwbuttonselectedbackgroundcolor :darken (#ffffff, 5%);
 /* PAGE ACTIONS */
 /* ACCORDIONS */
 /* DISCUSSIONS */
@@ -111,7 +110,7 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
 .cwLayoutNetworkOption {
   right: -17px;
   position: absolute;
-  width: 400px;
+  width: 439px;
   display: block;
   top: 0px;
   z-index: 100;
@@ -150,7 +149,8 @@ div.cwLayoutNetworkExpertModeConfig div.vis-configuration.vis-config-button {
   background-color: #5c5d61;
 }
 .cwLayoutNetworkToolBox .btn.fa-arrows-alt,
-.cwLayoutNetworkToolBox .btn.fa-download {
+.cwLayoutNetworkToolBox .btn.fa-download,
+.cwLayoutNetworkToolBox .btn.fa-files-o {
   background-color: #03a0ce;
 }
 .cwLayoutNetworkToolBox .btn.selected {

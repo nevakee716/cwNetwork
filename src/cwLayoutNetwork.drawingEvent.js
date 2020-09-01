@@ -1,29 +1,40 @@
 /* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
 
 /*global cwAPI, jQuery */
-(function(cwApi, $) {
+(function (cwApi, $) {
   "use strict";
   if (cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
     var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
   } else {
     // constructor
-    var cwLayoutNetwork = function(options, viewSchema) {
+    var cwLayoutNetwork = function (options, viewSchema) {
       cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
       cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
       this.construct(options);
     };
   }
 
-  cwLayoutNetwork.prototype.beforeDrawing = function(ctx) {
+  cwLayoutNetwork.prototype.beforeDrawing = function (ctx) {
+    var container = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
+
+    // save current translate/zoom
+    ctx.save();
+    // reset transform to identity
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    // fill background with solid white
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    // restore old transform
+    ctx.restore();
     this.positionClusters(ctx);
     //if (this.diagramTemplate) this.diagramDesign(ctx);
   };
 
-  cwLayoutNetwork.prototype.afterDrawing = function(ctx) {
+  cwLayoutNetwork.prototype.afterDrawing = function (ctx) {
     //if (this.diagramTemplate) this.diagramDesign(ctx);
   };
 
-  cwLayoutNetwork.prototype.reSizeNode = function(node, palette) {
+  cwLayoutNetwork.prototype.reSizeNode = function (node, palette) {
     if (node.resized !== true) {
       node.resized = true;
       node.widthConstraint = {};
@@ -36,19 +47,27 @@
     return node;
   };
 
-  cwLayoutNetwork.prototype.shapeToImage = function(node) {
+  cwLayoutNetwork.prototype.shapeToImage = function (node) {
     var self = this;
     let obj = this.originalObjects[node.object_id + "#" + node.objectTypeScriptName];
     let palette;
     let diagramTemplate = this.diagramTemplate[this.groupsArt[node.group].diagramTemplateID];
 
     if (this.imageTemplate.hasOwnProperty(node.id)) return this.imageTemplate[node.id];
-    if (this.groupsArt[node.group] && this.groupsArt[node.group].diagram === true && this.diagramTemplate[this.groupsArt[node.group].diagramTemplateID]) {
+    if (
+      this.groupsArt[node.group] &&
+      this.groupsArt[node.group].diagram === true &&
+      this.diagramTemplate[this.groupsArt[node.group].diagramTemplateID]
+    ) {
       let obj = this.originalObjects[node.object_id + "#" + node.objectTypeScriptName];
       let palette;
       let diagramTemplate = this.diagramTemplate[this.groupsArt[node.group].diagramTemplateID];
 
-      if (obj && obj.properties.type_id && diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id]) {
+      if (
+        obj &&
+        obj.properties.type_id &&
+        diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id]
+      ) {
         palette = diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|" + obj.properties.type_id];
       } else if (obj && diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"]) {
         palette = diagramTemplate.diagram.paletteEntries[node.objectTypeScriptName.toUpperCase() + "|0"];
@@ -66,7 +85,7 @@
       if (palette) {
         var shape = {};
 
-        palette.Regions.forEach(function(region) {
+        palette.Regions.forEach(function (region) {
           if (region.RegionType >= 3 && region.RegionType < 8 && !obj.properties.hasOwnProperty(region.SourcePropertyTypeScriptName)) {
             if (undefined === self.errors.diagrameTemplate[node.group]) self.errors.diagrameTemplate[node.group] = {};
             if (undefined === self.errors.diagrameTemplate[node.group][obj.nodeID]) {
@@ -74,7 +93,10 @@
               self.errors.diagrameTemplate[node.group][obj.nodeID].properties = {};
               self.errors.diagrameTemplate[node.group][obj.nodeID].associations = {};
             }
-            self.errors.diagrameTemplate[node.group][obj.nodeID].properties[region.SourcePropertyTypeScriptName] = cwAPI.mm.getProperty(obj.objectTypeScriptName, region.SourcePropertyTypeScriptName).name;
+            self.errors.diagrameTemplate[node.group][obj.nodeID].properties[region.SourcePropertyTypeScriptName] = cwAPI.mm.getProperty(
+              obj.objectTypeScriptName,
+              region.SourcePropertyTypeScriptName
+            ).name;
           }
           if (region.RegionType < 3 && region.RegionData && !obj.associations.hasOwnProperty(region.RegionData.Key)) {
             if (undefined === self.errors.diagrameTemplate[node.group]) self.errors.diagrameTemplate[node.group] = {};
@@ -83,7 +105,8 @@
               self.errors.diagrameTemplate[node.group][obj.nodeID].properties = {};
               self.errors.diagrameTemplate[node.group][obj.nodeID].associations = {};
             }
-            self.errors.diagrameTemplate[node.group][obj.nodeID].associations[region.RegionData.Key] = region.RegionData.AssociationTypeScriptName + " => " + cwAPI.mm.getObjectType(region.RegionData.TargetObjectTypeScriptName).name;
+            self.errors.diagrameTemplate[node.group][obj.nodeID].associations[region.RegionData.Key] =
+              region.RegionData.AssociationTypeScriptName + " => " + cwAPI.mm.getObjectType(region.RegionData.TargetObjectTypeScriptName).name;
           }
         });
 
@@ -124,27 +147,27 @@
         diagC.pictureGalleryLoader = new cwApi.CwPictureGalleryLoader.Loader(diagC);
 
         if (this.errorOnRegion === undefined) this.errorOnRegion = false;
-        diagC.loadRegionExplosionWithRuleAndRefProp = function() {
+        diagC.loadRegionExplosionWithRuleAndRefProp = function () {
           if (self.errors.explosionRegion !== true) {
             console.log("Explosion Region are not Supported Yet");
             self.errors.explosionRegion = true;
           }
         };
-        diagC.getNavigationDiagramsForObject = function() {
+        diagC.getNavigationDiagramsForObject = function () {
           if (self.errors.navigationRegion !== true) {
             console.log("Navigation Region are not Supported Yet");
             self.errors.navigationRegion = true;
           }
         };
 
-        diagC.getExplodedDiagramsForObject = function() {
+        diagC.getExplodedDiagramsForObject = function () {
           if (self.errors.navigationRegion !== true) {
             console.log("Navigation Region are not Supported Yet");
             self.errors.navigationRegion = true;
           }
         };
 
-        diagC.getDiagramPopoutForShape = function() {};
+        diagC.getDiagramPopoutForShape = function () {};
         var shapeObj = new cwApi.Diagrams.CwDiagramShape(shape, palette, diagC);
 
         shapeObj.draw(ctx);
@@ -155,13 +178,13 @@
     }
   };
 
-  cwLayoutNetwork.prototype.loadDiagramTemplate = function(templateListUrl, callback) {
+  cwLayoutNetwork.prototype.loadDiagramTemplate = function (templateListUrl, callback) {
     var self = this;
     this.diagramTemplate = {};
     var idToLoad = [];
     var idLoaded = 0;
     if (this.expertModeAvailable) {
-      $.getJSON(cwApi.getLiveServerURL() + "page/" + templateListUrl + "?" + cwApi.getDeployNumber(), function(json) {
+      $.getJSON(cwApi.getLiveServerURL() + "page/" + templateListUrl + "?" + cwApi.getDeployNumber(), function (json) {
         if (json) {
           for (var associationNode in json) {
             if (json.hasOwnProperty(associationNode)) {
@@ -171,9 +194,9 @@
             }
           }
           if (idToLoad.length === 0) callback();
-          idToLoad.forEach(function(id) {
+          idToLoad.forEach(function (id) {
             var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + cwApi.getDeployNumber();
-            $.getJSON(url, function(json) {
+            $.getJSON(url, function (json) {
               if (json.status === "Ok") {
                 self.diagramTemplate[id] = json.result;
               } else {
@@ -193,9 +216,9 @@
         }
       }
       if (idToLoad.length === 0) callback();
-      idToLoad.forEach(function(id) {
+      idToLoad.forEach(function (id) {
         var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + cwApi.getDeployNumber();
-        $.getJSON(url, function(json) {
+        $.getJSON(url, function (json) {
           if (json.status === "Ok") {
             self.diagramTemplate[id] = json.result;
             idLoaded = idLoaded + 1;
@@ -206,23 +229,23 @@
     }
   };
 
-  cwLayoutNetwork.prototype.loadDiagramImage = function(callback) {
+  cwLayoutNetwork.prototype.loadDiagramImage = function (callback) {
     var self = this;
     let imageToLoad = [];
     let imageLoaded = 0;
-    Object.keys(this.diagramTemplate).forEach(function(key) {
+    Object.keys(this.diagramTemplate).forEach(function (key) {
       let template = self.diagramTemplate[key];
-      Object.keys(template.diagram.paletteEntries).forEach(function(p) {
+      Object.keys(template.diagram.paletteEntries).forEach(function (p) {
         let palette = template.diagram.paletteEntries[p];
         if (palette.PictureUuid && imageToLoad.indexOf(palette.PictureUuid) === -1) {
           imageToLoad.push(palette.PictureUuid);
         }
-        palette.Regions.forEach(function(region) {
+        palette.Regions.forEach(function (region) {
           if (region.PictureUuid && imageToLoad.indexOf(region.PictureUuid) === -1) {
             imageToLoad.push(region.PictureUuid);
           }
           if (region.BandingRows && region.BandingRows.length > 0) {
-            region.BandingRows.forEach(function(b) {
+            region.BandingRows.forEach(function (b) {
               if (b.PictureUuid && imageToLoad.indexOf(b.PictureUuid) === -1) {
                 imageToLoad.push(b.PictureUuid);
               }
@@ -246,7 +269,7 @@
       }
     }
 
-    imageToLoad.forEach(function(uuid) {
+    imageToLoad.forEach(function (uuid) {
       var image = new Image();
       image.src = picturesPath + uuid + ".png?" + cwApi.getDeployNumber();
       cwApi.CwPictureGalleryLoader.images[uuid] = image;
@@ -255,7 +278,7 @@
     });
   };
 
-  cwLayoutNetwork.prototype.getStepForNode = function(nodeId) {
+  cwLayoutNetwork.prototype.getStepForNode = function (nodeId) {
     let ystep;
     let node = this.nodes.get(nodeId);
     var group = this.networkUI.groups.get(node.group);
@@ -268,9 +291,9 @@
     return ystep;
   };
 
-  cwLayoutNetwork.prototype.positionClusters = function(ctx) {
+  cwLayoutNetwork.prototype.positionClusters = function (ctx) {
     var self = this;
-    self.clusters.forEach(function(cluster) {
+    self.clusters.forEach(function (cluster) {
       var headPosition = self.networkUI.getPositions(cluster.head);
       headPosition = headPosition[cluster.head];
       var n = cluster.nodes.length;
@@ -316,17 +339,17 @@
   };
 
   // overload Evolve method to avoid error if association not exist
-  cwAPI.Diagrams.CwDiagramShape.prototype.getAssociationTypeCustomRegionText = function(region) {
+  cwAPI.Diagrams.CwDiagramShape.prototype.getAssociationTypeCustomRegionText = function (region) {
     var sourceObj,
       targetObjs,
       list = [];
     sourceObj = this.shape.cwObject;
     targetObjs = sourceObj.associations[region.RegionData.Key];
     if (targetObjs) {
-      targetObjs.forEach(function(targetObj) {
+      targetObjs.forEach(function (targetObj) {
         if (region.RegionData.IntersectionCategory < 0 || region.RegionData.IntersectionCategory === targetObj.iProperties.type_id) {
           var text = "";
-          region.RegionData.PropertiesSection.forEach(function(property) {
+          region.RegionData.PropertiesSection.forEach(function (property) {
             if (property.PropertyTypeScriptName !== null) {
               if (property.ObjectTypeScriptName.toLowerCase() === sourceObj.objectTypeScriptName) {
                 text = text + sourceObj.properties[property.PropertyTypeScriptName.toLowerCase()];

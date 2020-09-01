@@ -1,22 +1,22 @@
 /* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
 
 /*global cwAPI, jQuery */
-(function(cwApi, $) {
+(function (cwApi, $) {
   "use strict";
   if (cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
     var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
   } else {
     // constructor
-    var cwLayoutNetwork = function(options, viewSchema) {
+    var cwLayoutNetwork = function (options, viewSchema) {
       cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
       cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
       this.construct(options);
     };
   }
 
-  cwLayoutNetwork.prototype.getItemDisplayString = function(item) {
+  cwLayoutNetwork.prototype.getItemDisplayString = function (item) {
     var l,
-      getDisplayStringFromLayout = function(layout) {
+      getDisplayStringFromLayout = function (layout) {
         return layout.displayProperty.getDisplayString(item);
       };
     if (item.nodeID === this.nodeID) {
@@ -33,11 +33,11 @@
     return getDisplayStringFromLayout(this.layoutsByNodeId[item.nodeID]);
   };
 
-  cwLayoutNetwork.prototype.getAssociationDisplayString = function(item) {
+  cwLayoutNetwork.prototype.getAssociationDisplayString = function (item) {
     var assoNodeID,
       assoItem = {},
       l,
-      getDisplayStringFromLayout = function(layout, assoItem) {
+      getDisplayStringFromLayout = function (layout, assoItem) {
         return layout.displayProperty.getDisplayString(assoItem);
       };
     try {
@@ -59,7 +59,7 @@
     }
   };
 
-  cwLayoutNetwork.prototype.simplify = function(child, father, hiddenNode) {
+  cwLayoutNetwork.prototype.simplify = function (child, father, hiddenNode) {
     var childrenArray = [];
     var filterArray = [];
     var filtersGroup = [];
@@ -78,7 +78,7 @@
             filterElement.name = child.associations[associationNode][i].name;
             filterElement.object_id = child.associations[associationNode][i].object_id;
 
-            this.nodeFiltered[associationNode].forEach(function(groupFilterName) {
+            this.nodeFiltered[associationNode].forEach(function (groupFilterName) {
               self.externalFilters[groupFilterName].addfield(filterElement.name, filterElement.object_id);
               if (groupFilter[groupFilterName]) {
                 groupFilter[groupFilterName].push(filterElement.object_id);
@@ -132,7 +132,8 @@
             if (this.groupsArt.hasOwnProperty(element.group) === false) {
               let o = this.options.CustomOptions["iconGroup"];
               if (o !== "") o = "||" + o;
-              this.options.CustomOptions["iconGroup"] = element.group + "," + "ellipse" + ",#" + Math.floor(Math.random() * 16777215).toString(16) + o;
+              this.options.CustomOptions["iconGroup"] =
+                element.group + "," + "ellipse" + ",#" + Math.floor(Math.random() * 16777215).toString(16) + o;
               this.getFontAwesomeList(this.options.CustomOptions["iconGroup"]);
             } else {
               if (this.groupsArt[element.group].diagram === true && this.diagramTemplate[this.groupsArt[element.group].diagramTemplateID]) {
@@ -141,7 +142,13 @@
             }
 
             // add objectType ScriptName to group
-            if (element.group && element.objectTypeScriptName && this.groupsArt[element.group] && this.groupsArt[element.group].objectTypes && this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1) {
+            if (
+              element.group &&
+              element.objectTypeScriptName &&
+              this.groupsArt[element.group] &&
+              this.groupsArt[element.group].objectTypes &&
+              this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1
+            ) {
               this.groupsArt[element.group].objectTypes.push(element.objectTypeScriptName);
             }
 
@@ -159,8 +166,8 @@
               }
 
               element.filterArray = filterArray;
-              filtersGroup.forEach(function(filterGroup) {
-                Object.keys(filterGroup).map(function(filterKey, index) {
+              filtersGroup.forEach(function (filterGroup) {
+                Object.keys(filterGroup).map(function (filterKey, index) {
                   // On ajoute le edge et les éléments pères, fils
                   self.externalFilters[filterKey].addEdgeToFields(filterGroup[filterKey], element.edge);
                   self.externalFilters[filterKey].addNodeToFields(filterGroup[filterKey], father);
@@ -200,15 +207,15 @@
         }
       }
     }
-    filtersGroup.forEach(function(filterGroup) {
-      Object.keys(filterGroup).map(function(filterKey, index) {
+    filtersGroup.forEach(function (filterGroup) {
+      Object.keys(filterGroup).map(function (filterKey, index) {
         self.externalFilters[filterKey].addNodeToFields(filterGroup[filterKey], father);
       });
     });
     return childrenArray;
   };
 
-  cwLayoutNetwork.prototype.getSpecificProperties = function(nextChild, element) {
+  cwLayoutNetwork.prototype.getSpecificProperties = function (nextChild, element) {
     if (nextChild.properties.icon && nextChild.properties.color) {
       element.icon = {};
       element.icon.code = nextChild.properties.icon;
@@ -216,7 +223,7 @@
     } else element.icon = null;
   };
 
-  cwLayoutNetwork.prototype.multiLine = function(name, size) {
+  cwLayoutNetwork.prototype.multiLine = function (name, size) {
     if (name && size !== "" && size > 0) {
       var nameSplit = name.split(" ");
       var carry = 0;
@@ -239,7 +246,7 @@
   };
 
   // obligatoire appeler par le system
-  cwLayoutNetwork.prototype.manageDataFromEvolve = function(object) {
+  cwLayoutNetwork.prototype.manageDataFromEvolve = function (object) {
     this.objects = {};
 
     if (!cwAPI.isIndexPage() && object.objectTypeScriptName === this.definition.capinetworkScriptname && object.properties.configuration) {
@@ -252,7 +259,7 @@
     // keep the node of the layout
     assoNode[this.mmNode.NodeID] = object.associations[this.mmNode.NodeID];
     // complementary node
-    this.complementaryNode.forEach(function(nodeID) {
+    this.complementaryNode.forEach(function (nodeID) {
       if (object.associations[nodeID]) {
         assoNode[nodeID] = object.associations[nodeID];
       }
@@ -278,7 +285,7 @@
     return simplifyObject;
   };
   // obligatoire appeler par le system
-  cwLayoutNetwork.prototype.drawAssociations = function(output, associationTitleText, object) {
+  cwLayoutNetwork.prototype.drawAssociations = function (output, associationTitleText, object) {
     try {
       if (cwApi.customLibs.utils === undefined || cwAPI.customLibs.utils.version === undefined || cwAPI.customLibs.utils.version < 2.0) {
         output.push("<h2> Please Install Utils library 2.0 or higher</h2>");
@@ -296,22 +303,65 @@
       output.push('<div class="bootstrap-iso cwLayoutNetworkSearchBox" id="cwLayoutNetworkSearchBox' + this.nodeID + '"></div>');
 
       output.push('<div class="cwLayoutNetworkToolBox" id="cwLayoutNetworkToolBox' + this.nodeID + '">');
-      output.push('<a class="btn page-action no-text fa fa-filter" id="cwLayoutNetworkButtonsFilters' + this.nodeID + '" title="' + $.i18n.prop("filter") + '"></a>');
-      output.push('<a class="btn page-action no-text fa fa-cogs" id="cwLayoutNetworkButtonsOptions' + this.nodeID + '" title="' + $.i18n.prop("option") + '"></i></a>');
-      output.push('<a class="btn page-action no-text fa fa-arrows-alt" id="cwLayoutNetworkButtonsFit' + this.nodeID + '" title="' + $.i18n.prop("deDiagramOptionsButtonFitToScreen") + '"></a>');
-      output.push('<a class="btn page-action no-text fa fa-download" id="cwLayoutNetworkButtonsDownload' + this.nodeID + '" title="' + $.i18n.prop("download") + '"></a>');
+      output.push(
+        '<a class="btn page-action no-text fa fa-filter" id="cwLayoutNetworkButtonsFilters' +
+          this.nodeID +
+          '" title="' +
+          $.i18n.prop("filter") +
+          '"></a>'
+      );
+      output.push(
+        '<a class="btn page-action no-text fa fa-cogs" id="cwLayoutNetworkButtonsOptions' +
+          this.nodeID +
+          '" title="' +
+          $.i18n.prop("option") +
+          '"></i></a>'
+      );
+      output.push(
+        '<a class="btn page-action no-text fa fa-arrows-alt" id="cwLayoutNetworkButtonsFit' +
+          this.nodeID +
+          '" title="' +
+          $.i18n.prop("deDiagramOptionsButtonFitToScreen") +
+          '"></a>'
+      );
+      output.push(
+        '<a class="btn page-action no-text fa fa-download" id="cwLayoutNetworkButtonsDownload' +
+          this.nodeID +
+          '" title="' +
+          $.i18n.prop("download") +
+          '"></a>'
+      );
+      output.push(
+        '<a class="btn page-action no-text fa fa-files-o" id="cwLayoutNetworkButtonsClipboard' +
+          this.nodeID +
+          '" title="' +
+          $.i18n.prop("download") +
+          '"></a>'
+      );
       output.push("</div>");
       output.push("</div>");
 
       output.push('<div class="cwLayoutNetworkButtons cw-hidden" id="cwLayoutNetworkAction' + this.nodeID + '">');
-      if (this.physicsOption && this.hidePhysicsButton === false) output.push('<button class="k-grid k-button" id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '">' + $.i18n.prop("disablephysics") + "</button>");
+      if (this.physicsOption && this.hidePhysicsButton === false)
+        output.push(
+          '<button class="k-grid k-button" id="cwLayoutNetworkButtonsPhysics' + this.nodeID + '">' + $.i18n.prop("disablephysics") + "</button>"
+        );
       output.push('<button class="k-grid k-button" id="cwLayoutNetworkDeselectAll' + this.nodeID + '">' + $.i18n.prop("deselectall") + "</button>");
       output.push('<button class="k-grid k-button" id="cwLayoutNetworkSelectAll' + this.nodeID + '">' + $.i18n.prop("selectall") + "</button>");
-      if (this.edgeOption && this.hideEdgeButton === false) output.push('<button class="k-grid k-button" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '">' + $.i18n.prop("unzip_edge") + "</button>");
-      if (this.removeLonely) output.push('<button class="k-button" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '">' + $.i18n.prop("remove_lonely_node") + "</button>");
-      output.push('<button class="k-grid k-button" id="cwLayoutNetworkButtonsBehaviour' + this.nodeID + '">' + $.i18n.prop("behaviour_highlight") + "</button>");
+      if (this.edgeOption && this.hideEdgeButton === false)
+        output.push(
+          '<button class="k-grid k-button" id="cwLayoutNetworkButtonsZipEdge' + this.nodeID + '">' + $.i18n.prop("unzip_edge") + "</button>"
+        );
+      if (this.removeLonely)
+        output.push(
+          '<button class="k-button" id="cwLayoutNetworkButtonsLonelyNodes' + this.nodeID + '">' + $.i18n.prop("remove_lonely_node") + "</button>"
+        );
+      output.push(
+        '<button class="k-grid k-button" id="cwLayoutNetworkButtonsBehaviour' + this.nodeID + '">' + $.i18n.prop("behaviour_highlight") + "</button>"
+      );
 
-      if (this.expertModeAvailable) output.push('<button class="k-grid k-button" id="cwLayoutNetworkExpertModeButton' + this.nodeID + '">Expert Mode</button>');
+      if (this.expertModeAvailable)
+        output.push('<button class="k-grid k-button" id="cwLayoutNetworkExpertModeButton' + this.nodeID + '">Expert Mode</button>');
       output.push("</div>");
 
       output.push('<div id="cwLayoutNetworkFilter' + this.nodeID + '" class="cw-hidden"></div>');
@@ -326,7 +376,7 @@
     }
   };
 
-  cwLayoutNetwork.prototype.addObjectOfObjectPage = function(simplifyObject, object) {
+  cwLayoutNetwork.prototype.addObjectOfObjectPage = function (simplifyObject, object) {
     var rootID,
       element = {};
     element.name = this.multiLine(object.name, this.multiLineCount);
@@ -365,7 +415,13 @@
     this.originalObjects[element.object_id + "#" + element.objectTypeScriptName] = object;
 
     // add objectType ScriptName to group
-    if (element.group && element.objectTypeScriptName && this.groupsArt[element.group] && this.groupsArt[element.group].objectTypes && this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1) {
+    if (
+      element.group &&
+      element.objectTypeScriptName &&
+      this.groupsArt[element.group] &&
+      this.groupsArt[element.group].objectTypes &&
+      this.groupsArt[element.group].objectTypes.indexOf(element.objectTypeScriptName) === -1
+    ) {
       this.groupsArt[element.group].objectTypes.push(element.objectTypeScriptName);
     }
 

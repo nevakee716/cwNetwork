@@ -172,6 +172,9 @@
     var downloadButton = document.getElementById("cwLayoutNetworkButtonsDownload" + this.nodeID);
     downloadButton.addEventListener("click", this.downloadImage.bind(this));
 
+    var clipBoardButton = document.getElementById("cwLayoutNetworkButtonsClipboard" + this.nodeID);
+    clipBoardButton.addEventListener("click", this.clipBoardImage.bind(this));
+
     var filterButton = document.getElementById("cwLayoutNetworkButtonsFilters" + this.nodeID);
     filterButton.addEventListener("click", this.manageFilterButton.bind(this));
 
