@@ -27,8 +27,7 @@
       var titleReact = document.querySelector("#cw-top-bar").getBoundingClientRect();
       let topBar = document.querySelector(".page-top");
       let topBarHeight = 52;
-      if (topBar) topBarHeight = topBar.getBoundingClientRect().height;
-      var canvaHeight = window.innerHeight - titleReact.height - topBarHeight;
+      var canvaHeight = window.innerHeight - 92 - 1.25 * parseFloat(getComputedStyle(document.documentElement).fontSize);
       networkContainer.setAttribute("style", "height:" + canvaHeight + "px");
 
       if (cwAPI.isDebugMode() === true) {
