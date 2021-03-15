@@ -25,11 +25,12 @@
       if ((container.offsetWidth * 2) / scale > 10000) scale = container.offsetWidth / 5000;
       container.style.width = ((container.offsetWidth * 2) / scale).toString() + "px";
       container.style.height = ((container.offsetHeight * 2) / scale).toString() + "px";
+      this.networkUI.background = true;
       this.networkUI.redraw();
       cwAPI.customLibs.utils.copyCanvasToClipboard(container.firstElementChild.firstElementChild);
       container.style.height = oldheight + "px";
       container.style.width = "";
-
+      this.networkUI.background = false;
       this.networkUI.redraw();
       this.networkUI.fit();
     } catch (e) {
@@ -46,11 +47,6 @@
       var actionContainer = document.getElementById("cwLayoutNetworkAction" + self.nodeID);
       actionContainer.appendChild(link);
       link.style = "display: none";
-      //link.download = name;
-      //link.href = uri;
-      //link.click();
-      //var blob = new Blob([uri], { type: "image/png" });
-      //window.navigator.msSaveOrOpenBlob(uri, name);
 
       if (canvas.msToBlob) {
         //for IE
@@ -64,21 +60,7 @@
           link.style = "display: block";
           link.click();
           link.remove();
-          // create a mouse event
-          //var event = new MouseEvent('click');
-
-          // dispatching it will open a save as dialog in FF
-          //link.dispatchEvent(event);
         }, "image/png");
-
-        ////other browsers
-        //link.href = canvas.toDataURL('image/png');
-        //link.download = name;
-        //// create a mouse event
-        //var event = new MouseEvent('click');
-
-        //// dispatching it will open a save as dialog in FF
-        //link.dispatchEvent(event);
       }
     }
 
@@ -90,12 +72,13 @@
       if ((container.offsetWidth * 2) / scale > 10000) scale = container.offsetWidth / 5000;
       container.style.width = ((container.offsetWidth * 2) / scale).toString() + "px";
       container.style.height = ((container.offsetHeight * 2) / scale).toString() + "px";
+      this.networkUI.background = true;
       this.networkUI.redraw();
       downloadURI(container.firstElementChild.firstElementChild, cwAPI.getPageTitle() + ".png");
       //            this.networkUI.on("afterDrawing", function(ctx) {});
       container.style.height = oldheight + "px";
       container.style.width = "";
-
+      this.networkUI.background = false;
       this.networkUI.redraw();
       this.networkUI.fit();
     } catch (e) {

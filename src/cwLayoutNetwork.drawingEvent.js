@@ -17,15 +17,18 @@
   cwLayoutNetwork.prototype.beforeDrawing = function (ctx) {
     var container = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
 
-    // save current translate/zoom
-    ctx.save();
-    // reset transform to identity
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    // fill background with solid white
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    // restore old transform
-    ctx.restore();
+    if (this.networkUI.background) {
+      // save current translate/zoom
+      ctx.save();
+      // reset transform to identity
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      // fill background with solid white
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      // restore old transform
+      ctx.restore();
+    }
+
     this.positionClusters(ctx);
     //if (this.diagramTemplate) this.diagramDesign(ctx);
   };
