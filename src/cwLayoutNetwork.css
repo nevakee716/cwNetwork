@@ -29,6 +29,15 @@
 .bootstrap-select.btn-group[class*="span"] {
   margin: 0 !important;
 }
+.homePage_evolveView .cwLayoutNetwork {
+  border: none;
+  position: relative;
+}
+.homePage_evolveView .cwLayoutNetwork .cwLayoutNetworkOption {
+  top: unset;
+  margin-top: 0.25rem;
+  right: 0px;
+}
 .cwLayoutNetwork {
   display: block;
   width: 100%;

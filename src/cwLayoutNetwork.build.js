@@ -20,6 +20,7 @@
       var self = this;
       var libToLoad = [];
 
+      let wrapper = document.querySelector("#cwLayoutNetwork" + this.nodeID);
       var networkContainer = document.getElementById("cwLayoutNetworkCanva" + this.nodeID);
       this.createLoadingElement(networkContainer.parentNode);
 
@@ -27,7 +28,16 @@
       var titleReact = document.querySelector("#cw-top-bar").getBoundingClientRect();
       let topBar = document.querySelector(".page-top");
       let topBarHeight = 52;
-      var canvaHeight = window.innerHeight - 94 - 1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+      var canvaHeight ;
+
+
+      let checkIfInaDisplay = document.querySelector(".homePage_evolveView  #cwLayoutNetwork" + this.nodeID);
+
+      if (!checkIfInaDisplay) {
+        canvaHeight = window.innerHeight - 94 - 1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+      } else {
+        canvaHeight = wrapper.offsetHeight  - 1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+      }
       networkContainer.setAttribute("style", "height:" + canvaHeight + "px");
 
       if (cwAPI.isDebugMode() === true) {
