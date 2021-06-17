@@ -387,6 +387,11 @@
     if (this.viewSchema.rootID && this.viewSchema.rootID.length > 0) {
       rootID = this.viewSchema.rootID[0];
     }
+    if (this.viewSchema.RootNodesId && this.viewSchema.RootNodesId.length > 0) {
+      rootID = this.viewSchema.RootNodesId[0];
+    }
+
+    if (this.hiddenNodes.indexOf(rootID) !== -1) return simplifyObject;
 
     // on check si l'element appartient deja a un group
     if (!this.objects.hasOwnProperty(element.object_id + "#" + element.objectTypeScriptName)) {
