@@ -28,15 +28,14 @@
       var titleReact = document.querySelector("#cw-top-bar").getBoundingClientRect();
       let topBar = document.querySelector(".page-top");
       let topBarHeight = 52;
-      var canvaHeight ;
-
+      var canvaHeight;
 
       let checkIfInaDisplay = document.querySelector(".homePage_evolveView  #cwLayoutNetwork" + this.nodeID);
 
       if (!checkIfInaDisplay) {
         canvaHeight = window.innerHeight - 94 - 1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize);
       } else {
-        canvaHeight = wrapper.offsetHeight  - 1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+        canvaHeight = wrapper.offsetHeight - 1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize);
       }
       networkContainer.setAttribute("style", "height:" + canvaHeight + "px");
 
@@ -207,7 +206,14 @@
     this.activateStartingEdgeType();
 
     if (this.startingNetwork && this.networkConfiguration && this.networkConfiguration.nodes) {
-      let startCwApiNetwork = this.networkConfiguration.nodes[Object.keys(this.networkConfiguration.nodes)[0]];
+      let qNetworkId = cwApi.getQueryStringObject().cwNetwork;
+      let startCwApiNetwork;
+      if (qNetworkId !== undefined) {
+        startCwApiNetwork = this.networkConfiguration.nodes[qNetworkId];
+      } else {
+        startCwApiNetwork = this.networkConfiguration.nodes[Object.keys(this.networkConfiguration.nodes)[0]];
+      }
+
       if (startCwApiNetwork && startCwApiNetwork.configuration) {
         this.networkUI = new vis.Network(networkContainer, data, this.networkOptions);
         this.loadCwApiNetwork(startCwApiNetwork.configuration);
