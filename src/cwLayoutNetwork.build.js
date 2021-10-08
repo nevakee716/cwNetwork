@@ -204,9 +204,8 @@
     this.nodes.on("remove", this.removeSearchFilterElement.bind(this));
 
     this.activateStartingEdgeType();
-
-    if (this.startingNetwork && this.networkConfiguration && this.networkConfiguration.nodes) {
-      let qNetworkId = cwApi.getQueryStringObject().cwNetwork;
+    let qNetworkId = cwApi.getQueryStringObject().cwNetwork;
+    if ((this.startingNetwork || qNetworkId !== undefined) && this.networkConfiguration && this.networkConfiguration.nodes) {
       let startCwApiNetwork;
       if (qNetworkId !== undefined) {
         startCwApiNetwork = this.networkConfiguration.nodes[qNetworkId];
