@@ -31,10 +31,10 @@
           "val",
           $(this)
             .val()
-            .concat(groupArray[$(this).context.name])
+            .concat(groupArray[$(this).attr("name")])
         );
       } else {
-        $(this).selectpicker("val", groupArray[$(this).context.name]);
+        $(this).selectpicker("val", groupArray[$(this).attr("name")]);
       }
     });
   };
