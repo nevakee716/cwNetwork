@@ -1,20 +1,20 @@
 /* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
 
 /*global cwAPI, jQuery */
-(function(cwApi, $) {
+(function (cwApi, $) {
   "use strict";
   if (cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
     var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
   } else {
     // constructor
-    var cwLayoutNetwork = function(options, viewSchema) {
+    var cwLayoutNetwork = function (options, viewSchema) {
       cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
       cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
       this.construct(options);
     };
   }
 
-  cwLayoutNetwork.prototype.construct = function(options) {
+  cwLayoutNetwork.prototype.construct = function (options) {
     this.definition = {};
     this.definition.capinetworkScriptname = "capinetwork";
     this.definition.capinetworkDisplayname = "Network";
@@ -31,19 +31,32 @@
     this.networkConfiguration.nodes = {};
     this.expertMode = false;
     this.expertModeAvailable = this.options.CustomOptions["expertMode"];
+    this.preventEdgeBetweenSameNode = this.options.CustomOptions["preventEdgeBetweenSameNode"];
 
     this.imageTemplate = {};
     this.errors = {};
     this.errors.diagrameTemplate = {};
     this.errors.init = false;
     try {
-      this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(this.definition.capinetworkScriptname, this.definition.capinetworkCreateOnViewScriptname).name;
-      this.definition.capinetworkConfigurationDisplayname = cwAPI.mm.getProperty(this.definition.capinetworkScriptname, this.definition.capinetworkConfigurationScriptname).name;
+      this.definition.capinetworkCreateOnViewDisplayName = cwAPI.mm.getProperty(
+        this.definition.capinetworkScriptname,
+        this.definition.capinetworkCreateOnViewScriptname
+      ).name;
+      this.definition.capinetworkConfigurationDisplayname = cwAPI.mm.getProperty(
+        this.definition.capinetworkScriptname,
+        this.definition.capinetworkConfigurationScriptname
+      ).name;
 
-      if (cwAPI.cwUser.isCurrentUserSocial() === false && cwAPI.mm.getLookupsOnAccessRights(this.definition.capinetworkScriptname, "CanCreate").length > 0) {
+      if (
+        cwAPI.cwUser.isCurrentUserSocial() === false &&
+        cwAPI.mm.getLookupsOnAccessRights(this.definition.capinetworkScriptname, "CanCreate").length > 0
+      ) {
         this.canCreateNetwork = true;
       }
-      if (cwAPI.cwUser.isCurrentUserSocial() === false && cwAPI.mm.getLookupsOnAccessRights(this.definition.capinetworkScriptname, "CanUpdate").length > 0) {
+      if (
+        cwAPI.cwUser.isCurrentUserSocial() === false &&
+        cwAPI.mm.getLookupsOnAccessRights(this.definition.capinetworkScriptname, "CanUpdate").length > 0
+      ) {
         this.canUpdateNetwork = true;
       }
     } catch (e) {
@@ -152,6 +165,7 @@
     this.nodeOptions = {
       CDSFilterOption: this.CDSFilterOption,
       CDSNodesOption: this.CDSNodesOption,
+      preventEdgeBetweenSameNode: this.preventEdgeBetweenSameNode,
     };
 
     this.filterBoxShowed = false;

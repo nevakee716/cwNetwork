@@ -189,6 +189,12 @@
       "DisplayName": "Duplicate the nodeIDS",
       "Description": "list the nodeIDs splitter is a comma",
       "Type": 0
+    },
+    {
+      "Id": "preventEdgeBetweenSameNode",
+      "DisplayName": "Prevent Edge Between same nodes",
+      "Description": "Won't Display Edge between the same Node",
+      "Type": 1
     }
   ]
 }
