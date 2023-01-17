@@ -170,7 +170,7 @@
           }
         };
 
-        diagC.getDiagramPopoutForShape = function () { };
+        diagC.getDiagramPopoutForShape = function () {};
         var shapeObj = new cwApi.Diagrams.CwDiagramShape(shape, palette, diagC);
 
         shapeObj.draw(ctx);
@@ -181,15 +181,13 @@
     }
   };
 
-
-
   cwLayoutNetwork.prototype.loadDiagramTemplate = function (templateListUrl, callback) {
     var self = this;
     this.diagramTemplate = {};
     var idToLoad = [];
     var idLoaded = 0;
     if (this.expertModeAvailable) {
-      console.log("expert mode loading all templates")
+      console.log("expert mode loading all templates");
       $.getJSON(cwApi.getLiveServerURL() + "page/" + templateListUrl + "?" + cwApi.getDeployNumber(), function (json) {
         if (json) {
           for (var associationNode in json) {
@@ -201,7 +199,42 @@
           }
           if (idToLoad.length === 0) callback();
 
-          async.mapLimit(idToLoad,3, (id, callback) => {
+          async.mapLimit(
+            idToLoad,
+            3,
+            (id, callback) => {
+              console.log("try to get " + id);
+              var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + cwApi.getDeployNumber();
+              $.getJSON(url, function (json) {
+                if (json.status === "Ok") {
+                  self.diagramTemplate[id] = json.result;
+                  console.log("Load Diagram Template ID : " + id);
+                } else {
+                  console.log("Failed to Load Diagram Template ID : " + id);
+                }
+                callback(null);
+              });
+            },
+            function (err, results) {
+              self.loadDiagramImage(callback);
+              console.log("Templates Loaded");
+            }
+          );
+        }
+      });
+    } else {
+      for (var group in this.groupsArt) {
+        if (this.groupsArt[group] && this.groupsArt[group].diagramTemplateID !== undefined) {
+          var id = this.groupsArt[group].diagramTemplateID;
+          idToLoad.push(id);
+        }
+      }
+      if (idToLoad.length === 0) callback();
+      else {
+        async.mapLimit(
+          idToLoad,
+          3,
+          (id, callback) => {
             console.log("try to get " + id);
             var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + cwApi.getDeployNumber();
             $.getJSON(url, function (json) {
@@ -213,36 +246,13 @@
               }
               callback(null);
             });
-          }, function (err, results) {
+          },
+          function (err, results) {
             self.loadDiagramImage(callback);
             console.log("Templates Loaded");
-          });
-        };
-      });
-    } else {
-      for (var group in this.groupsArt) {
-        if (this.groupsArt[group] && this.groupsArt[group].diagramTemplateID !== undefined) {
-          var id = this.groupsArt[group].diagramTemplateID;
-          idToLoad.push(id);
-        }
-      }
-      if (idToLoad.length === 0) callback();
-      async.mapLimit(idToLoad,3, (id, callback) => {
-        console.log("try to get " + id);
-        var url = cwApi.getLiveServerURL() + "Diagram/Vector/" + id + "?" + cwApi.getDeployNumber();
-        $.getJSON(url, function (json) {
-          if (json.status === "Ok") {
-            self.diagramTemplate[id] = json.result;
-            console.log("Load Diagram Template ID : " + id);
-          } else {
-            console.log("Failed to Load Diagram Template ID : " + id);
           }
-          callback(null);
-        });
-      }, function (err, results) {
-        self.loadDiagramImage(callback);
-        console.log("Templates Loaded");
-      });
+        );
+      }
     }
   };
 
@@ -279,27 +289,28 @@
       picturesPath = cwAPI.getLiveServerURL() + "pictures/gallerypictures/uuid/";
     }
 
-
-    async.mapLimit(imageToLoad,3, (uuid, callbackAsyncSeries) => {
-      console.log("try to get image " + uuid);
-      var image = new Image();
-      image.src = picturesPath + uuid + ".png?" + cwApi.getDeployNumber();
-      cwApi.CwPictureGalleryLoader.images[uuid] = image;
-      image.onload = () => {
-        console.log("got image " + uuid);
-        callbackAsyncSeries(null,uuid);
+    async.mapLimit(
+      imageToLoad,
+      3,
+      (uuid, callbackAsyncSeries) => {
+        console.log("try to get image " + uuid);
+        var image = new Image();
+        image.src = picturesPath + uuid + ".png?" + cwApi.getDeployNumber();
+        cwApi.CwPictureGalleryLoader.images[uuid] = image;
+        image.onload = () => {
+          console.log("got image " + uuid);
+          callbackAsyncSeries(null, uuid);
+        };
+        image.onerror = () => {
+          console.log("error image " + uuid);
+          callbackAsyncSeries(null, uuid);
+        };
+      },
+      function (err, results) {
+        console.log("Images Loaded");
+        callback();
       }
-      image.onerror = () => {
-        console.log("error image " + uuid);
-        callbackAsyncSeries(null,uuid);
-      }
-    }, function (err, results) {
-      console.log("Images Loaded");
-      callback();
-   
-    });
-
-
+    );
   };
 
   cwLayoutNetwork.prototype.getStepForNode = function (nodeId) {
