@@ -282,7 +282,10 @@
       });
     });
 
-    if (imageToLoad.length === 0) callback();
+    if (imageToLoad.length === 0) {
+      callback();
+      return;
+    }
 
     let picturesPath = cwAPI.getSiteMediaPath() + "images/gallerypictures/";
     if (cwAPI.isLive()) {
