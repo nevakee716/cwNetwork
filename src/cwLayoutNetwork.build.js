@@ -42,13 +42,17 @@
       if (cwAPI.isDebugMode() === true) {
         self.loadDiagramTemplate("z_diagram_template", self.createNetworkData.bind(self));
       } else {
-        libToLoad = [
-          "modules/bootstrap/bootstrap.min.js",
-          "modules/bootstrap-select/bootstrap-select.min.js",
-          "modules/vis/vis.min.js",
-          "modules/d3/d3.min.js",
-          "modules/jsTree/jstree.min.js",
-        ];
+        libToLoad =
+          cwAPI.cwConfigs.EnabledVersion.indexOf("v2022") !== -1
+            ? ["modules/d3/d3.min.js", "modules/jsTree/jstree.min.js"]
+            : [
+                "modules/bootstrap/bootstrap.min.js",
+                "modules/bootstrap-select/bootstrap-select.min.js",
+                "modules/vis/vis.min.js",
+                "modules/d3/d3.min.js",
+                "modules/jsTree/jstree.min.js",
+              ];
+
         // AsyncLoad
         cwApi.customLibs.aSyncLayoutLoader.loadUrls(libToLoad, function (error) {
           if (error === null) {
