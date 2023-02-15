@@ -140,8 +140,9 @@
     $("select.selectNetworkSearch_" + this.nodeID).on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
       var changeSet, id, nodeId, i;
       var groupArray = {};
-      if (clickedIndex !== undefined && $(this).children && $(this).children()[clickedIndex]) {
-        id = $(this).children()[clickedIndex].id;
+
+      id = self.checkSelectAllForFilter($(this), clickedIndex);
+      if (id !== null) {
         id = id.replaceAll("¤", " ");
         var options = {
           position: self.networkUI.getPositions()[id],
@@ -376,11 +377,11 @@
     // Event for filter
     // Network Node Selector
     $("select.selectNetworkPicker_" + this.nodeID).on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
-      var group = $(this).attr("id");
-      var scriptname = $(this).attr("scriptname");
-      var changeSet, id, i;
+      var group = cwAPI.cwConfigs.EnabledVersion.indexOf("v2022") !== -1 ? $(this).attr("id") : $(this).context["id"];
+      var changeSet, id;
 
-      if (clickedIndex !== undefined && $(this).children() && $(this).children()[clickedIndex]) {
+      id = self.checkSelectAllForFilter($(this), clickedIndex);
+      if (id !== null) {
         id = $(this).children()[clickedIndex].id;
         if (newValue === false) {
           // hide a node
@@ -395,9 +396,10 @@
         }
       } else {
         // select or deselect all node
-        if ($(this)[0]) {
+        let r = self.getCheckForSelectAll($(this));
+        if (r[0]) {
           var changeSet = self.network.SetAllAndGetNodesObject($(this).val(), group);
-          if ($(this).val().length > 0) {
+          if (r[1]) {
             self.nodes.add(changeSet);
             self.updatePhysics();
           } else {
@@ -415,11 +417,8 @@
     // Event for filter
     // Edge Selector
     $("select.selectNetworkEdge_" + this.nodeID).on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
-      var group = $(this).attr("id");
-      var scriptname = $(this).attr("scriptname");
-      var changeSet, id, nodeId, i;
-
-      if (clickedIndex !== undefined && $(this).children && $(this).children()[clickedIndex]) {
+      let id = self.checkSelectAllForFilter($(this), clickedIndex);
+      if (id !== null) {
         id = $(this).children()[clickedIndex].id;
         if (newValue === false) {
           // hide a node
@@ -432,8 +431,9 @@
         }
       } else {
         // select or deselect all node
-        if ($(this)[0]) {
-          if ($(this).val().length > 0) {
+        let r = self.getCheckForSelectAll($(this));
+        if (r[0]) {
+          if (r[1]) {
             self.showAllEdgesByScriptname();
           } else {
             self.hideAllEdgesByScriptname();
@@ -457,7 +457,8 @@
 
     // Cluster Group Filter Child
     $("select.selectNetworkClusterByGroup_" + this.nodeID + "_child").on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
-      if (clickedIndex !== undefined && $(this).children && $(this).children()[clickedIndex]) {
+      let id = self.checkSelectAllForFilter($(this), clickedIndex);
+      if (id !== null) {
         let option = self.clusterByGroupOption[self.selectedCluster];
         let value = $(this).children()[clickedIndex].value;
         if (newValue === true) {
@@ -474,17 +475,13 @@
 
     // External Filter
     $("select.selectNetworkExternal_" + this.nodeID).on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
-      var group = $(this).attr("id");
       var filterName = $(this).attr("filterName");
-      var nodesArray, id, nodeId, i, changeSet;
-
-      var allNodes;
-
       if (self.behaviour.absolute === true) {
         self.deActivateAllGroup();
       }
 
-      if (clickedIndex !== undefined && $(this).children && $(this).children()[clickedIndex]) {
+      let id = self.checkSelectAllForFilter($(this), clickedIndex);
+      if (id !== null) {
         id = $(this).children()[clickedIndex].id;
         if (newValue === false) {
           // hide a node
@@ -494,9 +491,10 @@
           self.setAllExternalFilter();
         }
       } else {
+        let r = self.getCheckForSelectAll($(this));
         // select or deselect all node
-        if ($(this)[0]) {
-          if ($(this).val().length > 0) {
+        if (r[0]) {
+          if (r[1]) {
             self.addAllExternalFilterValue(filterName, id);
           } else {
             self.removeAllExternalFilterValue(filterName, id);
@@ -509,9 +507,9 @@
     // Event for filter
     // Load a new network
     $("select.selectNetworkConfiguration_" + this.nodeID).on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
-      var changeSet, id, nodeId, i, config;
-      var groupArray = {};
-      if (clickedIndex !== undefined && $(this).children && $(this).children()[clickedIndex]) {
+      let config,
+        id = self.checkSelectAllForFilter($(this), clickedIndex);
+      if (id !== null) {
         id = $(this).children()[clickedIndex].id;
         if (id != 0) {
           config = self.networkConfiguration.nodes[id].configuration;

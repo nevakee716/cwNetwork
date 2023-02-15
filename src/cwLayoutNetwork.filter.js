@@ -1,20 +1,20 @@
 /* Copyright (c) 2012-2013 Casewise Systems Ltd (UK) - All rights reserved */
 
 /*global cwAPI, jQuery */
-(function(cwApi, $) {
+(function (cwApi, $) {
   "use strict";
   if (cwApi && cwApi.cwLayouts && cwApi.cwLayouts.cwLayoutNetwork) {
     var cwLayoutNetwork = cwApi.cwLayouts.cwLayoutNetwork;
   } else {
     // constructor
-    var cwLayoutNetwork = function(options, viewSchema) {
+    var cwLayoutNetwork = function (options, viewSchema) {
       cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
       cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
       this.construct(options);
     };
   }
 
-  cwLayoutNetwork.prototype.fillFilter = function(changeSet) {
+  cwLayoutNetwork.prototype.fillFilter = function (changeSet) {
     var groupArray = {};
     for (i = 0; i < changeSet.length; i += 1) {
       // put all nodes into groups
@@ -24,31 +24,47 @@
       groupArray[changeSet[i].group].push(changeSet[i].label.replace(/\n/g, " "));
     }
 
-    $("select.selectNetworkPicker_" + this.nodeID).each(function(index) {
+    $("select.selectNetworkPicker_" + this.nodeID).each(function (index) {
       // put values into filters
       if ($(this).val()) {
-        $(this).selectpicker(
-          "val",
-          $(this)
-            .val()
-            .concat(groupArray[$(this).attr("name")])
-        );
+        $(this).selectpicker("val", $(this).val().concat(groupArray[$(this).attr("name")]));
       } else {
         $(this).selectpicker("val", groupArray[$(this).attr("name")]);
       }
     });
   };
 
-  cwLayoutNetwork.prototype.fillClusterFilter = function(clusterGroupName) {
+  cwLayoutNetwork.prototype.checkSelectAllForFilter = function (jThis, clickedIndex) {
+    if (cwAPI.cwConfigs.EnabledVersion.indexOf("v2022") !== -1 && $(this)[0] && $(this).val().length > 0) {
+      return true;
+    }
+    if (
+      cwAPI.cwConfigs.EnabledVersion.indexOf("v2022") === -1 &&
+      clickedIndex !== undefined &&
+      jThis.context.children &&
+      jThis.context.children[clickedIndex]
+    ) {
+      return jThis.context.children[clickedIndex].id;
+    }
+    return null;
+  };
+
+  cwLayoutNetwork.prototype.getCheckForSelectAll = function (jThis) {
+    let a = cwAPI.cwConfigs.EnabledVersion.indexOf("v2022") !== -1 ? jThis[0] : jThis.context[0];
+    let b = cwAPI.cwConfigs.EnabledVersion.indexOf("v2022") === -1 ? jThis.val().length > 0 : jThis.context[0].selected === true;
+    return [a, b];
+  };
+
+  cwLayoutNetwork.prototype.fillClusterFilter = function (clusterGroupName) {
     let self = this;
-    $("select.selectNetworkClusterByGroup_" + this.nodeID + "_child").each(function(index) {
+    $("select.selectNetworkClusterByGroup_" + this.nodeID + "_child").each(function (index) {
       if (self.clusterByGroupOption[clusterGroupName] === undefined) self.clusterByGroupOption[clusterGroupName] = [];
       $(this).selectpicker("val", self.clusterByGroupOption[clusterGroupName]);
     });
   };
 
   // Create Filter selector
-  cwLayoutNetwork.prototype.createFilterObjects = function(filterContainer) {
+  cwLayoutNetwork.prototype.createFilterObjects = function (filterContainer) {
     filterContainer.className += " cwLayoutNetork_filterSection";
     filterContainer.innerHTML = "";
     var externalfilter,
