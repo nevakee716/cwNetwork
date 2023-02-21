@@ -14,7 +14,8 @@
     };
   }
 
-  cwLayoutNetwork.prototype.construct = function (options) {
+  // custom object network//pivot
+  cwLayoutNetwork.prototype.getCapipivotScriptnames = function () {
     this.definition = {};
     this.definition.capinetworkScriptname = "capinetwork";
     this.definition.capinetworkDisplayname = "Network";
@@ -24,6 +25,11 @@
     this.definition.capinetworkToAnyAssociationDisplayName = "Present On Network";
     this.definition.capinetworkCreateOnViewScriptname = "createoncwview";
     this.definition.capinetworkConfigurationScriptname = "configuration";
+  };
+
+  cwLayoutNetwork.prototype.construct = function (options) {
+    this.getCapipivotScriptnames();
+
     this.canCreateNetwork = false;
     this.canUpdateNetwork = false;
     this.networkConfiguration = {};
