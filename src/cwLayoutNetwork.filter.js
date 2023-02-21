@@ -35,7 +35,7 @@
   };
 
   cwLayoutNetwork.prototype.checkSelectAllForFilter = function (jThis, clickedIndex) {
-    if (cwAPI.cwConfigs.EnabledVersion.indexOf("v2022") !== -1 && $(this)[0] && $(this).val().length > 0) {
+    if (cwAPI.cwConfigs.EnabledVersion.indexOf("v2022") !== -1 && jThis[0] && jThis.val().length > 0) {
       return true;
     }
     if (
