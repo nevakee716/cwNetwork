@@ -35,7 +35,7 @@
   };
 
   cwLayoutNetwork.prototype.checkSelectAllForFilter = function (jThis, clickedIndex) {
-    if (cwAPI.cwConfigs.EnabledVersion.indexOf("v2022") !== -1 && jThis[0] && jThis.val().length > 0) {
+    if (cwAPI.cwConfigs.EnabledVersion.indexOf("v2022") !== -1 && jThis[0] && jThis.val().length > 0 && clickedIndex !== undefined) {
       return true;
     }
     if (
@@ -51,7 +51,7 @@
 
   cwLayoutNetwork.prototype.getCheckForSelectAll = function (jThis) {
     let a = cwAPI.cwConfigs.EnabledVersion.indexOf("v2022") !== -1 ? jThis[0] : jThis.context[0];
-    let b = cwAPI.cwConfigs.EnabledVersion.indexOf("v2022") === -1 ? jThis.val().length > 0 : jThis.context[0].selected === true;
+    let b = cwAPI.cwConfigs.EnabledVersion.indexOf("v2022") !== -1 ? jThis.val().length > 0 : jThis.context[0].selected === true;
     return [a, b];
   };
 
